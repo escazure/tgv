@@ -21,17 +21,4 @@ void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    float aspect = (float)width / (float)height;
-    if(aspect >= 1.0){
-        glOrtho(-aspect*FSF, aspect*FSF, -FSF, FSF, -FSF*10, FSF*10);
-    }
-    else{
-        glOrtho(-FSF, FSF, -FSF/aspect, FSF/aspect, -FSF*10, FSF*10);
-    }
-
-    glMatrixMode(GL_MODELVIEW);
 }

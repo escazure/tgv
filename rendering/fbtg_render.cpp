@@ -2,11 +2,11 @@
 
 GLuint render_module::vao , render_module::vbo, render_module::vert_shader, render_module::frag_shader, render_module::shader_program;
 
-std::size_t render_module::vertex_count = 0;
-std::size_t render_module:: data_width = 0, render_module::data_length = 0;
+unsigned int render_module::vertex_count = 0;
+unsigned int render_module::data_width = 0, render_module::data_length = 0;
 
-void render_module::init(const std::vector<float>& vertices, std::size_t width, std::size_t length){
-	render_module::vertex_count = vertices.size();
+void render_module::init(float* vertices, unsigned int width, unsigned int length){
+	render_module::vertex_count = (width-1)*(length-1)*18;
 	render_module::data_width = width;
 	render_module::data_length = length;
 
@@ -16,7 +16,7 @@ void render_module::init(const std::vector<float>& vertices, std::size_t width, 
 	glGenBuffers(1, &render_module::vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, render_module::vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, render_module::vertex_count * sizeof(float), vertices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);

@@ -1,15 +1,6 @@
 #include "fbtg_core.h"
-#include "fbtg_callbacks.h"
-#include "fbtg_render.h"
-#include "plugin_system.hpp"
-#include "fbtg_gen.h"
-#include "input.h"
 
-std::size_t width = 32, length = 32;
-
-std::vector<float> vertices = generator::temp_gen(width, length);
-
-GLFWwindow* init_subsystems(){
+GLFWwindow* init_subsystems(float* vertices, u32 width, u32 length){
     glfwSetErrorCallback(error_callback);
 
     if(!glfwInit()){
@@ -36,9 +27,11 @@ GLFWwindow* init_subsystems(){
 		return 0;
 	}
 
-    int w, h;
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, key_callback);
+
+    int w, h;
+	glfwGetFramebufferSize(window, &w, &h);
     framebuffer_size_callback(window, w, h);
 
 	render_module::init(vertices, width, length);
@@ -62,45 +55,4 @@ void shutdown(void** _handle, GLFWwindow* _window){
 	dlclose(_handle);
     glfwDestroyWindow(_window);
     glfwTerminate();
-}
-
-int main(){  
-    GLFWwindow* window = init_subsystems();
-	if(!window){
-		std::cout << "Something during initialization gone wrong, see logs\n";
-		return -1;
-	}
-
-	std::string test_fun, test_name;
-	std::cout << "Provide function: \n";
-	std::getline(std::cin, test_fun);
-
-	std::cout << "Provide function name: \n";
-	std::getline(std::cin, test_name);
-
-	if(!plugin_system::write_fun(test_fun, test_name)){
-		error_callback(-1, ("Failed to open/create file: " + test_name).c_str());
-		return 1;
-	}
-    
-	if(!plugin_system::compile_fun(test_name)){
-		error_callback(-2, ("Failed to compile file: " + test_name).c_str());
-		return 1;
-	}
-
-	float (*fun)(float,float);
-	void* handle;
-
-	if(!plugin_system::get_fun_pointer(test_name, &fun, &handle)){
-		error_callback(-5, "Failed to get function pointer");
-		return 1;
-	}
-	
-	/*
-	 	Here will be temporary evaluator for vertices
-	 */
-
-    //parse_config();
-    run(window);
-    shutdown(&handle, window);
 }

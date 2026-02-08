@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
+typedef unsigned int u32;
 
 namespace generator {
-	std::vector<float> temp_gen(std::size_t width, std::size_t length);
-	inline void set_vertex(std::vector<float>& vertices, size_t& idx, float x, float y, float z);
+	void generate_heightmap(float* vertex_arr, u32 width, u32 length, float (*fun)(float, float));
+	void generate_vertices(float* vertex_arr, u32 width, u32 length, float (*fun)(float, float));
+	inline void set_vertex(float* vertex_arr, u32& idx, float x, float y, float z);
 }

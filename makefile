@@ -11,7 +11,7 @@ LDFLAGS = -lglfw -lGL -ldl
 
 # Source and object files
 C_SRC = external/gl3w.c
-CPP_SRC = core/fbtg_core.cpp core/fbtg_callbacks.cpp core/input.cpp rendering/fbtg_render.cpp etc/plugin_system.cpp etc/fbtg_gen.cpp
+CPP_SRC = core/main.cpp core/fbtg_core.cpp core/fbtg_callbacks.cpp core/input.cpp rendering/fbtg_render.cpp etc/plugin_system.cpp etc/fbtg_gen.cpp external/obj_exporter.cpp
 
 C_OBJS = $(C_SRC:.c=.o)
 CPP_OBJS = $(CPP_SRC:.cpp=.o)
@@ -38,6 +38,9 @@ rendering/%.o: rendering/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 etc/%.o: etc/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	
+external/%.o: external/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: clean

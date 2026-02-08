@@ -8,7 +8,7 @@ bool plugin_system::write_fun(const std::string& _fun, const std::string& _name)
 	if(!out.good()){
 		return false;
 	}
-	std::string fun_wrapper = "extern \"C\" float " + _name + "(float x, float y = 0){return " + _fun + ";}";
+	std::string fun_wrapper = "#include <cmath>\nusing namespace std;\nextern \"C\" float " + _name + "(float x, float z = 0){return " + _fun + ";}";
 	out << fun_wrapper;
 	return true;
 }
