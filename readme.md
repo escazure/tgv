@@ -1,4 +1,4 @@
-**Function based terrain generation system**
+**Terrain generator and visualizer**
 *Project for university*
 
 Uses:
@@ -12,8 +12,3 @@ Planned features:
 - Dynamic parameters
 - Export system
 - Statistics
-
-To compile enter this command:
-make ; make clean ; build/fbtg
-
-Current version requires having 'functions' directory in directory from which you are calling executable
