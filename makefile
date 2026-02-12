@@ -1,49 +1,20 @@
 #!/bin/bash
 
-# Compilers
-CC = gcc
-CXX = g++
+LD_FLAGS = -lglfw -lGL -ldl
 
-# Flags
-CFLAGS = -Iexternal
-CXXFLAGS = -std=c++17 -Iinclude  
-LDFLAGS = -lglfw -lGL -ldl 
+tgv: main.o core.o gl3w.o
+	g++ -Iinc main.o core.o gl3w.o -o tgv $(LD_FLAGS)
 
-# Source and object files
-C_SRC = external/gl3w.c
-CPP_SRC = core/main.cpp core/fbtg_core.cpp core/fbtg_callbacks.cpp core/input.cpp rendering/fbtg_render.cpp etc/plugin_system.cpp etc/fbtg_gen.cpp external/obj_exporter.cpp
+gl3w.o: src/gl3w.c
+	g++ -c -Iinc src/gl3w.c 
 
-C_OBJS = $(C_SRC:.c=.o)
-CPP_OBJS = $(CPP_SRC:.cpp=.o)
-OBJS = $(C_OBJS) $(CPP_OBJS)
+core.o: src/core.cpp  
+	g++ -c -Iinc src/core.cpp
 
-# Target
-TARGET = fbtg
-
-# Build rules
-all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o fbtg $(LDFLAGS)
-
-# Compile C src
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Compile C++ src
-core/%.o: core/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-rendering/%.o: rendering/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-etc/%.o: etc/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-	
-external/%.o: external/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+main.o: src/main.cpp 
+	g++ -c -Iinc src/main.cpp 
 
 .PHONY: clean
 
 clean:
-	rm -f $(OBJS)
+	rm -f *.o

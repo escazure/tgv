@@ -1,4 +1,4 @@
-**Function based terrain generation system**
+**Terrain generator and visualizer**
 *Project for university*
 
 Uses:
@@ -6,17 +6,8 @@ Uses:
 - GL3W for OpenGL function loading
 - OpenGL for rendering
 
-Planned features: 
+**TODO**: 
 - Rule-based generation
 - Recursive layers
 - Dynamic parameters
-- Export system
 - Statistics
-
-To compile enter this command:
-make ; make clean 
-
-Currently works on Linux.
-
-Current version requires having 'functions' and 'shaders' directorys in same directory where executable is.
-
