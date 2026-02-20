@@ -8,13 +8,15 @@ inline bool write_fun(const std::string& _fun, const std::string& _name){
 	if(!out.good()){
 		return false;
 	}
-	std::string fun_wrapper = "#include <cmath>\nusing namespace std;\nextern \"C\" float " + _name + "(float x, float z = 0){return " + _fun + ";}";
+	std::string fun_wrapper = "#include <cmath>\n"\
+							   "#include \"simple_terrain_lib.h\"\n"\
+							   "using namespace std;\nextern \"C\" float " + _name + "(float x, float z = 0){return " + _fun + ";}";
 	out << fun_wrapper;
 	return true;
 }
 
 inline bool compile_fun(const std::string& _name){
-	std::string cmd = "g++ -shared -fPIC -O2 ./functions/" + _name + ".cpp -o ./functions/" + _name;
+	std::string cmd = "g++ -Iinclude -shared -fPIC -O2 ./functions/" + _name + ".cpp -o ./functions/" + _name;
 	int result = std::system(cmd.c_str());
 	if(result != 0){
 		return false;

@@ -10,12 +10,10 @@
 #include "shader_program.h"
 #include "simple_renderer.h"
 #include "simple_generator.h"
+#include "simple_camera.h"
 
 #include <cmath>
 
 GLFWwindow* init(float* vertices, unsigned int size, unsigned int* indices, unsigned int isize);
 void run(GLFWwindow* window, float* vertices, unsigned int size);
 void shutdown(GLFWwindow* window);
-
-void process_input(GLFWwindow* window);
-

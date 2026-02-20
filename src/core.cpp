@@ -1,6 +1,41 @@
 #include "core.h"
 
 Renderer rend;
+Camera camera(glm::vec3(0.0, 10.0, 0.0), 10.0, 0.07);
+float lastx, lasty, delta_time;
+bool first_mouse = true;
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+	float yawt = camera.yaw, pitcht = camera.pitch;
+
+	if(first_mouse){
+		lastx = (float)xpos;
+		lasty = (float)ypos;
+		first_mouse = false;
+	}
+
+	float xoffset = xpos - lastx;
+	float yoffset = lasty - ypos;
+	lastx = xpos;
+	lasty = ypos;
+
+	camera.process_mouse_mov(xoffset, yoffset);
+}
+
+void process_input(GLFWwindow* window){
+	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)	
+		camera.move_forward(delta_time);
+	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.move_back(delta_time);
+	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.move_left(delta_time);
+	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.move_right(delta_time);
+	if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		camera.move_up(delta_time);
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		camera.move_down(delta_time);
+}
 
 GLFWwindow* init(float* vertices, unsigned int size, unsigned int* indices, unsigned int isize){
 	glfwInit();
@@ -14,7 +49,11 @@ GLFWwindow* init(float* vertices, unsigned int size, unsigned int* indices, unsi
 
 	glfwMakeContextCurrent(window);
 
-	/* Input initialization*/
+	lastx = 1980/2;
+	lasty = 1080/2;
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	if(gl3wInit() != 0)
 		std::cerr << "ERROR: Failed to init gl3w" << std::endl;
@@ -27,7 +66,7 @@ GLFWwindow* init(float* vertices, unsigned int size, unsigned int* indices, unsi
 }
 
 void run(GLFWwindow* window, float* vertices, unsigned int size){
-	float delta_time = 0.0;
+	delta_time = 0.0;
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
@@ -45,17 +84,17 @@ void run(GLFWwindow* window, float* vertices, unsigned int size){
 		process_input(window);
 
 		glm::mat4 view(1.0f);
-		view = glm::lookAt(glm::vec3(0.0, 0.0, 5.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		view = camera.get_view_mat();
 		shader.set_mat4("view", view);
 
 		glm::mat4 projection(1.0f);
-		projection = glm::perspective(glm::radians(45.0f), (float)1920/(float)1080, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(45.0f), (float)1920/(float)1080, 0.1f, 500.0f);
 		shader.set_mat4("projection", projection);
 
-		glClearColor(0.2, 0.3, 0.3, 1.0);
+		glClearColor(0.2, 0.6, 0.8, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		rend.render(3);	// Render three vertices of test triangle
+		rend.render(size);	// Render three vertices of test triangle
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -65,8 +104,4 @@ void run(GLFWwindow* window, float* vertices, unsigned int size){
 void shutdown(GLFWwindow* window){
 	glfwDestroyWindow(window);	
 	glfwTerminate();
-}
-
-void process_input(GLFWwindow* window){
-
 }

@@ -1,10 +1,15 @@
 #include "core.h"
 
-#define PLAIN_LENGTH 2
-#define PLAIN_WIDTH 2
+#define PLAIN_LENGTH 512
+#define PLAIN_WIDTH 512
+#define STEP_SIZE 0.5f
 
 int main(){
-	/*
+	std::cout << "Menu:\n- random(x,z,seed) - generates random fractional value\n" \
+						 "- value_noise(x,z) - value noise\n" \
+						 "- fbm(x,z,octave) - fractal brownian motion\n" \
+						 "- example(x,z,seed) - predefined terrain function\n";
+	
 	std::string test_fun, test_name;
 	std::cout << "Provide function: \n";
 	std::getline(std::cin, test_fun);
@@ -30,26 +35,16 @@ int main(){
 		return 1;
 	}
 
-	float* vertices = generate_vertices(PLAIN_LENGTH, PLAIN_WIDTH, fun);	
-	unsigned int size = PLAIN_LENGTH * PLAIN_WIDTH * 6;
+	unsigned int vertex_count_x = std::floor(PLAIN_LENGTH/STEP_SIZE);
+	unsigned int vertex_count_z = std::floor(PLAIN_WIDTH/STEP_SIZE);
 
-	for(int i = 0; i < size; i++){
-		if(i%6==0) std::cout << std::endl;
-		std::cout << vertices[i] << " ";
-	}
-*/
-	unsigned int* indices = new unsigned int[]{
-		0, 1, 2,			
-	};
+	float* vertices = generate_vertices(PLAIN_LENGTH, PLAIN_WIDTH, STEP_SIZE , fun);	
+	unsigned int size = vertex_count_x * vertex_count_z * 6;
+	unsigned int* indices = generate_indices(PLAIN_LENGTH, PLAIN_WIDTH, STEP_SIZE);
+	unsigned int isize = (vertex_count_x-1)*(vertex_count_z-1)*6;
 
-	float* vertices = new float[]{
-		-1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0, 1.0, 0.0, 0.0,
-	};
-	unsigned int size = 18;
+	GLFWwindow* window = init(vertices, size, indices, isize);
 
-	GLFWwindow* window = init(vertices, size, indices, 6);
 	run(window, vertices, size);
 	shutdown(window);
 
