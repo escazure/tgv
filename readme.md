@@ -3,12 +3,11 @@
 
 Uses:
 - GLFW for window management
-- GL3W for function loading
+- GL3W for OpenGL function loading
 - OpenGL for rendering
 
-Planned features: 
+**TODO**: 
 - Rule-based generation
 - Recursive layers
 - Dynamic parameters
-- Export system
 - Statistics

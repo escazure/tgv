@@ -1,5 +1,5 @@
 *.o
 *.out
 *.exe
+*.obj
 functions/
-build/functions/

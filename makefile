@@ -1,24 +1,20 @@
 #!/bin/bash
-CXX = g++
-CXXFLAGS = -std=c++17 -Iinclude  
-LDFLAGS = -lglfw -lGL -ldl -lpthread -lwayland-client
 
-SRC = core/fbtg_core.cpp core/fbtg_callbacks.cpp core/input.cpp rendering/fbtg_render.cpp etc/plugin_system.cpp
-OBJ = $(SRC:.cpp=.o)
+LD_FLAGS = -lglfw -lGL -ldl
 
-fbtg: $(OBJ)
-	$(CXX) $(OBJ) -o build/fbtg $(LDFLAGS)
+tgv: main.o core.o gl3w.o
+	g++ -Iinclude main.o core.o gl3w.o -o tgv $(LD_FLAGS)
 
-core/%.o: core/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+gl3w.o: src/gl3w.c
+	g++ -c -Iinclude src/gl3w.c 
 
-rendering/%.o: rendering/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+core.o: src/core.cpp  
+	g++ -c -Iinclude src/core.cpp
 
-etc/%.o: etc/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+main.o: src/main.cpp 
+	g++ -c -Iinclude src/main.cpp 
 
 .PHONY: clean
 
 clean:
-	rm -f $(OBJ)
+	rm -f *.o
