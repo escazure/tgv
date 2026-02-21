@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "function_loader.h"
 #include "shader_program.h"
@@ -14,6 +17,7 @@
 
 #include <cmath>
 
-GLFWwindow* init(float* vertices, unsigned int size, unsigned int* indices, unsigned int isize);
-void run(GLFWwindow* window, float* vertices, unsigned int size);
+GLFWwindow* init();
+void runStartUI(GLFWwindow* window);
+void run(GLFWwindow* window);
 void shutdown(GLFWwindow* window);
