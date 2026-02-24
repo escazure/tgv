@@ -14,10 +14,10 @@
 #include "simple_renderer.h"
 #include "simple_generator.h"
 #include "simple_camera.h"
+#include "terrain.h"
 
 #include <cmath>
 
 GLFWwindow* init();
-void runStartUI(GLFWwindow* window);
 void run(GLFWwindow* window);
 void shutdown(GLFWwindow* window);

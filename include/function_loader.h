@@ -3,38 +3,52 @@
 #include <dlfcn.h>
 #include <fstream>
 
-inline bool write_fun(const std::string& _fun, const std::string& _name){
-	std::ofstream out("functions/" + _name + ".cpp");
-	if(!out.good()){
-		return false;
-	}
-	std::string fun_wrapper = "#include <cmath>\n"\
+struct FunctionLoader{
+	std::string function_buffer, function_name;
+	void* handle;
+	bool writeFunction(){
+		std::ofstream out("functions/" + function_name + ".cpp");
+		if(!out.good()){
+			return false;
+		}
+		std::string fun_wrapper = "#include <cmath>\n"\
 							   "#include \"simple_terrain_lib.h\"\n"\
-							   "using namespace std;\nextern \"C\" float " + _name + "(float x, float z = 0){return " + _fun + ";}";
-	out << fun_wrapper;
-	return true;
-}
+								   "using namespace std;\nextern \"C\" float " + function_name + "(float x, float z = 0){return " + function_buffer + ";}";
+		out << fun_wrapper;
+		return true;
+	}
+	
+	bool compileFunction(){
+		std::string cmd = "g++ -Iinclude -shared -fPIC -O2 ./functions/" + function_name + ".cpp -o ./functions/" + function_name;
+		int result = std::system(cmd.c_str());
+		if(result != 0)
+			return false;
+		return true;
+	}
 
-inline bool compile_fun(const std::string& _name){
-	std::string cmd = "g++ -Iinclude -shared -fPIC -O2 ./functions/" + _name + ".cpp -o ./functions/" + _name;
-	int result = std::system(cmd.c_str());
-	if(result != 0){
-		return false;
+	bool getFunctionPointer(float (**_fun)(float,float)){
+		handle = dlopen(("./functions/"+function_name).c_str(), RTLD_LAZY);
+		if(!handle){
+			return false;
+		}
+		*_fun = (float (*)(float,float))dlsym(handle, function_name.c_str());
+		const char* error = dlerror();
+		if(error){
+			dlclose(handle);
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
 
-inline bool get_fun_pointer(const std::string& _name, float (**_fun)(float,float), void** _handle){
-	void* handle = dlopen(("./functions/"+_name).c_str(), RTLD_LAZY);
-	if(!handle){
-		return false;
+	bool load(){
+		if(!writeFunction())
+			return false;
+		if(!compileFunction())
+			return false;
+		return true;
 	}
-	*_fun = (float (*)(float,float))dlsym(handle, _name.c_str());
-	const char* error = dlerror();
-	if(error){
-		dlclose(handle);
-		return false;
+
+	void destroy(){
+		
 	}
-	*_handle = handle;
-	return true;
-}
+};
