@@ -11,8 +11,6 @@
 
 #include "function_loader.h"
 #include "shader_program.h"
-#include "simple_renderer.h"
-#include "simple_generator.h"
 #include "simple_camera.h"
 #include "terrain.h"
 
