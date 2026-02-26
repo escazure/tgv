@@ -14,7 +14,11 @@ Uses:
 - Statistics
 - GUI
 - Export
- 
-To build the project run *make* in the project directory. 
+
+Currently works only on Linux.
+
+To launch the project, run *tgv* binary.
+
+To build the project, run *make* in the project directory. 
 GLSL shader files are expected to be in the same directory as an executable.
 You will also need to create a *function* directory for project to work.
