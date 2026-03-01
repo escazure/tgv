@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <iostream>
 
 class Terrain {
 	public:
@@ -26,7 +27,7 @@ class Terrain {
 			
 			auto start = std::chrono::high_resolution_clock::now();
 			vertices = generate_vertices(terrain_length, terrain_width, step_size, fun);
-			size = vertex_count_x * vertex_count_z * 6;
+			size = vertex_count_x * vertex_count_z * 3;
 			indices = generate_indices(terrain_length, terrain_width, step_size);
 			isize = (vertex_count_x-1)*(vertex_count_z-1)*6;
 			auto end = std::chrono::high_resolution_clock::now();
@@ -47,11 +48,8 @@ class Terrain {
 			glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), vertices, GL_STATIC_DRAW);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, isize * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
-
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
 
 			glBindVertexArray(0);
 		}
@@ -77,29 +75,11 @@ class Terrain {
 			int z0 = width/2 - width;
 			unsigned int vertex_count_x = std::floor(length/step_size);
 			unsigned int vertex_count_z = std::floor(width/step_size);
-			float* vertices = new float[vertex_count_x * vertex_count_z * 6];	
+			float* vertices = new float[vertex_count_x * vertex_count_z * 3];	
 			int temp = 0;
 			float x = x0, z = z0, y;
 
 			float max_y = std::numeric_limits<float>::min(), min_y = std::numeric_limits<float>::max();
-
-			for(int i = 0; i < vertex_count_x; i++){
-				z = z0;
-				for(int j = 0; j < vertex_count_z; j++){
-					y = fun(x, z);
-					if(y < 0.0f) below_sea++;
-					if(max_y < y) max_y = y;
-					if(min_y > y) min_y = y;
-
-					z+=step_size;
-				}
-				x+=step_size;
-			}
-
-			max = max_y;
-			min = min_y;
-
-			x = x0;
 
 			for(int i = 0; i < vertex_count_x; i++){
 				z = z0;
@@ -109,28 +89,19 @@ class Terrain {
 					vertices[temp+1] = y;	
 					vertices[temp+2] = z;	
 
-					float norm_y = (y - min_y)/(max_y - min_y);
-					float r = 1.0f,g = 1.0f,b = 1.0f;
-					if(norm_y < 0.3f){
-						r = 0.8f; g = 0.8f, b = 0.5f;	
-					}
-					else if(norm_y < 0.5f){
-						r = 0.1f; g = 0.7f, b = 0.1f;
-					}
-					else if(norm_y < 0.9f){
-						r = 0.5f; g = 0.5f; b = 0.5f;
-					}
+					if(y < 0.0f) below_sea++;
+					if(max_y < y) max_y = y;
+					if(min_y > y) min_y = y;
 
-					vertices[temp+3] = r;	
-					vertices[temp+4] = g;	
-					vertices[temp+5] = b;	
-					temp+=6;
+					temp+=3;
 
 					z+=step_size;
 				}
 				x+=step_size;
 			}
 
+			max = max_y;
+			min = min_y;
 			return vertices;
 		}
 
@@ -151,7 +122,6 @@ class Terrain {
 					temp+=6;
 				}
 			} 
-	
 			return indices;
 		}
 };

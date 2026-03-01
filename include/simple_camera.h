@@ -5,9 +5,9 @@
 
 struct Camera {
 	glm::vec3 pos, front, up, right, world_up;
-	float speed, yaw, pitch, fov, height, sensitivity;
+	float speed, yaw, pitch, fov, height, sensitivity, view_distance;
 
-	Camera(const glm::vec3 &_pos, float _speed, float _sens){
+	Camera(const glm::vec3 &_pos, float _speed, float _sens, float _view_distance = 1000){
 		pos = _pos; 
 		speed = _speed;
 		sensitivity = _sens;
@@ -20,6 +20,8 @@ struct Camera {
 		fov = 45.0;
 
 		height = pos.y;
+
+		view_distance = _view_distance; 
 
 		update_dir();
 	}

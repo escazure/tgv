@@ -1,11 +1,15 @@
 #include "core.h"
 
-#define MAX_LENGTH_EXPONENT 11
+#define MAX_LENGTH_EXPONENT 13
 #define MIN_LENGTH_EXPONENT 5
-#define MAX_WIDTH_EXPONENT 11
+#define MAX_WIDTH_EXPONENT 13
 #define MIN_WIDTH_EXPONENT 5
 #define MIN_STEP_SIZE 0.2f
 #define MAX_STEP_SIZE 4.0f
+#define MIN_CAMERA_SPEED 1.0f
+#define MAX_CAMERA_SPEED 100.0f
+#define MIN_CAMERA_VIEW_DISTANCE 20.0f
+#define MAX_CAMERA_VIEW_DISTANCE 10000.0f
 
 Camera camera(glm::vec3(0.0, 50.0, 0.0), 20.0, 0.07);
 Terrain* terrain;
@@ -15,6 +19,7 @@ float lastx, lasty, delta_time;
 bool first_mouse = true;
 bool is_capturing = false;
 bool terrain_generated = false;
+float window_width, window_height;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
 	if(!is_capturing){
@@ -81,6 +86,7 @@ void render_gui(){
 	static char fun_buf[256];
 	static char fun_name[128];
 	static bool show_noise_window = false;
+	static bool show_camera_settings_window = false;
 
 	if(ImGui::SliderInt("##xsize", &x_exponent, MIN_LENGTH_EXPONENT, MAX_LENGTH_EXPONENT, "")){
 		x_size = 1 << x_exponent;	
@@ -119,9 +125,13 @@ void render_gui(){
 
 	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(1920.0f - 350.0f, 30.0f));
+	ImGui::SetNextWindowPos(ImVec2(window_width - 350.0f, 30.0f));
 	ImGui::SetNextWindowSize(ImVec2(350.0f, 200.0f));
 	ImGui::Begin("Statistics");
+
+	ImGui::Text("Vertex count: %d", terrain_generated ? terrain->size : 0);
+	ImGui::Text("Index count: %d", terrain_generated ? terrain->isize : 0);
+	ImGui::NewLine();
 
 	ImGui::Text("Max height: %.2f", terrain_generated ? terrain->max : 0.0f);	
 	ImGui::Text("Min height: %.2f", terrain_generated ? terrain->min : 0.0f);	
@@ -130,14 +140,20 @@ void render_gui(){
 	ImGui::Text("Percent below sea level: %.2f", terrain_generated ? terrain->below_sea : 0.0f);
 	ImGui::NewLine();
 	ImGui::Text("Generation time (ms): %.2f", terrain_generated ? terrain->gen_time : 0.0f);
-	
 	ImGui::End();
 
-	ImGui::SetNextWindowSize(ImVec2(1920.0f, 40.0f));
+	ImGui::SetNextWindowSize(ImVec2(window_width, 40.0f));
 	ImGui::BeginMainMenuBar();
 
 	if(ImGui::BeginMenu("File")){
 		ImGui::MenuItem("Save");
+		ImGui::EndMenu();
+	}
+
+	if(ImGui::BeginMenu("Settings")){
+		if(ImGui::MenuItem("Camera")){
+			show_camera_settings_window = true;
+		}
 		ImGui::EndMenu();
 	}
 
@@ -152,7 +168,7 @@ void render_gui(){
 
 	if(show_noise_window){
 		ImGui::SetNextWindowSize(ImVec2(600.0f, 300.0f));
-		ImGui::SetNextWindowPos(ImVec2(1920.0f/2 - 300.0f, 1080.0f/2 - 150.0f));
+		ImGui::SetNextWindowPos(ImVec2(window_width/2 - 300.0f, window_height/2 - 150.0f));
 		if(ImGui::Begin("Noise and utility functions", &show_noise_window)){
 			ImGui::TextWrapped("* float random(float x, float z, unsigned int seed = 5527265) - returns semi-random values in range (0,1)");
 			ImGui::TextWrapped("* float lerp(float a, float b, float t) - interpolates between a and b");
@@ -161,6 +177,20 @@ void render_gui(){
 			ImGui::TextWrapped("* float value_noise(float x, float z) - creates a value noise map");
 			ImGui::TextWrapped("* float fbm(float x, float z, int octaves = 4) - creates a fBm noise map");
 			ImGui::TextWrapped("* float example(float x, float z, seed = 1000) - creates an example terrain using multiple stacked fBm calls (high seed values result in blocky terrain, because of rounding error)");
+			ImGui::End();
+		}
+	}
+
+	if(show_camera_settings_window){
+		ImGui::SetNextWindowSize(ImVec2(600.0f, 300.0f));
+		ImGui::SetNextWindowPos(ImVec2(window_width/2 - 300.0f, window_height/2 - 150.0f));
+		if(ImGui::Begin("Camera settings", &show_camera_settings_window)){
+			ImGui::Text("Speed: %.1f", camera.speed);
+			ImGui::SameLine();
+			ImGui::SliderFloat("##camera_speed", &camera.speed, MIN_CAMERA_SPEED, MAX_CAMERA_SPEED, "");
+			ImGui::Text("View distance: %.1f", camera.view_distance);
+			ImGui::SameLine();
+			ImGui::SliderFloat("##camera_view_distance", &camera.view_distance, MIN_CAMERA_VIEW_DISTANCE, MAX_CAMERA_VIEW_DISTANCE, "");
 			ImGui::End();
 		}
 	}
@@ -178,11 +208,13 @@ GLFWwindow* init(){
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "tgv", NULL, NULL);
+	window_width = mode->width;
+	window_height = mode->height;
 
 	glfwMakeContextCurrent(window);
 
-	lastx = 1980/2;
-	lasty = 1080/2;
+	lastx = window_width/2;
+	lasty = window_height/2;
 
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetKeyCallback(window, key_callback);
@@ -236,8 +268,11 @@ void run(GLFWwindow* window){
 			shader.set_mat4("view", view);
 
 			glm::mat4 projection(1.0f);
-			projection = glm::perspective(glm::radians(45.0f), (float)1920/(float)1080, 0.1f, 2000.0f);
+			projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
 			shader.set_mat4("projection", projection);
+
+			shader.set_float("min_y", terrain->min);
+			shader.set_float("max_y", terrain->max);
 
 			terrain->draw();
 		}

@@ -27,10 +27,15 @@ struct FunctionLoader{
 	}
 
 	bool getFunctionPointer(float (**_fun)(float,float)){
+		if(handle){
+			dlclose(handle);
+			handle = nullptr;
+		}
 		handle = dlopen(("./functions/"+function_name).c_str(), RTLD_LAZY);
 		if(!handle){
 			return false;
 		}
+		dlerror();
 		*_fun = (float (*)(float,float))dlsym(handle, function_name.c_str());
 		const char* error = dlerror();
 		if(error){
@@ -49,6 +54,9 @@ struct FunctionLoader{
 	}
 
 	void destroy(){
-		
+		if(handle){
+			dlclose(handle);
+			handle = nullptr;
+		}
 	}
 };
