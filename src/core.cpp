@@ -87,6 +87,7 @@ void render_gui(){
 	static char fun_name[128];
 	static bool show_noise_window = false;
 	static bool show_camera_settings_window = false;
+	static bool show_keybinds_window = false;
 
 	if(ImGui::SliderInt("##xsize", &x_exponent, MIN_LENGTH_EXPONENT, MAX_LENGTH_EXPONENT, "")){
 		x_size = 1 << x_exponent;	
@@ -161,6 +162,9 @@ void render_gui(){
 		if(ImGui::MenuItem("Noise and utility functions")){
 			show_noise_window = true;
 		}
+		if(ImGui::MenuItem("Keybinds")){
+			show_keybinds_window = true;
+		}
 		ImGui::EndMenu();
 	}
 
@@ -191,6 +195,20 @@ void render_gui(){
 			ImGui::Text("View distance: %.1f", camera.view_distance);
 			ImGui::SameLine();
 			ImGui::SliderFloat("##camera_view_distance", &camera.view_distance, MIN_CAMERA_VIEW_DISTANCE, MAX_CAMERA_VIEW_DISTANCE, "");
+			ImGui::End();
+		}
+	}
+
+	if(show_keybinds_window){
+		ImGui::SetNextWindowSize(ImVec2(600.0f, 300.0f));
+		ImGui::SetNextWindowPos(ImVec2(window_width/2 - 300.0f, window_height/2 - 150.0f));
+		if(ImGui::Begin("Keybinds", &show_keybinds_window)){
+			ImGui::Text("Camera movement left - A");
+			ImGui::Text("Camera movement right - D");
+			ImGui::Text("Camera movement back - S");
+			ImGui::Text("Camera movement forward - W");
+			ImGui::Text("Camera movement down - Ctrl");
+			ImGui::Text("Camera movement up - Space");
 			ImGui::End();
 		}
 	}
