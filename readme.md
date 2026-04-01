@@ -9,10 +9,9 @@ Uses:
 - Dear ImGui for GUI
 
 **TODO**: 
-- Terrain regeneration
+- Restructure
+- Switch to CMake
 - Dynamicly adjustable parameters
-- Statistics
-- GUI
 - Export
 
 Currently works only on Linux.
