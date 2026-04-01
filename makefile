@@ -1,5 +1,3 @@
-#!/bin/bash
-
 LD_FLAGS = -lglfw -lGL -ldl -lpthread
 
 CXXFLAGS = -Iinclude -Iexternal -Iexternal/imgui -Iexternal/imgui/backends

@@ -127,7 +127,7 @@ void render_gui(){
 	ImGui::End();
 
 	ImGui::SetNextWindowPos(ImVec2(window_width - 350.0f, 30.0f));
-	ImGui::SetNextWindowSize(ImVec2(350.0f, 200.0f));
+	ImGui::SetNextWindowSize(ImVec2(350.0f, 230.0f));
 	ImGui::Begin("Statistics");
 
 	ImGui::Text("Vertex count: %d", terrain_generated ? terrain->size : 0);
@@ -141,6 +141,8 @@ void render_gui(){
 	ImGui::Text("Percent below sea level: %.2f", terrain_generated ? terrain->below_sea : 0.0f);
 	ImGui::NewLine();
 	ImGui::Text("Generation time (ms): %.2f", terrain_generated ? terrain->gen_time : 0.0f);
+	ImGui::NewLine();
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	ImGui::End();
 
 	ImGui::SetNextWindowSize(ImVec2(window_width, 40.0f));
