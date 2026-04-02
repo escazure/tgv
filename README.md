@@ -32,11 +32,10 @@ The plane's dimensions can be changed on the fly. As well as function used for g
 
 #### Run
 ---
-```./tgv```
+```./build/tgv```
 
 #### Build
 ---
 *Currently works only on Linux.*<br/>
-```mkdir functions```<br/>
-```make```<br/>
-```./tgv```
+```cmake --build build```<br/>
+```./build/tgv```

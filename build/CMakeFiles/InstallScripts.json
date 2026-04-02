@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/escazure/cpp_projects/tgv/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

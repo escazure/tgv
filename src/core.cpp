@@ -262,7 +262,7 @@ void run(GLFWwindow* window){
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
-	Shader shader("vertex.glsl", "fragment.glsl");
+	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 	shader.use();
 	
 	while(!glfwWindowShouldClose(window)){
