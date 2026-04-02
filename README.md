@@ -36,7 +36,7 @@ The plane's dimensions can be changed on the fly. As well as function used for g
 
 #### Build
 ---
-*Currently works only on Linux.*
-```mkdir functions```
-```make```
+*Currently works only on Linux.*<br/>
+```mkdir functions```<br/>
+```make```<br/>
 ```./tgv```
