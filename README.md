@@ -7,13 +7,19 @@ The plane's dimensions can be changed on the fly. As well as function used for g
 #### Examples
 ---
 *4Kx4K plane*
-<img src="assets/4k_plane.png" width="300"/>
+<div align="left">
+    <img src="assets/4k_plane.png" width="350"/>
+</div>
 
 *2Kx2K plane*
-<img src="assets/2k_plane.png" width="300"/>
+<div align="left">
+    <img src="assets/2k_plane.png" width="350"/>
+</div>
 
 *1Kx1K plane*
-<img src="assets/1k_plane.png" width="300"/>
+<div align="left">
+    <img src="assets/1k_plane.png" width="350"/>
+</div>
 
 
 #### Dependencies
