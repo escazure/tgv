@@ -1,5 +1,4 @@
 #pragma once
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,7 +14,7 @@ struct Camera {
 		front = glm::vec3(0.0, 0.0, -1.0);
 		world_up = glm::vec3(0.0, 1.0, 0.0);
 
-		yaw = -90.0;
+		yaw = 0.0;
 		pitch = 0.0;
 		fov = 45.0;
 
@@ -39,21 +38,27 @@ struct Camera {
 
 	void move_forward(float delta){
 		pos += speed * front * delta;	
+		pos.y = height;
 	}
 	void move_back(float delta){
 		pos -= speed * front * delta;	
+		pos.y = height;
 	}
 	void move_right(float delta){
 		pos += speed * right * delta;	
+		pos.y = height;
 	}
 	void move_left(float delta){
 		pos -= speed * right * delta;	
+		pos.y = height;
 	}
 	void move_up(float delta){
 		pos += speed * world_up * delta;	
+		height = pos.y;
 	}
 	void move_down(float delta){
 		pos -= speed * world_up * delta;	
+		height = pos.y;
 	}
 
 	void process_mouse_mov(float xoffset, float yoffset){
