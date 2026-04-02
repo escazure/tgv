@@ -6,14 +6,14 @@ The plane's dimensions can be changed on the fly. As well as function used for g
 
 #### Examples
 ---
+*4Kx4K plane*
 <img src="assets/4k_plane.png" width="300"/>
-**4Kx4K plane**
 
+*2Kx2K plane*
 <img src="assets/2k_plane.png" width="300"/>
-**2Kx2K plane**
 
+*1Kx1K plane*
 <img src="assets/1k_plane.png" width="300"/>
-**1Kx1K plane**
 
 
 #### Dependencies
