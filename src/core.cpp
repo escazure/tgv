@@ -277,8 +277,10 @@ void run(GLFWwindow* window){
 		//  Process input, send data to shader and render only if terrain already generated 
 		// -----------------------------------------------------------------
 		
-		if(terrain_generated){
+		if(is_capturing)
 			process_input(window);
+
+		if(terrain_generated){
 
 			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
