@@ -1,12 +1,12 @@
 #include "core.h"
 
-#define MAX_LENGTH_EXPONENT 13
-#define MIN_LENGTH_EXPONENT 5
-#define MAX_WIDTH_EXPONENT 13
-#define MIN_WIDTH_EXPONENT 5
-#define MIN_STEP_SIZE 0.2f
-#define MAX_STEP_SIZE 4.0f
-#define MIN_CAMERA_SPEED 1.0f
+#define MAX_EXPONENT 13
+#define MIN_EXPONENT 5
+#define MIN_STEP_EXPONENT 0
+#define MAX_STEP_EXPONENT 3
+#define MIN_CHUNK_EXPONENT 5
+#define MAX_CHUNK_EXPONENT 8
+#define MIN_CAMERA_SPEED 10.0f
 #define MAX_CAMERA_SPEED 100.0f
 #define MIN_CAMERA_VIEW_DISTANCE 20.0f
 #define MAX_CAMERA_VIEW_DISTANCE 10000.0f
@@ -19,6 +19,7 @@ float lastx, lasty, delta_time;
 bool first_mouse = true;
 bool is_capturing = false;
 bool terrain_generated = false;
+bool is_wireframe_mode = false;
 float window_width, window_height;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
@@ -78,32 +79,36 @@ void render_gui(){
 	ImGui::Begin("Generation");
 
 	// ----- Values below are static since we want to keep them across loop iterations without updating ----- //
-	static int x_exponent = MIN_LENGTH_EXPONENT;
-	static int z_exponent = MIN_WIDTH_EXPONENT;
-	static int x_size = 1 << x_exponent;
-	static int z_size = 1 << z_exponent; 
-	static float step_size = 1.0f;
+	static int exponent = MIN_EXPONENT;
+	static int size = 1 << exponent;
+	static int step_exponent = MIN_STEP_EXPONENT;
+	static int step_size = 1 << step_exponent;
+	static int chunk_exponent = MIN_CHUNK_EXPONENT;
+	static int chunk_size = 1 << chunk_exponent;
 	static char fun_buf[256];
 	static char fun_name[128];
 	static bool show_noise_window = false;
 	static bool show_camera_settings_window = false;
+	static bool show_render_settings_window = false;
 	static bool show_keybinds_window = false;
 
-	if(ImGui::SliderInt("##xsize", &x_exponent, MIN_LENGTH_EXPONENT, MAX_LENGTH_EXPONENT, "")){
-		x_size = 1 << x_exponent;	
+	if(ImGui::SliderInt("##size", &exponent, MIN_EXPONENT, MAX_EXPONENT, "")){
+		size = 1 << exponent;	
 	}
 	ImGui::SameLine();
-	ImGui::Text("X size: %d",x_size);
+	ImGui::Text("Size: %d",size);
 
-	if(ImGui::SliderInt("##zsize", &z_exponent, MIN_WIDTH_EXPONENT, MAX_WIDTH_EXPONENT, "")){
-		z_size = 1 << z_exponent;	
+	if(ImGui::SliderInt("##step_exponent", &step_exponent, MIN_STEP_EXPONENT, MAX_STEP_EXPONENT, "")){
+		step_size = 1 << step_exponent;
 	}
 	ImGui::SameLine();
-	ImGui::Text("Z size: %d",z_size);
-
-	ImGui::SliderFloat("##step_size", &step_size, MIN_STEP_SIZE, MAX_STEP_SIZE, "");
+	ImGui::Text("Step size: %d", step_size);
+	
+	if(ImGui::SliderInt("##chunk_exponent", &chunk_exponent, MIN_CHUNK_EXPONENT, MAX_CHUNK_EXPONENT, "")){
+		chunk_size = 1 << chunk_exponent;	
+	}
 	ImGui::SameLine();
-	ImGui::Text("Step size: %.1f", step_size);
+	ImGui::Text("Chunk size: %d",chunk_size);
 
 	ImGui::InputText("Function", fun_buf, IM_ARRAYSIZE(fun_buf));
 	ImGui::InputText("Function name", fun_name, IM_ARRAYSIZE(fun_name));
@@ -118,7 +123,7 @@ void render_gui(){
 		if(!function_loader.getFunctionPointer(&fun))
 			std::cerr << "ERROR::FUNCTION_LOADER::FAILED_TO_GET_FUNCTION_POINTER" << std::endl;
 			
-		terrain = new Terrain(x_size, z_size, step_size);
+		terrain = new Terrain(size, step_size, chunk_size);
 		terrain->generate(fun);
 
 		terrain_generated = true;
@@ -130,15 +135,12 @@ void render_gui(){
 	ImGui::SetNextWindowSize(ImVec2(350.0f, 230.0f));
 	ImGui::Begin("Statistics");
 
-	ImGui::Text("Vertex count: %d", terrain_generated ? terrain->size : 0);
-	ImGui::Text("Index count: %d", terrain_generated ? terrain->isize : 0);
+	ImGui::Text("Triangle count: %d", terrain_generated ? terrain->triangle_count : 0);
 	ImGui::NewLine();
 
-	ImGui::Text("Max height: %.2f", terrain_generated ? terrain->max : 0.0f);	
-	ImGui::Text("Min height: %.2f", terrain_generated ? terrain->min : 0.0f);	
-	ImGui::Text("Height range: %.2f", terrain_generated ? terrain->max - terrain->min : 0.0f);
-	ImGui::NewLine();
-	ImGui::Text("Percent below sea level: %.2f", terrain_generated ? terrain->below_sea : 0.0f);
+	ImGui::Text("Max height: %.2f", terrain_generated ? terrain->max_height : 0.0f);	
+	ImGui::Text("Min height: %.2f", terrain_generated ? terrain->min_height : 0.0f);	
+	ImGui::Text("Height range: %.2f", terrain_generated ? terrain->max_height - terrain->min_height : 0.0f);
 	ImGui::NewLine();
 	ImGui::Text("Generation time (ms): %.2f", terrain_generated ? terrain->gen_time : 0.0f);
 	ImGui::NewLine();
@@ -156,6 +158,9 @@ void render_gui(){
 	if(ImGui::BeginMenu("Settings")){
 		if(ImGui::MenuItem("Camera")){
 			show_camera_settings_window = true;
+		}
+		if(ImGui::MenuItem("Render")){
+			show_render_settings_window = true;
 		}
 		ImGui::EndMenu();
 	}
@@ -215,6 +220,15 @@ void render_gui(){
 		}
 	}
 
+	if(show_render_settings_window){
+		ImGui::SetNextWindowSize(ImVec2(600.0f, 300.0f));
+		ImGui::SetNextWindowPos(ImVec2(window_width/2 - 300.0f, window_height/2 - 150.0f));
+		if(ImGui::Begin("Rendering", &show_render_settings_window)){
+			ImGui::Checkbox("Toggle wireframe mode", &is_wireframe_mode);
+			ImGui::End();
+		}
+	}
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -264,7 +278,7 @@ void run(GLFWwindow* window){
 
 	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 	shader.use();
-	
+
 	while(!glfwWindowShouldClose(window)){
 		glClearColor(0.2, 0.6, 0.8, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -272,6 +286,13 @@ void run(GLFWwindow* window){
 		current_frame = glfwGetTime();
 		delta_time = current_frame - last_frame;	
 		last_frame = current_frame;
+
+		if(is_wireframe_mode){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 
 		// -----------------------------------------------------------------
 		//  Process input, send data to shader and render only if terrain already generated 
@@ -281,7 +302,6 @@ void run(GLFWwindow* window){
 			process_input(window);
 
 		if(terrain_generated){
-
 			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
 			
@@ -293,8 +313,8 @@ void run(GLFWwindow* window){
 			projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
 			shader.set_mat4("projection", projection);
 
-			shader.set_float("min_y", terrain->min);
-			shader.set_float("max_y", terrain->max);
+			shader.set_float("min_y", terrain->min_height);
+			shader.set_float("max_y", terrain->max_height);
 
 			terrain->draw();
 		}

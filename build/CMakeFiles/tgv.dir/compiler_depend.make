@@ -1314,6 +1314,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.h \
   /home/escazure/cpp_projects/tgv/external/imgui/imconfig.h \
   /home/escazure/cpp_projects/tgv/external/imgui/imgui.h \
+  /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
   /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
@@ -1462,12 +1463,15 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/c++/14.2/bits/sstream.tcc \
   /usr/include/c++/14.2/bits/std_abs.h \
   /usr/include/c++/14.2/bits/stl_algobase.h \
+  /usr/include/c++/14.2/bits/stl_bvector.h \
   /usr/include/c++/14.2/bits/stl_construct.h \
   /usr/include/c++/14.2/bits/stl_function.h \
   /usr/include/c++/14.2/bits/stl_iterator.h \
   /usr/include/c++/14.2/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14.2/bits/stl_iterator_base_types.h \
   /usr/include/c++/14.2/bits/stl_pair.h \
+  /usr/include/c++/14.2/bits/stl_uninitialized.h \
+  /usr/include/c++/14.2/bits/stl_vector.h \
   /usr/include/c++/14.2/bits/streambuf.tcc \
   /usr/include/c++/14.2/bits/streambuf_iterator.h \
   /usr/include/c++/14.2/bits/string_view.tcc \
@@ -1475,6 +1479,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/c++/14.2/bits/uses_allocator.h \
   /usr/include/c++/14.2/bits/uses_allocator_args.h \
   /usr/include/c++/14.2/bits/utility.h \
+  /usr/include/c++/14.2/bits/vector.tcc \
   /usr/include/c++/14.2/bits/version.h \
   /usr/include/c++/14.2/cassert \
   /usr/include/c++/14.2/cctype \
@@ -1534,6 +1539,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/c++/14.2/tuple \
   /usr/include/c++/14.2/type_traits \
   /usr/include/c++/14.2/typeinfo \
+  /usr/include/c++/14.2/vector \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/basic_file.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/c++allocator.h \
@@ -1793,6 +1799,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.h \
   /home/escazure/cpp_projects/tgv/external/imgui/imconfig.h \
   /home/escazure/cpp_projects/tgv/external/imgui/imgui.h \
+  /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
   /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
@@ -1941,12 +1948,15 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/c++/14.2/bits/sstream.tcc \
   /usr/include/c++/14.2/bits/std_abs.h \
   /usr/include/c++/14.2/bits/stl_algobase.h \
+  /usr/include/c++/14.2/bits/stl_bvector.h \
   /usr/include/c++/14.2/bits/stl_construct.h \
   /usr/include/c++/14.2/bits/stl_function.h \
   /usr/include/c++/14.2/bits/stl_iterator.h \
   /usr/include/c++/14.2/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/14.2/bits/stl_iterator_base_types.h \
   /usr/include/c++/14.2/bits/stl_pair.h \
+  /usr/include/c++/14.2/bits/stl_uninitialized.h \
+  /usr/include/c++/14.2/bits/stl_vector.h \
   /usr/include/c++/14.2/bits/streambuf.tcc \
   /usr/include/c++/14.2/bits/streambuf_iterator.h \
   /usr/include/c++/14.2/bits/string_view.tcc \
@@ -1954,6 +1964,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/c++/14.2/bits/uses_allocator.h \
   /usr/include/c++/14.2/bits/uses_allocator_args.h \
   /usr/include/c++/14.2/bits/utility.h \
+  /usr/include/c++/14.2/bits/vector.tcc \
   /usr/include/c++/14.2/bits/version.h \
   /usr/include/c++/14.2/cassert \
   /usr/include/c++/14.2/cctype \
@@ -2013,6 +2024,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/c++/14.2/tuple \
   /usr/include/c++/14.2/type_traits \
   /usr/include/c++/14.2/typeinfo \
+  /usr/include/c++/14.2/vector \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/basic_file.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/c++allocator.h \
@@ -2244,11 +2256,19 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 
 /usr/lib32/libGLdispatch.so.0:
 
-/usr/lib/libOpenGL.so:
-
 /usr/lib/libGLX.so:
 
 /lib64/libxcb.so.1:
+
+/lib64/libX11.so.6:
+
+/lib64/libGLdispatch.so.0:
+
+/home/escazure/cpp_projects/tgv/src/main.cpp:
+
+/usr/include/wctype.h:
+
+/usr/include/wchar.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/lwpintrin.h:
 
@@ -2258,7 +2278,13 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/ia32intrin.h:
 
+/usr/lib/libOpenGL.so:
+
+/usr/include/c++/14.2/bits/stl_vector.h:
+
 /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.h:
+
+/usr/include/c++/14.2/bits/vector.tcc:
 
 /usr/include/c++/14.2/climits:
 
@@ -2387,6 +2413,10 @@ CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o:
 /usr/include/c++/14.2/bits/range_access.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/gtc/quaternion.hpp:
+
+/lib64/libXau.so.6:
+
+/usr/include/c++/14.2/system_error:
 
 /usr/include/c++/14.2/bits/stl_pair.h:
 
@@ -2692,8 +2722,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/include/sched.h:
 
-/usr/include/wctype.h:
-
 /usr/include/bits/signum-generic.h:
 
 /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr-default.h:
@@ -2713,8 +2741,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 /usr/include/bits/pthreadtypes-arch.h:
 
 /usr/include/features-time64.h:
-
-/usr/include/bits/select.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_mat.hpp:
 
@@ -2882,8 +2908,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/func_trigonometric.inl:
 
-/usr/include/wchar.h:
-
 /usr/include/c++/14.2/cmath:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/avx512bitalgvlintrin.h:
@@ -2923,8 +2947,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mwaitintrin.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mwaitxintrin.h:
-
-/usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/pconfigintrin.h:
 
 /usr/include/time.h:
 
@@ -3092,8 +3114,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_mat4x4.inl:
 
-/lib64/libX11.so.6:
-
 /home/escazure/cpp_projects/tgv/external/glm/geometric.hpp:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/avxvnniint8intrin.h:
@@ -3134,12 +3154,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 
 /usr/include/c++/14.2/bits/sstream.tcc:
 
-/home/escazure/cpp_projects/tgv/external/glm/detail/func_integer_simd.inl:
-
-/usr/include/c++/14.2/system_error:
-
-/lib64/libXau.so.6:
-
 /home/escazure/cpp_projects/tgv/external/glm/detail/func_matrix_simd.inl:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/func_packing.hpp:
@@ -3153,6 +3167,10 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/clflushoptintrin.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/func_packing_simd.inl:
+
+/usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/pconfigintrin.h:
+
+/home/escazure/cpp_projects/tgv/include/chunk.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_float.hpp:
 
@@ -3278,6 +3296,12 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 
 /usr/include/c++/14.2/bits/streambuf_iterator.h:
 
+/home/escazure/cpp_projects/tgv/external/glm/detail/func_integer_simd.inl:
+
+/usr/include/c++/14.2/bits/stl_bvector.h:
+
+/usr/include/c++/14.2/bits/stl_uninitialized.h:
+
 /usr/include/c++/14.2/bits/streambuf.tcc:
 
 /usr/include/c++/14.2/bits/string_view.tcc:
@@ -3293,8 +3317,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 /usr/include/c++/14.2/cstdio:
 
 /usr/include/c++/14.2/cstring:
-
-/home/escazure/cpp_projects/tgv/src/main.cpp:
 
 /usr/include/c++/14.2/ctime:
 
@@ -3328,6 +3350,12 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 
 /usr/include/c++/14.2/string:
 
+/usr/include/bits/select.h:
+
+/usr/include/c++/14.2/vector:
+
+/usr/include/pthread.h:
+
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_mat2x3.hpp:
 
 /usr/include/c++/14.2/bits/basic_string.h:
@@ -3352,10 +3380,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 
 /usr/include/linux/stddef.h:
 
-/usr/include/pthread.h:
-
 /usr/include/asm-generic/errno.h:
 
 /usr/include/sys/single_threaded.h:
-
-/lib64/libGLdispatch.so.0:
