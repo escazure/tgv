@@ -20,6 +20,7 @@ bool first_mouse = true;
 bool is_capturing = false;
 bool terrain_generated = false;
 bool is_wireframe_mode = false;
+bool cool_backface = true;
 float window_width, window_height;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
@@ -156,22 +157,14 @@ void render_gui(){
 	}
 
 	if(ImGui::BeginMenu("Settings")){
-		if(ImGui::MenuItem("Camera")){
-			show_camera_settings_window = true;
-		}
-		if(ImGui::MenuItem("Render")){
-			show_render_settings_window = true;
-		}
+		if(ImGui::MenuItem("Camera")) show_camera_settings_window = true;
+		if(ImGui::MenuItem("Render")) show_render_settings_window = true;
 		ImGui::EndMenu();
 	}
 
 	if(ImGui::BeginMenu("Docs")){
-		if(ImGui::MenuItem("Noise and utility functions")){
-			show_noise_window = true;
-		}
-		if(ImGui::MenuItem("Keybinds")){
-			show_keybinds_window = true;
-		}
+		if(ImGui::MenuItem("Noise and utility functions")) show_noise_window = true;
+		if(ImGui::MenuItem("Keybinds")) show_keybinds_window = true;
 		ImGui::EndMenu();
 	}
 
@@ -225,6 +218,11 @@ void render_gui(){
 		ImGui::SetNextWindowPos(ImVec2(window_width/2 - 300.0f, window_height/2 - 150.0f));
 		if(ImGui::Begin("Rendering", &show_render_settings_window)){
 			ImGui::Checkbox("Toggle wireframe mode", &is_wireframe_mode);
+			ImGui::NewLine();
+
+			ImGui::Checkbox("Toggle backface cooling", &cool_backface);
+			ImGui::NewLine();
+
 			ImGui::End();
 		}
 	}
@@ -280,19 +278,18 @@ void run(GLFWwindow* window){
 	shader.use();
 
 	while(!glfwWindowShouldClose(window)){
+		if(cool_backface) glEnable(GL_CULL_FACE);
+		else glDisable(GL_CULL_FACE);
+
+		if(is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		glClearColor(0.2, 0.6, 0.8, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		current_frame = glfwGetTime();
 		delta_time = current_frame - last_frame;	
 		last_frame = current_frame;
-
-		if(is_wireframe_mode){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
 
 		// -----------------------------------------------------------------
 		//  Process input, send data to shader and render only if terrain already generated 
