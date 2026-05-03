@@ -334,6 +334,30 @@ src/core.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/src/core.cpp.s
 .PHONY : src/core.cpp.s
 
+src/helper.o: src/helper.cpp.o
+.PHONY : src/helper.o
+
+# target to build an object file
+src/helper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/src/helper.cpp.o
+.PHONY : src/helper.cpp.o
+
+src/helper.i: src/helper.cpp.i
+.PHONY : src/helper.i
+
+# target to preprocess a source file
+src/helper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/src/helper.cpp.i
+.PHONY : src/helper.cpp.i
+
+src/helper.s: src/helper.cpp.s
+.PHONY : src/helper.s
+
+# target to generate assembly for a file
+src/helper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/src/helper.cpp.s
+.PHONY : src/helper.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -392,6 +416,9 @@ help:
 	@echo "... src/core.o"
 	@echo "... src/core.i"
 	@echo "... src/core.s"
+	@echo "... src/helper.o"
+	@echo "... src/helper.i"
+	@echo "... src/helper.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

@@ -1,4 +1,5 @@
 #include "core.h"
+#include "helper.h"
 
 #define MAX_EXPONENT 13
 #define MIN_EXPONENT 5
@@ -15,59 +16,10 @@ Camera camera(glm::vec3(0.0, 50.0, 0.0), 20.0, 0.07);
 Terrain* terrain;
 FunctionLoader function_loader;
 
-float lastx, lasty, delta_time;
-bool first_mouse = true;
-bool is_capturing = false;
 bool terrain_generated = false;
 bool is_wireframe_mode = false;
 bool cool_backface = true;
 float window_width, window_height;
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos){
-	if(!is_capturing){
-		first_mouse = true;
-		return;
-	}
-		
-	float yawt = camera.yaw, pitcht = camera.pitch;
-
-	if(first_mouse){
-		lastx = (float)xpos;
-		lasty = (float)ypos;
-		first_mouse = false;
-	}
-
-	float xoffset = xpos - lastx;
-	float yoffset = lasty - ypos;
-	lastx = xpos;
-	lasty = ypos;
-
-	camera.process_mouse_mov(xoffset, yoffset);
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-		if(ImGui::GetIO().WantCaptureKeyboard) return;
-		is_capturing = !is_capturing;
-
-		glfwSetInputMode(window, GLFW_CURSOR, is_capturing ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-	}
-}
-
-void process_input(GLFWwindow* window){
-	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)	
-		camera.move_forward(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.move_back(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.move_left(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.move_right(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		camera.move_up(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		camera.move_down(delta_time);
-}
 
 void render_gui(){
 	ImGui_ImplOpenGL3_NewFrame();
@@ -75,8 +27,7 @@ void render_gui(){
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 30.0f));
-	ImGui::SetNextWindowSize(ImVec2(350.0f, 200.0f));
-	
+	ImGui::SetNextWindowSize(ImVec2(380.0f, 200.0f));
 	ImGui::Begin("Generation");
 
 	// ----- Values below are static since we want to keep them across loop iterations without updating ----- //
@@ -93,26 +44,44 @@ void render_gui(){
 	static bool show_render_settings_window = false;
 	static bool show_keybinds_window = false;
 
+	ImGui::Columns(2, nullptr, false);
+
+	ImGui::Text("Size: %d",size);
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##size", &exponent, MIN_EXPONENT, MAX_EXPONENT, "")){
 		size = 1 << exponent;	
 	}
-	ImGui::SameLine();
-	ImGui::Text("Size: %d",size);
+	ImGui::NextColumn();
 
+	ImGui::Text("Step size: %d", step_size);
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##step_exponent", &step_exponent, MIN_STEP_EXPONENT, MAX_STEP_EXPONENT, "")){
 		step_size = 1 << step_exponent;
 	}
-	ImGui::SameLine();
-	ImGui::Text("Step size: %d", step_size);
+	ImGui::NextColumn();
 	
+	ImGui::Text("Chunk size: %d",chunk_size);
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##chunk_exponent", &chunk_exponent, MIN_CHUNK_EXPONENT, MAX_CHUNK_EXPONENT, "")){
 		chunk_size = 1 << chunk_exponent;	
 	}
-	ImGui::SameLine();
-	ImGui::Text("Chunk size: %d",chunk_size);
+	ImGui::NextColumn();
 
-	ImGui::InputText("Function", fun_buf, IM_ARRAYSIZE(fun_buf));
-	ImGui::InputText("Function name", fun_name, IM_ARRAYSIZE(fun_name));
+	ImGui::Text("Function: ");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::InputText("##fun_buf", fun_buf, IM_ARRAYSIZE(fun_buf));
+	ImGui::NextColumn();
+
+	ImGui::Text("Function name: ");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::InputText("##fun_name", fun_name, IM_ARRAYSIZE(fun_name));
+	ImGui::NextColumn();
+
 	if(ImGui::Button("Generate")){
 		function_loader.function_buffer = std::string(fun_buf);
 		function_loader.function_name = std::string(fun_name);
@@ -136,16 +105,45 @@ void render_gui(){
 	ImGui::SetNextWindowSize(ImVec2(350.0f, 230.0f));
 	ImGui::Begin("Statistics");
 
-	ImGui::Text("Triangle count: %d", terrain_generated ? terrain->triangle_count : 0);
-	ImGui::NewLine();
+	ImGui::Columns(2, nullptr, false);
 
-	ImGui::Text("Max height: %.2f", terrain_generated ? terrain->max_height : 0.0f);	
-	ImGui::Text("Min height: %.2f", terrain_generated ? terrain->min_height : 0.0f);	
-	ImGui::Text("Height range: %.2f", terrain_generated ? terrain->max_height - terrain->min_height : 0.0f);
+	ImGui::Text("Triangle count:");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%d", terrain_generated ? terrain->triangle_count : 0);
 	ImGui::NewLine();
-	ImGui::Text("Generation time (ms): %.2f", terrain_generated ? terrain->gen_time : 0.0f);
+	ImGui::NextColumn();
+
+	ImGui::Text("Max height:");	
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%.2f", terrain_generated ? terrain->max_height : 0.0f);	
+	ImGui::NextColumn();
+
+	ImGui::Text("Min height:");	
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%.2f", terrain_generated ? terrain->min_height : 0.0f);	
+	ImGui::NextColumn();
+
+	ImGui::Text("Height range:");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%.2f", terrain_generated ? terrain->max_height - terrain->min_height : 0.0f);
 	ImGui::NewLine();
-	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+	ImGui::NextColumn();
+
+	ImGui::Text("Generation time (ms):");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%.2f", terrain_generated ? terrain->gen_time : 0.0f);
+	ImGui::NewLine();
+	ImGui::NextColumn();
+
+	ImGui::Text("FPS:");
+	ImGui::NextColumn();
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Text("%.1f", ImGui::GetIO().Framerate);
 	ImGui::End();
 
 	ImGui::SetNextWindowSize(ImVec2(window_width, 40.0f));
@@ -245,11 +243,8 @@ GLFWwindow* init(){
 
 	glfwMakeContextCurrent(window);
 
-	lastx = window_width/2;
-	lasty = window_height/2;
-
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback_wrapper);
+	glfwSetKeyCallback(window, key_callback_wrapper);
 
 	if(gl3wInit() != 0)
 		std::cerr << "ERROR: Failed to init gl3w" << std::endl;
@@ -259,6 +254,9 @@ GLFWwindow* init(){
 	ImGuiIO& io = ImGui::GetIO(); 
 	(void)io;
 	io.IniFilename = nullptr;
+	io.Fonts->Clear();
+	std::string font_path = PROJECT_ASSET_DIR + std::string("/fonts/URWGothic-Demi.ttf");
+	io.Fonts->AddFontFromFileTTF(font_path.c_str(), 16.0f);
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -270,7 +268,7 @@ GLFWwindow* init(){
 }
 
 void run(GLFWwindow* window){
-	delta_time = 0.0;
+	float delta_time = 0.0;
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
@@ -291,12 +289,11 @@ void run(GLFWwindow* window){
 		delta_time = current_frame - last_frame;	
 		last_frame = current_frame;
 
-		// -----------------------------------------------------------------
-		//  Process input, send data to shader and render only if terrain already generated 
-		// -----------------------------------------------------------------
+		// ----------------------------------------------------------------------------------- //
+		//  Process input, send data to shader and render only if terrain is already generated //
+		// ----------------------------------------------------------------------------------- //
 		
-		if(is_capturing)
-			process_input(window);
+		process_input(window, delta_time);
 
 		if(terrain_generated){
 			glm::mat4 model(1.0f);

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "gl3w.h"
 #include "glfw3.h"
 #include <glm/glm.hpp>
@@ -14,6 +15,8 @@
 #include "terrain.h"
 
 #include <cmath>
+
+extern Camera camera;
 
 GLFWwindow* init();
 void run(GLFWwindow* window);

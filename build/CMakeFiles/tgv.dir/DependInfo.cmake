@@ -16,6 +16,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/escazure/cpp_projects/tgv/external/imgui/imgui_tables.cpp" "CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o" "gcc" "CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o.d"
   "/home/escazure/cpp_projects/tgv/external/imgui/imgui_widgets.cpp" "CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o" "gcc" "CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o.d"
   "/home/escazure/cpp_projects/tgv/src/core.cpp" "CMakeFiles/tgv.dir/src/core.cpp.o" "gcc" "CMakeFiles/tgv.dir/src/core.cpp.o.d"
+  "/home/escazure/cpp_projects/tgv/src/helper.cpp" "CMakeFiles/tgv.dir/src/helper.cpp.o" "gcc" "CMakeFiles/tgv.dir/src/helper.cpp.o.d"
   "/home/escazure/cpp_projects/tgv/src/main.cpp" "CMakeFiles/tgv.dir/src/main.cpp.o" "gcc" "CMakeFiles/tgv.dir/src/main.cpp.o.d"
   "" "tgv" "gcc" "CMakeFiles/tgv.dir/link.d"
   )

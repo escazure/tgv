@@ -16,6 +16,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o.d"
   "CMakeFiles/tgv.dir/src/core.cpp.o"
   "CMakeFiles/tgv.dir/src/core.cpp.o.d"
+  "CMakeFiles/tgv.dir/src/helper.cpp.o"
+  "CMakeFiles/tgv.dir/src/helper.cpp.o.d"
   "CMakeFiles/tgv.dir/src/main.cpp.o"
   "CMakeFiles/tgv.dir/src/main.cpp.o.d"
   "tgv"

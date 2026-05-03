@@ -3,6 +3,7 @@ tgv: \
   /usr/lib64/gcc/x86_64-unknown-linux-gnu/14.2.1/../../../../lib64/crti.o \
   /usr/lib64/gcc/x86_64-unknown-linux-gnu/14.2.1/crtbeginS.o \
   CMakeFiles/tgv.dir/src/core.cpp.o \
+  CMakeFiles/tgv.dir/src/helper.cpp.o \
   CMakeFiles/tgv.dir/src/main.cpp.o \
   CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o \
   CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o \
@@ -60,6 +61,8 @@ tgv: \
 /usr/lib64/gcc/x86_64-unknown-linux-gnu/14.2.1/crtbeginS.o:
 
 CMakeFiles/tgv.dir/src/core.cpp.o:
+
+CMakeFiles/tgv.dir/src/helper.cpp.o:
 
 CMakeFiles/tgv.dir/src/main.cpp.o:
 

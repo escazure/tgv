@@ -86,10 +86,24 @@ CMakeFiles/tgv.dir/src/core.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tgv.dir/src/core.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/escazure/cpp_projects/tgv/src/core.cpp -o CMakeFiles/tgv.dir/src/core.cpp.s
 
+CMakeFiles/tgv.dir/src/helper.cpp.o: CMakeFiles/tgv.dir/flags.make
+CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.cpp
+CMakeFiles/tgv.dir/src/helper.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tgv.dir/src/helper.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/src/helper.cpp.o -MF CMakeFiles/tgv.dir/src/helper.cpp.o.d -o CMakeFiles/tgv.dir/src/helper.cpp.o -c /home/escazure/cpp_projects/tgv/src/helper.cpp
+
+CMakeFiles/tgv.dir/src/helper.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tgv.dir/src/helper.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/escazure/cpp_projects/tgv/src/helper.cpp > CMakeFiles/tgv.dir/src/helper.cpp.i
+
+CMakeFiles/tgv.dir/src/helper.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tgv.dir/src/helper.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/escazure/cpp_projects/tgv/src/helper.cpp -o CMakeFiles/tgv.dir/src/helper.cpp.s
+
 CMakeFiles/tgv.dir/src/main.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp
 CMakeFiles/tgv.dir/src/main.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tgv.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tgv.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/src/main.cpp.o -MF CMakeFiles/tgv.dir/src/main.cpp.o.d -o CMakeFiles/tgv.dir/src/main.cpp.o -c /home/escazure/cpp_projects/tgv/src/main.cpp
 
 CMakeFiles/tgv.dir/src/main.cpp.i: cmake_force
@@ -103,7 +117,7 @@ CMakeFiles/tgv.dir/src/main.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/imgui.cpp
 CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/imgui.cpp
 
 CMakeFiles/tgv.dir/external/imgui/imgui.cpp.i: cmake_force
@@ -117,7 +131,7 @@ CMakeFiles/tgv.dir/external/imgui/imgui.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/imgui_draw.cpp
 CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/imgui_draw.cpp
 
 CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/imgui_tables.cpp
 CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/imgui_tables.cpp
 
 CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.i: cmake_force
@@ -145,7 +159,7 @@ CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/imgui_widgets.cpp
 CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/imgui_widgets.cpp
 
 CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.i: cmake_force
@@ -159,7 +173,7 @@ CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.cpp
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.cpp
 
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o: /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.cpp
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o -MF CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o -c /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.cpp
 
 CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.i: cmake_force
@@ -187,7 +201,7 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.s: cmake_force
 CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o: CMakeFiles/tgv.dir/flags.make
 CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o: /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.c
 CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o -MF CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o.d -o CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o -c /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.c
 
 CMakeFiles/tgv.dir/external/gl3w/gl3w.c.i: cmake_force
@@ -201,6 +215,7 @@ CMakeFiles/tgv.dir/external/gl3w/gl3w.c.s: cmake_force
 # Object files for target tgv
 tgv_OBJECTS = \
 "CMakeFiles/tgv.dir/src/core.cpp.o" \
+"CMakeFiles/tgv.dir/src/helper.cpp.o" \
 "CMakeFiles/tgv.dir/src/main.cpp.o" \
 "CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o" \
 "CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o" \
@@ -214,6 +229,7 @@ tgv_OBJECTS = \
 tgv_EXTERNAL_OBJECTS =
 
 tgv: CMakeFiles/tgv.dir/src/core.cpp.o
+tgv: CMakeFiles/tgv.dir/src/helper.cpp.o
 tgv: CMakeFiles/tgv.dir/src/main.cpp.o
 tgv: CMakeFiles/tgv.dir/external/imgui/imgui.cpp.o
 tgv: CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o
@@ -227,7 +243,7 @@ tgv: CMakeFiles/tgv.dir/compiler_depend.ts
 tgv: /usr/lib/libGLX.so
 tgv: /usr/lib/libOpenGL.so
 tgv: CMakeFiles/tgv.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable tgv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable tgv"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tgv.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

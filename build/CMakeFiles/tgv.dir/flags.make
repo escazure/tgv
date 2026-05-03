@@ -3,13 +3,13 @@
 
 # compile C with /usr/bin/cc
 # compile CXX with /usr/bin/c++
-C_DEFINES = -DPROJECT_FUNCTIONS_DIR=\"/home/escazure/cpp_projects/tgv/build/functions\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\"
+C_DEFINES = -DPROJECT_ASSET_DIR=\"/home/escazure/cpp_projects/tgv/assets\" -DPROJECT_FUNCTIONS_DIR=\"/home/escazure/cpp_projects/tgv/build/functions\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\"
 
 C_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w
 
 C_FLAGS = -Wno-pragmas
 
-CXX_DEFINES = -DPROJECT_FUNCTIONS_DIR=\"/home/escazure/cpp_projects/tgv/build/functions\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\"
+CXX_DEFINES = -DPROJECT_ASSET_DIR=\"/home/escazure/cpp_projects/tgv/assets\" -DPROJECT_FUNCTIONS_DIR=\"/home/escazure/cpp_projects/tgv/build/functions\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\"
 
 CXX_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w
 
