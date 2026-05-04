@@ -27,6 +27,7 @@ extern bool terrain_generated;
 extern bool is_wireframe_mode;
 extern bool cool_backface;
 extern bool render_skybox;
+extern bool show_normals;
 
 extern float window_width;
 extern float window_height;

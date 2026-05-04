@@ -2916,6 +2916,7 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
   /home/escazure/cpp_projects/tgv/include/function_loader.h \
+  /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \

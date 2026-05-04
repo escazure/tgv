@@ -251,6 +251,9 @@ void render_gui(){
 			ImGui::Checkbox("Toggle skybox", &render_skybox);
 			ImGui::NewLine();
 
+			ImGui::Checkbox("Toggle normals", &show_normals);
+			ImGui::NewLine();
+
 			ImGui::End();
 		}
 	}
