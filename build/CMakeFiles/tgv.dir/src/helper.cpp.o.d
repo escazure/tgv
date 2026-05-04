@@ -295,6 +295,13 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/stdarg.h \
  /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.h \
  /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.h \
+ /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
+ /usr/include/stdio.h /usr/include/bits/types/__fpos_t.h \
+ /usr/include/bits/types/__mbstate_t.h \
+ /usr/include/bits/types/__fpos64_t.h /usr/include/bits/types/__FILE.h \
+ /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
+ /usr/include/bits/types/cookie_io_functions_t.h \
+ /usr/include/bits/stdio_lim.h \
  /home/escazure/cpp_projects/tgv/include/function_loader.h \
  /usr/include/dlfcn.h /usr/include/bits/dlfcn.h \
  /usr/include/bits/dl_find_object.h /usr/include/c++/14.2/fstream \
@@ -303,9 +310,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/c++/14.2/bits/memoryfwd.h \
  /usr/include/c++/14.2/bits/postypes.h /usr/include/c++/14.2/cwchar \
  /usr/include/wchar.h /usr/include/bits/types/wint_t.h \
- /usr/include/bits/types/mbstate_t.h \
- /usr/include/bits/types/__mbstate_t.h /usr/include/bits/types/__FILE.h \
- /usr/include/bits/types/FILE.h /usr/include/c++/14.2/exception \
+ /usr/include/bits/types/mbstate_t.h /usr/include/c++/14.2/exception \
  /usr/include/c++/14.2/bits/exception.h \
  /usr/include/c++/14.2/bits/exception_ptr.h \
  /usr/include/c++/14.2/bits/cxxabi_init_exception.h \
@@ -353,11 +358,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/c++/14.2/bits/functional_hash.h \
  /usr/include/c++/14.2/bits/string_view.tcc \
  /usr/include/c++/14.2/ext/string_conversions.h \
- /usr/include/c++/14.2/cstdio /usr/include/stdio.h \
- /usr/include/bits/types/__fpos_t.h /usr/include/bits/types/__fpos64_t.h \
- /usr/include/bits/types/struct_FILE.h \
- /usr/include/bits/types/cookie_io_functions_t.h \
- /usr/include/bits/stdio_lim.h /usr/include/c++/14.2/cerrno \
+ /usr/include/c++/14.2/cstdio /usr/include/c++/14.2/cerrno \
  /usr/include/errno.h /usr/include/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \

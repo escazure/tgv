@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "stb_image.h"
 
 #include "function_loader.h"
 #include "shader_program.h"
@@ -15,6 +16,8 @@
 #include "terrain.h"
 
 #include <cmath>
+#include <string>
+#include <vector>
 
 extern Camera camera;
 

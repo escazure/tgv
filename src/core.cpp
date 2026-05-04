@@ -15,11 +15,59 @@
 Camera camera(glm::vec3(0.0, 50.0, 0.0), 20.0, 0.07);
 Terrain* terrain;
 FunctionLoader function_loader;
+unsigned int skybox_cubemap;
 
 bool terrain_generated = false;
 bool is_wireframe_mode = false;
 bool cool_backface = true;
 float window_width, window_height;
+
+// Temporarely
+unsigned int skyboxVAO, skyboxVBO;	
+
+float skyboxVert[] = {
+	-0.5, -0.5,  0.5,
+     0.5, -0.5,  0.5,
+     0.5,  0.5,  0.5,
+    -0.5, -0.5,  0.5,
+     0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5,
+
+    -0.5, -0.5, -0.5,
+     0.5,  0.5, -0.5,
+     0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,
+    -0.5,  0.5, -0.5,
+     0.5,  0.5, -0.5,
+
+    -0.5, -0.5, -0.5,
+    -0.5, -0.5,  0.5,
+    -0.5,  0.5,  0.5,
+    -0.5, -0.5, -0.5,
+    -0.5,  0.5,  0.5,
+    -0.5,  0.5, -0.5,
+
+     0.5, -0.5, -0.5,
+     0.5,  0.5,  0.5,
+     0.5, -0.5,  0.5,
+     0.5, -0.5, -0.5,
+     0.5,  0.5, -0.5,
+     0.5,  0.5,  0.5,
+
+    -0.5,  0.5, -0.5,
+    -0.5,  0.5,  0.5,
+     0.5,  0.5,  0.5,
+    -0.5,  0.5, -0.5,
+     0.5,  0.5,  0.5,
+     0.5,  0.5, -0.5,
+
+    -0.5, -0.5, -0.5,
+     0.5, -0.5,  0.5,
+    -0.5, -0.5,  0.5,
+    -0.5, -0.5, -0.5,
+     0.5, -0.5, -0.5,
+     0.5, -0.5,  0.5,	
+};
 
 void render_gui(){
 	ImGui_ImplOpenGL3_NewFrame();
@@ -262,6 +310,26 @@ GLFWwindow* init(){
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
+	std::vector<std::string> faces = {
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/px.png"),
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/nx.png"),
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/py.png"),
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/ny.png"),
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/pz.png"),
+		PROJECT_ASSET_DIR + std::string("/textures/skybox/nz.png")
+	};
+	skybox_cubemap = loadCubeMap(faces);
+
+	glGenVertexArrays(1, &skyboxVAO);
+	glBindVertexArray(skyboxVAO);
+
+	glGenBuffers(1, &skyboxVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVert), skyboxVert, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	glEnable(GL_DEPTH_TEST);
 
 	return window;
@@ -273,7 +341,7 @@ void run(GLFWwindow* window){
 	float current_frame = 0.0;
 
 	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
-	shader.use();
+	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
 		if(cool_backface) glEnable(GL_CULL_FACE);
@@ -296,15 +364,14 @@ void run(GLFWwindow* window){
 		process_input(window, delta_time);
 
 		if(terrain_generated){
+			shader.use();
 			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
 			
-			glm::mat4 view(1.0f);
-			view = camera.get_view_mat();
+			glm::mat4 view = camera.get_view_mat();
 			shader.set_mat4("view", view);
 
-			glm::mat4 projection(1.0f);
-			projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
 			shader.set_mat4("projection", projection);
 
 			shader.set_float("min_y", terrain->min_height);
@@ -312,6 +379,29 @@ void run(GLFWwindow* window){
 
 			terrain->draw();
 		}
+
+		glDepthMask(GL_FALSE); 
+		glDepthFunc(GL_LEQUAL);
+		glDisable(GL_CULL_FACE);
+		skybox_shader.use();
+		// Remove the translation part of the view matrix
+		glm::mat4 view = glm::mat4(glm::mat3(camera.get_view_mat()));
+		skybox_shader.set_mat4("view", view);
+
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
+		skybox_shader.set_mat4("projection", projection);
+
+		skybox_shader.set_int("skybox", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap);
+
+		// Manual binding temporarely
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+		glDepthMask(GL_TRUE); 
+		glDepthFunc(GL_LESS);
 		
 		render_gui();
 

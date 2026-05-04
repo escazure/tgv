@@ -16,6 +16,9 @@ set(IMGUI_SRCS
 set(GL3W_SRC external/gl3w/gl3w.c)
 set(GL3W_INCLUDE external/gl3w)
 
+set(STBI_SRC external/stbi/stb_image.cpp)
+set(STBI_INCLUDE external/stbi)
+
 add_custom_target(copy_assets ALL
 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/shaders ${CMAKE_BINARY_DIR}/shaders
 )
@@ -24,6 +27,7 @@ add_executable(tgv
 	${CPP_SRCS}
 	${IMGUI_SRCS}
 	${GL3W_SRC}
+	${STBI_SRC}
 )
 
 target_include_directories(tgv PRIVATE
@@ -32,6 +36,7 @@ target_include_directories(tgv PRIVATE
 	external/imgui
 	external/imgui/backends
 	${GL3W_INCLUDE}
+	${STBI_INCLUDE}
 )
 
 find_package(OpenGL REQUIRED)
