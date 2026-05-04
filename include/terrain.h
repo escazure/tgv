@@ -15,8 +15,8 @@ class Terrain {
 			terrain_length = _size;
 			terrain_width = _size;
 			step_size = _step_size;
-			max_height = 0.0f;
-			min_height = 0.0f;
+			max_height = std::numeric_limits<float>::lowest();
+			min_height = std::numeric_limits<float>::max();
 			gen_time = 0.0f;
 			vertex_count = 0;
 			triangle_count = 0;

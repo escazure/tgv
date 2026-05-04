@@ -2,7 +2,7 @@
 #include "helper.h"
 #include "render.h"
 
-Camera camera(glm::vec3(0.0, 50.0, 0.0), 20.0, 0.07);
+Camera camera(glm::vec3(0.0, 50.0, 0.0), 50.0, 0.07);
 Terrain* terrain;
 FunctionLoader function_loader;
 

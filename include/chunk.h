@@ -81,7 +81,7 @@ class Chunk{
 			vertex_count = vertex_count_axis * vertex_count_axis;
 
 			int temp = 0;
-			float max_y = std::numeric_limits<float>::min(), min_y = std::numeric_limits<float>::max();
+			float max_y = std::numeric_limits<float>::lowest(), min_y = std::numeric_limits<float>::max();
 
 			for(int i = 0; i < vertex_count_axis; i++){
 				for(int j = 0; j < vertex_count_axis; j++){
