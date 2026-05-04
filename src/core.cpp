@@ -20,6 +20,7 @@ unsigned int skybox_cubemap;
 bool terrain_generated = false;
 bool is_wireframe_mode = false;
 bool cool_backface = true;
+bool render_skybox = true;
 float window_width, window_height;
 
 // Temporarely
@@ -269,6 +270,9 @@ void render_gui(){
 			ImGui::Checkbox("Toggle backface cooling", &cool_backface);
 			ImGui::NewLine();
 
+			ImGui::Checkbox("Toggle skybox", &render_skybox);
+			ImGui::NewLine();
+
 			ImGui::End();
 		}
 	}
@@ -380,28 +384,30 @@ void run(GLFWwindow* window){
 			terrain->draw();
 		}
 
-		glDepthMask(GL_FALSE); 
-		glDepthFunc(GL_LEQUAL);
-		glDisable(GL_CULL_FACE);
-		skybox_shader.use();
-		// Remove the translation part of the view matrix
-		glm::mat4 view = glm::mat4(glm::mat3(camera.get_view_mat()));
-		skybox_shader.set_mat4("view", view);
+		if(render_skybox){
+			glDepthMask(GL_FALSE); 
+			glDepthFunc(GL_LEQUAL);
+			glDisable(GL_CULL_FACE);
+			skybox_shader.use();
+			// Remove the translation part of the view matrix
+			glm::mat4 view = glm::mat4(glm::mat3(camera.get_view_mat()));
+			skybox_shader.set_mat4("view", view);
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
-		skybox_shader.set_mat4("projection", projection);
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
+			skybox_shader.set_mat4("projection", projection);
 
-		skybox_shader.set_int("skybox", 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap);
+			skybox_shader.set_int("skybox", 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap);
 
-		// Manual binding temporarely
-		glBindVertexArray(skyboxVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+			// Manual binding temporarely
+			glBindVertexArray(skyboxVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
 
-		glDepthMask(GL_TRUE); 
-		glDepthFunc(GL_LESS);
+			glDepthMask(GL_TRUE); 
+			glDepthFunc(GL_LESS);
+		}
 		
 		render_gui();
 
