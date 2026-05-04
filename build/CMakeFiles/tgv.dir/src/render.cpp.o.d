@@ -1,5 +1,7 @@
-CMakeFiles/tgv.dir/src/core.cpp.o: \
- /home/escazure/cpp_projects/tgv/src/core.cpp /usr/include/stdc-predef.h \
+CMakeFiles/tgv.dir/src/render.cpp.o: \
+ /home/escazure/cpp_projects/tgv/src/render.cpp \
+ /usr/include/stdc-predef.h \
+ /home/escazure/cpp_projects/tgv/include/render.h \
  /home/escazure/cpp_projects/tgv/include/core.h \
  /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.h \
  /usr/include/GL/glcorearb.h /usr/include/KHR/khrplatform.h \
@@ -398,5 +400,4 @@ CMakeFiles/tgv.dir/src/core.cpp.o: \
  /usr/include/c++/14.2/bits/stl_bvector.h \
  /usr/include/c++/14.2/bits/vector.tcc \
  /home/escazure/cpp_projects/tgv/include/chunk.h \
- /home/escazure/cpp_projects/tgv/include/helper.h \
- /home/escazure/cpp_projects/tgv/include/render.h
+ /home/escazure/cpp_projects/tgv/include/helper.h

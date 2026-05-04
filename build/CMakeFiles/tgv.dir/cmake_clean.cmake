@@ -22,6 +22,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/tgv.dir/src/helper.cpp.o.d"
   "CMakeFiles/tgv.dir/src/main.cpp.o"
   "CMakeFiles/tgv.dir/src/main.cpp.o.d"
+  "CMakeFiles/tgv.dir/src/render.cpp.o"
+  "CMakeFiles/tgv.dir/src/render.cpp.o.d"
   "tgv"
   "tgv.pdb"
 )

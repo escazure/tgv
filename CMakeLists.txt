@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
 project(tgv LANGUAGES C CXX)
 
-file(GLOB CPP_SRCS src/*.cpp)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/functions)
+
+set(CPP_SRCS
+	src/core.cpp
+	src/helper.cpp
+	src/render.cpp
+	src/main.cpp
+)
 
 set(IMGUI_SRCS
     external/imgui/imgui.cpp
