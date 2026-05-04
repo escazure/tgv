@@ -57,9 +57,9 @@ inline float fbm(float x, float z, int octaves = 4){
 }
 
 inline float example(float x, float z, int seed = 1000){
-	float base = fbm(x*0.0004+seed*0.2, z*0.0004+seed*0.1, 5);
-	float detail = lerp(-0.2, 1.0, fbm(x*0.004+seed*2, z*0.004-seed*4, 4));
-	float micro = fbm(x*0.02+seed, z*0.02+seed, 2);
+	float base = fbm(x*0.0004+fbm(x*0.0004+seed*0.2, z*0.0004+seed*0.2), z*0.0004+fbm(x*0.0004+seed*0.1, z*0.0004+seed*0.1), 3);
+	float detail = 1.0 - abs(fbm(x*0.009+seed*2, z*0.009-seed*4, 4));
+	float micro = fbm(x*0.02+seed, z*0.02+seed, 6);
 
-	return base * 200.0f + detail * 100.0f + micro * 10.0f;
+	return base * 300.0f + detail * 100.0f + micro * 10.0f;
 }

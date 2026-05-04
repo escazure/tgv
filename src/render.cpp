@@ -205,8 +205,8 @@ void render_gui(){
 			ImGui::TextWrapped("* float value_noise(float x, float z) - creates a value noise map");
 			ImGui::TextWrapped("* float fbm(float x, float z, int octaves = 4) - creates a fBm noise map");
 			ImGui::TextWrapped("* float example(float x, float z, seed = 1000) - creates an example terrain using multiple stacked fBm calls (high seed values result in blocky terrain, because of rounding error)");
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	if(show_camera_settings_window){
@@ -219,8 +219,8 @@ void render_gui(){
 			ImGui::Text("View distance: %.1f", camera.view_distance);
 			ImGui::SameLine();
 			ImGui::SliderFloat("##camera_view_distance", &camera.view_distance, MIN_CAMERA_VIEW_DISTANCE, MAX_CAMERA_VIEW_DISTANCE, "");
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	if(show_keybinds_window){
@@ -234,8 +234,8 @@ void render_gui(){
 			ImGui::Text("Camera movement down - Ctrl");
 			ImGui::Text("Camera movement up - Space");
 			ImGui::Text("Toggle capture mouse - ESC");
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	if(show_render_settings_window){
@@ -253,9 +253,8 @@ void render_gui(){
 
 			ImGui::Checkbox("Toggle normals", &show_normals);
 			ImGui::NewLine();
-
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	ImGui::Render();
