@@ -22,7 +22,8 @@ void main(){
 
 	vec3 ground = mix(rock, grass, slope);
 	ground = mix(sand, ground, smoothstep(0.0, 0.3, normalized_y));
-	ground = mix(ground, snow, smoothstep(0.7, 1.0, normalized_y));
+	ground = mix(ground, rock, smoothstep(0.75, 0.8, normalized_y));
+	ground = mix(ground, snow, smoothstep(0.8, 1.0, normalized_y));
 	vec3 color = ground;
 
 	if(show_normals) color = normal * 0.5 + 0.5;
