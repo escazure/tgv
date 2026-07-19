@@ -41,7 +41,7 @@ inline float value_noise(float x, float z){
 	return lerp(ix0, ix1, sz) * 2.0f - 1.0f;
 }
 
-inline float fbm(float x, float z, int octaves = 4){
+inline float fbm(float x, float z, int octaves = 3){
 	float total = 0.0f;
 	float amplitude = 1.0f;
 	float frequency = 1.0f;
@@ -56,10 +56,23 @@ inline float fbm(float x, float z, int octaves = 4){
 	return total / (2.0f - 1.0f / (1 << octaves));
 }
 
-inline float example(float x, float z, int seed = 1000){
-	float base = fbm(x*0.0004+fbm(x*0.0004-seed*10.0, z*0.0004+seed*10.2), z*0.0004+fbm(x*0.0004+seed*15.0, z*0.0004-seed*16.0), 3);
-	float detail = 1.0 - abs(fbm(x*0.009+seed*2, z*0.009-seed*4, 4));
-	float micro = fbm(x*0.02-seed, z*0.02+seed, 6);
+inline float example(float x, float z, int seed = 1){
+	float baseFrequency = 0.0004f;
+	float detailFrequency = 0.002f;
+	float microFrequency = 0.02f;
+	float offsetX = float(seed) * 3.1415f;
+	float offsetZ = float(seed) * 1.6180f;
+
+	float sx = x + offsetX;
+	float sz = z + offsetZ;
+
+	float warpX = fbm(sx * baseFrequency, sz * baseFrequency);
+	float warpZ = fbm(sz * baseFrequency, sx * baseFrequency);
+	float base = fbm(sx * baseFrequency + warpX, sz * baseFrequency + warpZ);
+
+	float detail = 1.0f - std::abs(fbm(sx * detailFrequency, sz * detailFrequency, 4));
+
+	float micro = fbm(sx * microFrequency, sz * microFrequency, 4);
 
 	return base * 800.0f + detail * 100.0f + micro * 10.0f;
 }
