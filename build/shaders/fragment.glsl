@@ -10,7 +10,7 @@ uniform bool show_normals;
 uniform bool calculate_lighting;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
-const vec3 lightDir = vec3(1.5, -1.0, 0.0);
+const vec3 lightDir = vec3(-1.5, -1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
 
 // Colors
