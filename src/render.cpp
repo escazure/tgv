@@ -253,6 +253,9 @@ void render_gui(){
 
 			ImGui::Checkbox("Toggle normals", &show_normals);
 			ImGui::NewLine();
+
+			ImGui::Checkbox("Toggle lighting", &calculate_lighting);
+			ImGui::NewLine();
 		}
 		ImGui::End();
 	}

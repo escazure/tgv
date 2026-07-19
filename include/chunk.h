@@ -23,7 +23,7 @@ class Chunk{
 		void generate(float (*fun)(float, float)){
 			generate_vertices(fun);
 			generate_indices();
-			generate_normals();
+			generate_normals(fun);
 
 			std::vector<float> vertex_data;
 			vertex_data.resize(vertex_count * 6);
@@ -125,67 +125,54 @@ class Chunk{
 			} 
 		}
 
-		void generate_normals(){
-			normals.resize(vertex_count * 3, 0.0f);	
+		void generate_normals(float(*fun)(float, float)) {
+    		unsigned int vertex_count_axis = std::floor(chunk_size / step_size) + 1;
+    		normals.resize(vertex_count * 3, 0.0f);
 
-			for(std::size_t i = 0; i < indices.size(); i += 3){
-				unsigned int i0 = indices[i] * 3;	
-				unsigned int i1 = indices[i+1] * 3;	
-				unsigned int i2 = indices[i+2] * 3;	
+    		int x0 = x_pos * chunk_size - (terrain_size * 0.5f);
+    		int z0 = z_pos * chunk_size - (terrain_size * 0.5f);
 
-				float v0_x = vertices[i0];						
-				float v0_y = vertices[i0+1];						
-				float v0_z = vertices[i0+2];						
+    		for (int i = 0; i < vertex_count_axis; i++) {
+        		for (int j = 0; j < vertex_count_axis; j++) {
+            		int current_idx = (i * vertex_count_axis + j) * 3;
 
-				float v1_x = vertices[i1];						
-				float v1_y = vertices[i1+1];						
-				float v1_z = vertices[i1+2];						
+            		float L_world_x = x0 + (i - 1) * step_size;
+            		float R_world_x = x0 + (i + 1) * step_size;
+            		float B_world_z = z0 + (j - 1) * step_size;
+            		float F_world_z = z0 + (j + 1) * step_size;
 
-				float v2_x = vertices[i2];						
-				float v2_y = vertices[i2+1];						
-				float v2_z = vertices[i2+2];						
+            		float current_world_x = x0 + i * step_size;
+            		float current_world_z = z0 + j * step_size;
+	
+    		        float hL = fun(L_world_x, current_world_z); 
+        		    float hR = fun(R_world_x, current_world_z); 
+            		float hB = fun(current_world_x, B_world_z);
+            		float hF = fun(current_world_x, F_world_z); 
 
-				float e0_x = v1_x - v0_x; 
-				float e0_y = v1_y - v0_y; 
-				float e0_z = v1_z - v0_z; 
+            		float tan_x_x = 2.0f * step_size;
+            		float tan_x_y = hR - hL;
+            		float tan_x_z = 0.0f;
+		
+            		float tan_z_x = 0.0f;
+            		float tan_z_y = hF - hB;
+            		float tan_z_z = 2.0f * step_size;
 
-				float e1_x = v2_x - v0_x; 
-				float e1_y = v2_y - v0_y; 
-				float e1_z = v2_z - v0_z; 
+            		float n_x = tan_z_y * tan_x_z - tan_z_z * tan_x_y;
+            		float n_y = tan_z_z * tan_x_x - tan_z_x * tan_x_z;
+            		float n_z = tan_z_x * tan_x_y - tan_z_y * tan_x_x;
 
-				float n_x = e0_y*e1_z - e0_z*e1_y;	
-				float n_y = e0_z*e1_x - e0_x*e1_z;	
-				float n_z = e0_x*e1_y - e0_y*e1_x;	
+            		float len = n_x * n_x + n_y * n_y + n_z * n_z;
+            		if (len > 1e-10f) {
+                		float inv_len = 1.0f / std::sqrt(len);
+                		n_x *= inv_len;
+                		n_y *= inv_len;
+                		n_z *= inv_len;
+            		}
 
-				normals[i0] += n_x;
-				normals[i0+1] += n_y;
-				normals[i0+2] += n_z;
-
-				normals[i1] += n_x;
-				normals[i1+1] += n_y;
-				normals[i1+2] += n_z;
-
-				normals[i2] += n_x;
-				normals[i2+1] += n_y;
-				normals[i2+2] += n_z;
-			}
-
-			for(std::size_t i = 0; i < normals.size(); i += 3){
-				float n_x = normals[i];
-				float n_y = normals[i+1];
-				float n_z = normals[i+2];
-
-				float len = n_x * n_x + n_y * n_y + n_z * n_z;
-				if(len > 1e-10f){
-					float inv_len = 1.0f / std::sqrt(len);
-					n_x *= inv_len;
-					n_y *= inv_len;
-					n_z *= inv_len;
-				}
-
-				normals[i] = n_x;
-				normals[i+1] = n_y;
-				normals[i+2] = n_z;
-			}
+            		normals[current_idx]     = n_x;
+            		normals[current_idx + 1] = n_y;
+            		normals[current_idx + 2] = n_z;
+        		}
+    		}
 		}
 };

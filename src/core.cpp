@@ -11,6 +11,7 @@ bool is_wireframe_mode = false;
 bool cool_backface = true;
 bool render_skybox = true;
 bool show_normals = false;
+bool calculate_lighting = false;
 float window_width, window_height;
 
 GLFWwindow* init(){
@@ -95,6 +96,7 @@ void run(GLFWwindow* window){
 			shader.set_float("min_y", terrain->min_height);
 			shader.set_float("max_y", terrain->max_height);
 			shader.set_bool("show_normals", show_normals);
+			shader.set_bool("calculate_lighting", calculate_lighting);
 
 			terrain->draw();
 		}
