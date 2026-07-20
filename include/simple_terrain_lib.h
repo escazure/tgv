@@ -1,8 +1,18 @@
 #include <cmath>
+#include <cstdint>
 
 inline float random(float x, float z, unsigned int seed = 5527265){
 	float h = sin(x * 12.564f + z * 18.851f) * seed;	
 	return h - floor(h);
+}
+
+inline uint32_t hash_seed(uint32_t seed){
+	seed ^= seed >> 16;
+	seed *= 0x85ebac88;
+	seed ^= seed >> 13;
+	seed *= 0x4ac849ba;
+	seed ^= seed >> 16;
+	return seed;
 }
 
 inline float lerp(float a, float b, float t){
@@ -60,19 +70,22 @@ inline float example(float x, float z, int seed = 1){
 	float baseFrequency = 0.0004f;
 	float detailFrequency = 0.002f;
 	float microFrequency = 0.02f;
-	float offsetX = float(seed) * 3.1415f;
-	float offsetZ = float(seed) * 1.6180f;
+
+	uint32_t hashX = hash_seed(uint32_t(seed));
+	uint32_t hashZ = hash_seed(hashX);
+
+	float offsetX = float(hashX % 10000);
+	float offsetZ = float(hashZ % 10000);
 
 	float sx = x + offsetX;
 	float sz = z + offsetZ;
 
 	float warpX = fbm(sx * baseFrequency, sz * baseFrequency);
 	float warpZ = fbm(sz * baseFrequency, sx * baseFrequency);
+
 	float base = fbm(sx * baseFrequency + warpX, sz * baseFrequency + warpZ);
-
-	float detail = 1.0f - std::abs(fbm(sx * detailFrequency, sz * detailFrequency, 4));
-
-	float micro = fbm(sx * microFrequency, sz * microFrequency, 4);
+	float detail = fbm(sx * detailFrequency, sz * detailFrequency,4);
+	float micro = fbm(sx * microFrequency, sz * microFrequency,4);
 
 	return base * 800.0f + detail * 100.0f + micro * 10.0f;
 }

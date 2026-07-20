@@ -44,6 +44,6 @@ void main(){
 
 	FragColor = vec4(color, 1.0);
 
-	if(calculate_lighting) FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.1, 0.9), 1.0);
+	if(calculate_lighting) FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.2, 0.8), 1.0);
 }
 
