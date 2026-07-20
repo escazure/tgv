@@ -13,6 +13,10 @@
 #define MIN_CAMERA_VIEW_DISTANCE 100.0f
 #define MAX_CAMERA_VIEW_DISTANCE 10000.0f
 
+#define SHADOW_WIDTH 2048 
+#define SHADOW_HEIGHT 2048 
+
 void render_gui();
 void init_skybox();
+void init_fbo(unsigned int& depthMapFBO, unsigned int& depthMap);
 void draw_skybox(Shader shader);

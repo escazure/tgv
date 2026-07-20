@@ -3,14 +3,17 @@
 in vec3 Normal;
 in vec3 Position;
 in float normalized_y;
+in vec4 FragPosLightSpace;
 
 out vec4 FragColor;
 
 uniform bool show_normals;
 uniform bool calculate_lighting;
+uniform vec3 lightDir;
+
+uniform sampler2D shadowMap;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
-const vec3 lightDir = vec3(-1.5, -1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
 
 // Colors
@@ -19,14 +22,27 @@ const vec3 rock = vec3(0.5, 0.5, 0.5);
 const vec3 sand = vec3(0.7, 0.7, 0.5);
 const vec3 snow = vec3(1.0, 1.0, 1.0);
 
-vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float ambientStrength, float diffuseStrength){
+vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float ambientStrength, float diffuseStrength, float shadow){
 	vec3 ambient = fragmentColor * lightColor * ambientStrength;
 
 	vec3 fragmentToLight = normalize(-lightDirection);
 	float diff = max(dot(normal, fragmentToLight), 0.0);
 	vec3 diffuse = fragmentColor * lightColor * diff * diffuseStrength;
 
-	return ambient + diffuse;
+	return (ambient + (1.0 - shadow) * diffuse);
+}
+
+float calculateShadows(vec4 fragPosLightSpace, vec3 normal, vec3 lightDirection){
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+	if(projCoords.z > 1.0) return 0.0;
+
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+
+	float bias = max(0.05 * (1.0 - dot(normal, lightDirection)), 0.005);
+	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+	return shadow;
 }
 
 void main(){
@@ -44,6 +60,11 @@ void main(){
 
 	FragColor = vec4(color, 1.0);
 
-	if(calculate_lighting) FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.2, 0.8), 1.0);
+	if(calculate_lighting){
+		float shadow = calculateShadows(FragPosLightSpace, normal, normalize(-lightDir));
+		FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.2, 0.8, shadow), 1.0);
+		// Turn into debug option ? //
+		// FragColor = vec4(vec3(1.0-shadow), 1.0);
+	}
 }
 
