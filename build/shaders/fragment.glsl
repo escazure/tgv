@@ -40,8 +40,11 @@ float calculateShadows(vec4 fragPosLightSpace, vec3 normal, vec3 lightDirection)
 	float closestDepth = texture(shadowMap, projCoords.xy).r;
 	float currentDepth = projCoords.z;
 
-	float bias = max(0.05 * (1.0 - dot(normal, lightDirection)), 0.005);
+	float bias = max(0.005 * (1.0 - dot(normal, lightDirection)), 0.0005);
 	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+	// Implement PCF or some other blurring algorithm //
+
 	return shadow;
 }
 

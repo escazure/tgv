@@ -12,6 +12,8 @@ bool cool_backface = true;
 bool render_skybox = true;
 bool show_normals = false;
 bool calculate_lighting = false;
+bool show_light_frustum = false;
+bool show_light_marker = false;
 float window_width, window_height;
 unsigned int depthMapFBO, depthMap;
 
@@ -50,85 +52,12 @@ GLFWwindow* init(){
 
 	init_skybox();
 	init_fbo(depthMapFBO, depthMap);
+	init_light_frustum();
 
 	glEnable(GL_DEPTH_TEST);
 
 	return window;
 }
-
-// Move those 3 somewhere from here // 
-std::vector<glm::vec3> GetLightFrustumCornersWorldSpace(const glm::mat4& lightSpaceMatrix) {
-    glm::mat4 invLightSpace = glm::inverse(lightSpaceMatrix);
-    
-    std::vector<glm::vec3> corners;
-    for (int x = 0; x < 2; ++x) {
-        for (int y = 0; y < 2; ++y) {
-            for (int z = 0; z < 2; ++z) {
-                glm::vec4 pt = invLightSpace * glm::vec4(
-                    x * 2.0f - 1.0f,
-                    y * 2.0f - 1.0f,
-                    z * 2.0f - 1.0f,
-                    1.0f
-                );
-                corners.push_back(glm::vec3(pt) / pt.w);
-            }
-        }
-    }
-    return corners;
-}
-
-void DrawLightFrustum(GLuint frustumVAO, GLuint frustumVBO, const glm::mat4& lightSpaceMatrix, Shader& debugLineShader) {
-    std::vector<glm::vec3> corners = GetLightFrustumCornersWorldSpace(lightSpaceMatrix);
-
-    glBindBuffer(GL_ARRAY_BUFFER, frustumVBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, corners.size() * sizeof(glm::vec3), corners.data());
-
-    debugLineShader.use();
-	glm::mat4 cameraProjection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
-	glm::mat4 cameraView = camera.get_view_mat();
-	glm::mat4 model(1.0f);
-    debugLineShader.set_mat4("projection", cameraProjection);
-    debugLineShader.set_mat4("view", cameraView);
-    debugLineShader.set_mat4("model", model); 
-    debugLineShader.set_vec3("color", glm::vec3(1.0f, 1.0f, 0.0f));
-
-    glBindVertexArray(frustumVAO);
-    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void DrawLightMarker(glm::vec3 lightPos, glm::vec3 lightDir, Shader& debugLineShader) {
-    glm::vec3 linePoints[2] = {
-        lightPos,
-        lightPos + (lightDir * 500.0f) 
-    };
-
-    GLuint lineVAO, lineVBO;
-    glGenVertexArrays(1, &lineVAO);
-    glGenBuffers(1, &lineVBO);
-    glBindVertexArray(lineVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(linePoints), linePoints, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
-
-    debugLineShader.use();
-
-	glm::mat4 cameraProjection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
-	glm::mat4 cameraView = camera.get_view_mat();
-	glm::mat4 model(1.0f);
-    debugLineShader.set_mat4("projection", cameraProjection);
-    debugLineShader.set_mat4("view", cameraView);
-    debugLineShader.set_mat4("model", model);
-    debugLineShader.set_vec3("color", glm::vec3(1.0f, 0.0f, 0.0f)); 
-
-    glLineWidth(3.0f); 
-    glDrawArrays(GL_LINES, 0, 2);
-
-    glDeleteBuffers(1, &lineVBO);
-    glDeleteVertexArrays(1, &lineVAO);
-}
-// ----------------------------------------------------------------- //
 
 void run(GLFWwindow* window){
 	float delta_time = 0.0;
@@ -139,7 +68,7 @@ void run(GLFWwindow* window){
 	glm::vec3 lightPos = -lightDir * 1000.0f;
 
 	// Frustum should be scaled with terrain size //
-	glm::mat4 lightProjection = glm::ortho(-1024.0f, 1024.0f, -1024.0f, 1024.0f, 1.0f, 2000.0f);
+	glm::mat4 lightProjection = glm::ortho(-1024.0f, 1024.0f, -512.0f, 512.0f, 1.0f, 2048.0f);
 	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
@@ -147,32 +76,6 @@ void run(GLFWwindow* window){
 	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
 	Shader depth_shader("shaders/depth_vertex.glsl", "shaders/depth_fragment.glsl");
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
-
-	// Move all of this somewhere out of this module , maybe into render // 
-	GLuint frustumVAO, frustumVBO, frustumEBO;
-
-	unsigned int frustumIndices[] = {
-    	0, 1,  1, 3,  3, 2,  2, 0, 
-    	4, 5,  5, 7,  7, 6,  6, 4, 
-    	0, 4,  1, 5,  2, 6,  3, 7  
-	};
-
-	glGenVertexArrays(1, &frustumVAO);
-	glGenBuffers(1, &frustumVBO);
-	glGenBuffers(1, &frustumEBO);
-
-	glBindVertexArray(frustumVAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, frustumVBO);
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(glm::vec3), nullptr, GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, frustumEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(frustumIndices), frustumIndices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
-	glBindVertexArray(0);
-	// -----------------------------------------------------------------------------------//
 
 	while(!glfwWindowShouldClose(window)){
 		if(cool_backface) glEnable(GL_CULL_FACE);
@@ -212,11 +115,6 @@ void run(GLFWwindow* window){
 			glViewport(0, 0, int(window_width), int(window_height));
 			glBindTexture(GL_TEXTURE_2D, depthMap);
 
-			// Turn this into debug option ---------------------------------------------//
-			DrawLightFrustum(frustumVAO, frustumVBO, lightSpaceMatrix, debug_line_shader);
-			DrawLightMarker(lightPos, lightDir, debug_line_shader);
-			// -------------------------------------------------------------------------//
-
 			shader.use();
 			shader.set_mat4("model", model);
 			
@@ -245,6 +143,12 @@ void run(GLFWwindow* window){
 			glDepthMask(GL_TRUE); 
 			glDepthFunc(GL_LESS);
 		}
+
+		if(show_light_frustum) 
+			DrawLightFrustum(lightSpaceMatrix, debug_line_shader);
+			
+		if(show_light_marker)
+			DrawLightMarker(lightPos, lightDir, debug_line_shader);
 		
 		render_gui();
 

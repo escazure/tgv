@@ -84,3 +84,23 @@ unsigned int loadCubeMap(std::vector<std::string>& faces){
 
 	return textureID;
 }
+
+std::vector<glm::vec3> GetLightFrustumCornersWorldSpace(const glm::mat4& lightSpaceMatrix) {
+    glm::mat4 invLightSpace = glm::inverse(lightSpaceMatrix);
+    
+    std::vector<glm::vec3> corners;
+    for (int x = 0; x < 2; ++x) {
+        for (int y = 0; y < 2; ++y) {
+            for (int z = 0; z < 2; ++z) {
+                glm::vec4 pt = invLightSpace * glm::vec4(
+                    x * 2.0f - 1.0f,
+                    y * 2.0f - 1.0f,
+                    z * 2.0f - 1.0f,
+                    1.0f
+                );
+                corners.push_back(glm::vec3(pt) / pt.w);
+            }
+        }
+    }
+    return corners;
+}

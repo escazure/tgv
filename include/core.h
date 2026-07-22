@@ -29,6 +29,8 @@ extern bool cool_backface;
 extern bool render_skybox;
 extern bool show_normals;
 extern bool calculate_lighting;
+extern bool show_light_frustum;
+extern bool show_light_marker;
 
 extern float window_width;
 extern float window_height;
