@@ -65,11 +65,10 @@ void run(GLFWwindow* window){
 	float current_frame = 0.0;
 
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-3.0f, -1.0f, 0.0f));
-	glm::vec3 lightPos = -lightDir * 1000.0f;
+	glm::vec3 lightPos = -lightDir * 512.0f;
 
-	// Frustum should be scaled with terrain size //
-	glm::mat4 lightProjection = glm::ortho(-1024.0f, 1024.0f, -512.0f, 512.0f, 1.0f, 2048.0f);
 	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightProjection = glm::ortho(-512.0f, 512.0f, -512.0f, 512.0f, 1.0f, 512.0f);
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
@@ -98,6 +97,10 @@ void run(GLFWwindow* window){
 		process_input(window, delta_time);
 
 		if(terrain_generated){
+			calculateTightLightProjection(float(terrain->max_height), float(terrain->min_height), float(terrain->terrain_length >> 1), lightProjection, lightView, lightDir);
+
+			lightSpaceMatrix = lightProjection * lightView;
+
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);

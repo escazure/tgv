@@ -104,3 +104,45 @@ std::vector<glm::vec3> GetLightFrustumCornersWorldSpace(const glm::mat4& lightSp
     }
     return corners;
 }
+
+void calculateTightLightProjection(float maxH, float minH, float halfLen, glm::mat4& lightProjection, glm::mat4& lightView, glm::vec3 lightDir){
+	glm::vec3 terrainCenter = glm::vec3(0.0f, (minH + maxH) * 0.5f, 0.0f);
+
+	float sceneRadius = glm::length(glm::vec3(halfLen, (maxH - minH) * 0.5f, halfLen));
+	glm::vec3 lightPos = terrainCenter - glm::normalize(lightDir) * sceneRadius * 1.5f;
+
+	glm::vec3 corners[8] = {
+    	glm::vec3(-halfLen, minH, -halfLen),
+    	glm::vec3( halfLen, minH, -halfLen),
+    	glm::vec3(-halfLen, maxH, -halfLen),
+    	glm::vec3( halfLen, maxH, -halfLen),
+    	glm::vec3(-halfLen, minH,  halfLen),
+    	glm::vec3( halfLen, minH,  halfLen),
+    	glm::vec3(-halfLen, maxH,  halfLen),
+    	glm::vec3( halfLen, maxH,  halfLen)
+	};
+
+	float minX =  std::numeric_limits<float>::max();
+	float maxX = -std::numeric_limits<float>::max();
+	float minY =  std::numeric_limits<float>::max();
+	float maxY = -std::numeric_limits<float>::max();
+	float minZ =  std::numeric_limits<float>::max();
+	float maxZ = -std::numeric_limits<float>::max();
+
+	for (int i = 0; i < 8; ++i) {
+	    glm::vec4 pt = lightView * glm::vec4(corners[i], 1.0f);
+	    minX = std::min(minX, pt.x);
+	    maxX = std::max(maxX, pt.x);
+	    minY = std::min(minY, pt.y);
+	    maxY = std::max(maxY, pt.y);
+	    minZ = std::min(minZ, pt.z);
+	    maxZ = std::max(maxZ, pt.z);
+	}
+
+	float padding = 10.0f;
+	lightProjection = glm::ortho(
+	    minX - padding, maxX + padding,
+	    minY - padding, maxY + padding,
+	    -maxZ - padding, -minZ + padding
+	);
+}

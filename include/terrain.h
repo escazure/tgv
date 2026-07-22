@@ -6,6 +6,7 @@
 
 class Terrain {
 	public:
+		int terrain_length, terrain_width;		
 		float max_height, min_height, gen_time;
 		std::size_t vertex_count;
 		std::size_t triangle_count;
@@ -55,7 +56,6 @@ class Terrain {
 		}
 
 	private:
-		int terrain_length, terrain_width;		
 		float step_size;
 		std::vector<Chunk> chunks;
 };
