@@ -5,18 +5,22 @@ in vec3 Position;
 in float normalized_y;
 in vec4 FragPosLightSpace;
 
+in mat4 LightSpaceMatrix;
+
 out vec4 FragColor;
 
 uniform bool show_normals;
 uniform bool calculate_lighting;
 uniform vec3 lightDir;
 
-uniform sampler2D shadowMap;
+uniform sampler2DShadow shadowMap;
+
+uniform float min_bias;
+uniform float max_bias;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
 
-// Colors
 const vec3 grass = vec3(0.2, 0.8, 0.2);
 const vec3 rock = vec3(0.5, 0.5, 0.5);
 const vec3 sand = vec3(0.7, 0.7, 0.5);
@@ -37,15 +41,10 @@ float calculateShadows(vec4 fragPosLightSpace, vec3 normal, vec3 lightDirection)
 	projCoords = projCoords * 0.5 + 0.5;
 	if(projCoords.z > 1.0) return 0.0;
 
-	float closestDepth = texture(shadowMap, projCoords.xy).r;
-	float currentDepth = projCoords.z;
+	float bias = max(max_bias * (1.0 - dot(normal, -lightDirection)), min_bias);
+	float shadow = texture(shadowMap, vec3(projCoords.xy, projCoords.z - bias));
 
-	float bias = max(0.005 * (1.0 - dot(normal, lightDirection)), 0.0005);
-	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-
-	// Implement PCF or some other blurring algorithm //
-
-	return shadow;
+	return 1.0 - shadow;
 }
 
 void main(){
@@ -64,10 +63,14 @@ void main(){
 	FragColor = vec4(color, 1.0);
 
 	if(calculate_lighting){
-		float shadow = calculateShadows(FragPosLightSpace, normal, normalize(-lightDir));
+		vec3 fragmentToLight = normalize(-lightDir);
+		float shadow = 1.0;
+
+		if(dot(normal, fragmentToLight) > 0.0){
+			shadow = calculateShadows(FragPosLightSpace, normal, lightDir);
+		}
+
 		FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.2, 0.8, shadow), 1.0);
-		// Turn into debug option ? //
-		// FragColor = vec4(vec3(1.0-shadow), 1.0);
 	}
 }
 

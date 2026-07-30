@@ -8,13 +8,14 @@ FunctionLoader function_loader;
 
 bool terrain_generated = false;
 bool is_wireframe_mode = false;
-bool cool_backface = true;
+bool cull_backface = true;
 bool render_skybox = true;
 bool show_normals = false;
 bool calculate_lighting = false;
 bool show_light_frustum = false;
 bool show_light_marker = false;
 float window_width, window_height;
+float bias;
 unsigned int depthMapFBO, depthMap;
 
 GLFWwindow* init(){
@@ -77,7 +78,7 @@ void run(GLFWwindow* window){
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
-		if(cool_backface) glEnable(GL_CULL_FACE);
+		if(cull_backface) glEnable(GL_CULL_FACE);
 		else glDisable(GL_CULL_FACE);
 
 		if(is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -103,7 +104,10 @@ void run(GLFWwindow* window){
 
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+			glDisable(GL_CULL_FACE);
 			glClear(GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_POLYGON_OFFSET_FILL);
+			glPolygonOffset(2.0f, 4.0f);
 
 			glm::mat4 model(1.0f);
 
@@ -114,6 +118,8 @@ void run(GLFWwindow* window){
 			terrain->draw();
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDisable(GL_POLYGON_OFFSET_FILL);
+			if(cull_backface) glEnable(GL_CULL_FACE);
 
 			glViewport(0, 0, int(window_width), int(window_height));
 			glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -131,6 +137,8 @@ void run(GLFWwindow* window){
 
 			shader.set_float("min_y", terrain->min_height);
 			shader.set_float("max_y", terrain->max_height);
+			shader.set_float("max_bias", 0.0001);
+			shader.set_float("min_bias", 0.00001);
 			shader.set_bool("show_normals", show_normals);
 			shader.set_bool("calculate_lighting", calculate_lighting);
 			shader.set_vec3("lightDir", lightDir);
