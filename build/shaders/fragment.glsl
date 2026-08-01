@@ -12,10 +12,12 @@ out vec4 FragColor;
 
 uniform bool show_normals;
 uniform bool calculate_lighting;
+uniform bool show_triplanar_projections_map;
 uniform vec3 lightDir;
 
 uniform sampler2DShadow shadowMap;
 
+uniform float triplanar_projections_threshold;
 uniform float min_bias;
 uniform float max_bias;
 
@@ -75,16 +77,44 @@ TerrainSample getProceduralColor(vec2 uv){
 }
 
 vec3 colorTerrain(float slope, vec3 normal){
-	TerrainSample sampleX = getProceduralColor(WorldPos.zy);
-	TerrainSample sampleY = getProceduralColor(WorldPos.xz);
-	TerrainSample sampleZ = getProceduralColor(WorldPos.xy);
-
 	vec3 weights = abs(normal);
+	weights = max(weights - vec3(triplanar_projections_threshold), vec3(0.0));
 	weights = pow(weights, vec3(4.0));
-	weights /= (weights.x + weights.y + weights.z);
+	
+	float totalWeight = weights.x + weights.y + weights.z;
+	weights = totalWeight > 0.0 ? (weights / totalWeight) : vec3(0.0, 1.0, 0.0);
 
-	vec3 finalGrass = sampleX.grass * weights.x + sampleY.grass * weights.y + sampleZ.grass * weights.z;
-	vec3 finalRock = sampleX.rock * weights.x + sampleY.rock * weights.y + sampleZ.rock * weights.z;
+	vec3 finalGrass = vec3(0.0);
+	vec3 finalRock = vec3(0.0);
+
+	int activeProjections = 0;
+
+	if(weights.x > 0.0){
+		activeProjections++;
+		TerrainSample sampleX = getProceduralColor(WorldPos.zy);
+		finalGrass += sampleX.grass * weights.x;
+		finalRock += sampleX.rock * weights.x;
+	}
+
+	if(weights.y > 0.0){
+		activeProjections++;
+		TerrainSample sampleY = getProceduralColor(WorldPos.xz);
+		finalGrass += sampleY.grass * weights.y;
+		finalRock += sampleY.rock * weights.y;
+	}
+	
+	if(weights.z > 0.0){
+		activeProjections++;
+		TerrainSample sampleZ = getProceduralColor(WorldPos.xy);
+		finalGrass += sampleZ.grass * weights.z;
+		finalRock += sampleZ.rock * weights.z;
+	}
+
+	if(show_triplanar_projections_map) {
+        if (activeProjections == 1) return vec3(0.0, 1.0, 0.0);
+        if (activeProjections == 2) return vec3(1.0, 1.0, 0.0);
+        if (activeProjections == 3) return vec3(1.0, 0.0, 0.0);
+    }
 
     float noiseHeight = (smoothNoise(WorldPos.xz * 0.01) - 0.5) * 30.0;
     float noisyY = max(WorldPos.y + noiseHeight, 0.0); 

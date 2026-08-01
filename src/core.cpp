@@ -14,6 +14,8 @@ bool show_normals = false;
 bool calculate_lighting = false;
 bool show_light_frustum = false;
 bool show_light_marker = false;
+bool show_triplanar_projections_map = false;
+float triplanar_projections_threshold = 0.35;
 float window_width, window_height;
 float bias;
 unsigned int depthMapFBO, depthMap;
@@ -135,11 +137,13 @@ void run(GLFWwindow* window){
 
 			shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
 
+			shader.set_float("triplanar_projections_threshold", triplanar_projections_threshold);
 			shader.set_float("min_y", terrain->min_height);
 			shader.set_float("max_y", terrain->max_height);
 			shader.set_float("max_bias", 0.0001);
 			shader.set_float("min_bias", 0.00001);
 			shader.set_bool("show_normals", show_normals);
+			shader.set_bool("show_triplanar_projections_map", show_triplanar_projections_map);
 			shader.set_bool("calculate_lighting", calculate_lighting);
 			shader.set_vec3("lightDir", lightDir);
 
