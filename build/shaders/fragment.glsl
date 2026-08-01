@@ -3,23 +3,22 @@
 in vec3 Normal;
 in vec3 Position;
 in vec3 WorldPos;
-in float normalized_y;
 in vec4 FragPosLightSpace;
-
 in mat4 LightSpaceMatrix;
 
 out vec4 FragColor;
 
+uniform sampler2DShadow shadowMap;
+
 uniform bool show_normals;
 uniform bool calculate_lighting;
 uniform bool show_triplanar_projections_map;
-uniform vec3 lightDir;
-
-uniform sampler2DShadow shadowMap;
 
 uniform float triplanar_projections_threshold;
 uniform float min_bias;
 uniform float max_bias;
+
+uniform vec3 lightDir;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
