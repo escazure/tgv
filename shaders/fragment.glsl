@@ -3,23 +3,22 @@
 in vec3 Normal;
 in vec3 Position;
 in vec3 WorldPos;
-in float normalized_y;
 in vec4 FragPosLightSpace;
-
 in mat4 LightSpaceMatrix;
 
 out vec4 FragColor;
 
+uniform sampler2DShadow shadowMap;
+
 uniform bool show_normals;
 uniform bool calculate_lighting;
 uniform bool show_triplanar_projections_map;
-uniform vec3 lightDir;
-
-uniform sampler2DShadow shadowMap;
 
 uniform float triplanar_projections_threshold;
 uniform float min_bias;
 uniform float max_bias;
+
+uniform vec3 lightDir;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
@@ -117,7 +116,7 @@ vec3 colorTerrain(float slope, vec3 normal){
     }
 
     float noiseHeight = (smoothNoise(WorldPos.xz * 0.01) - 0.5) * 30.0;
-    float noisyY = max(WorldPos.y , 0.0); 
+    float noisyY = max(WorldPos.y + noiseHeight, 0.0); 
 	
 	float rockSlopeMask = smoothstep(0.4, 0.7, 1.0 - slope);
 	float rockHeightMask = smoothstep(200.0, 320.0, noisyY);
