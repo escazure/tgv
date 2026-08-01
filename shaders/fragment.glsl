@@ -26,6 +26,11 @@ const float sandLevel = -20.0;
 const float grassLevel = 250.0;
 const float snowLevel = 420.0;
 
+struct TerrainSample {
+	vec3 grass;
+	vec3 rock;
+};
+
 // TERRAIN COLORS //
 const vec3 lushGrass = vec3(0.2, 0.45, 0.15);
 const vec3 dryGrass = vec3(0.4, 0.45, 0.2);
@@ -54,36 +59,47 @@ float smoothNoise(vec2 position){
 	return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
-vec3 colorTerrain(float slope){
+TerrainSample getProceduralColor(vec2 uv){
 	vec2 warp = vec2(
-		smoothNoise(WorldPos.xz * 0.02),
-		smoothNoise(WorldPos.xz * (-0.05) + vec2(5.2, 1.3))
+		smoothNoise(uv * 0.02),
+		smoothNoise(uv * (-0.05) + vec2(5.2, 1.3))
 	) * 20.0;
 
-    float noiseLarge = smoothNoise((WorldPos.xz + warp) * 0.005);
-	vec2 p = (WorldPos.xz - warp) * 0.02;
-	vec2 rotatedP = vec2(p.x * 0.7 - p.y * 0.7, p.x * 0.7 + p.y * 0.7);
-	float octave1 = smoothNoise(p);
-	float octave2 = smoothNoise(rotatedP * 2.1);
-	float noiseDetail = octave1 * 0.6 + octave2 * 0.4;
-    
+    float noiseLarge = smoothNoise((uv + warp) * 0.005);
+	float noiseDetail = smoothNoise((uv - warp) * 0.02);
+	
+	TerrainSample mat;
+    mat.grass = mix(lushGrass, dryGrass, noiseLarge * 0.7 + noiseDetail * 0.3);
+    mat.rock = mix(darkRock, lightRock, noiseDetail);
+	return mat;
+}
+
+vec3 colorTerrain(float slope, vec3 normal){
+	TerrainSample sampleX = getProceduralColor(WorldPos.zy);
+	TerrainSample sampleY = getProceduralColor(WorldPos.xz);
+	TerrainSample sampleZ = getProceduralColor(WorldPos.xy);
+
+	vec3 weights = abs(normal);
+	weights = pow(weights, vec3(4.0));
+	weights /= (weights.x + weights.y + weights.z);
+
+	vec3 finalGrass = sampleX.grass * weights.x + sampleY.grass * weights.y + sampleZ.grass * weights.z;
+	vec3 finalRock = sampleX.rock * weights.x + sampleY.rock * weights.y + sampleZ.rock * weights.z;
+
     float noiseHeight = (smoothNoise(WorldPos.xz * 0.01) - 0.5) * 30.0;
     float noisyY = max(WorldPos.y + noiseHeight, 0.0); 
-
-    vec3 varGrass = mix(lushGrass, dryGrass, noiseLarge * 0.7 + noiseDetail * 0.3);
-    vec3 varRock = mix(darkRock, lightRock, noiseDetail);
-
-    vec3 ground = mix(varRock, varGrass, slope);
+	
+	float rockSlopeMask = smoothstep(0.4, 0.7, 1.0 - slope);
+	float rockHeightMask = smoothstep(200.0, 320.0, noisyY);
+	float rockFactor = max(rockSlopeMask, rockHeightMask);
+	vec3 ground = mix(finalGrass, finalRock, rockFactor);
 
     float sandFactor = smoothstep(sandLevel, 30.0, noisyY);
-    float rockFactor = smoothstep(150.0, grassLevel + 100.0, noisyY);
-    
+    ground = mix(sand, ground, sandFactor);      
+
     float snowHeightMask = smoothstep(370.0, snowLevel + 50.0, noisyY);
     float snowSlopeMask = smoothstep(0.3, 0.6, slope); 
     float snowFactor = snowHeightMask * snowSlopeMask;
-
-    ground = mix(sand, ground, sandFactor);      
-    ground = mix(ground, varRock, rockFactor);  
     ground = mix(ground, snow, snowFactor);    
 
     return ground;
@@ -115,7 +131,7 @@ void main(){
 	float slope = dot(normal, up);
 	slope = clamp(slope, 0.0, 1.0);
 
-	vec3 color = colorTerrain(slope);
+	vec3 color = colorTerrain(slope, normal);
 
 	if(show_normals) color = normal * 0.5 + 0.5;
 
