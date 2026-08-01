@@ -147,6 +147,7 @@ void run(GLFWwindow* window){
 		}
 
 		if(render_skybox){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDepthMask(GL_FALSE); 
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
