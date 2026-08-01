@@ -61,18 +61,15 @@ float smoothNoise(vec2 position){
 }
 
 TerrainSample getProceduralColor(vec2 uv){
-	vec2 warp = vec2(
-		smoothNoise(uv * 0.02),
-		smoothNoise(uv * (-0.05) + vec2(5.2, 1.3))
-	) * 20.0;
+	float noiseLarge = smoothNoise(uv * 0.005);
+    
+    vec2 detailUV = uv * 0.02 + vec2(noiseLarge * 2.0);
+    float noiseDetail = smoothNoise(detailUV);
 
-    float noiseLarge = smoothNoise((uv + warp) * 0.005);
-	float noiseDetail = smoothNoise((uv - warp) * 0.02);
-	
-	TerrainSample mat;
+    TerrainSample mat;
     mat.grass = mix(lushGrass, dryGrass, noiseLarge * 0.7 + noiseDetail * 0.3);
-    mat.rock = mix(darkRock, lightRock, noiseDetail);
-	return mat;
+    mat.rock  = mix(darkRock, lightRock, noiseDetail);
+    return mat;
 }
 
 vec3 colorTerrain(float slope, vec3 normal){

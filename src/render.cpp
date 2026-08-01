@@ -61,7 +61,7 @@ void render_gui(){
 	static int exponent = MIN_EXPONENT;
 	static int size = 1 << exponent;
 	static int step_exponent = MIN_STEP_EXPONENT;
-	static int step_size = 1 << step_exponent;
+	static int step_size = 1 << (MAX_STEP_EXPONENT + MIN_STEP_EXPONENT - step_exponent);
 	static int chunk_exponent = MIN_CHUNK_EXPONENT;
 	static int chunk_size = 1 << chunk_exponent;
 	static char fun_buf[256];
@@ -73,7 +73,7 @@ void render_gui(){
 
 	ImGui::Columns(2, nullptr, false);
 
-	ImGui::Text("Size: %d",size);
+	ImGui::Text("Terrain Size: %d",size);
 	ImGui::NextColumn();
 	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##size", &exponent, MIN_EXPONENT, MAX_EXPONENT, "")){
@@ -81,15 +81,15 @@ void render_gui(){
 	}
 	ImGui::NextColumn();
 
-	ImGui::Text("Step size: %d", step_size);
+	ImGui::Text("Vertex Density: %d", step_size);
 	ImGui::NextColumn();
 	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##step_exponent", &step_exponent, MIN_STEP_EXPONENT, MAX_STEP_EXPONENT, "")){
-		step_size = 1 << step_exponent;
+		step_size = 1 << (MAX_STEP_EXPONENT + MIN_STEP_EXPONENT - step_exponent);
 	}
 	ImGui::NextColumn();
 	
-	ImGui::Text("Chunk size: %d",chunk_size);
+	ImGui::Text("Chunk Size: %d",chunk_size);
 	ImGui::NextColumn();
 	ImGui::SetNextItemWidth(-1);
 	if(ImGui::SliderInt("##chunk_exponent", &chunk_exponent, MIN_CHUNK_EXPONENT, MAX_CHUNK_EXPONENT, "")){
