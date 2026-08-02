@@ -12,9 +12,7 @@ uniform sampler2DShadow shadowMap;
 
 uniform bool show_normals;
 uniform bool calculate_lighting;
-uniform bool show_triplanar_projections_map;
 
-uniform float triplanar_projections_threshold;
 uniform float min_bias;
 uniform float max_bias;
 
@@ -25,16 +23,12 @@ const vec3 lightCol = vec3(1.0);
 
 const float sandLevel = -20.0;
 const float grassLevel = 250.0;
+const float rockLevel = 350.0;
 const float snowLevel = 420.0;
 
-struct TerrainSample {
-	vec3 grass;
-	vec3 rock;
-};
-
 // TERRAIN COLORS //
-const vec3 lushGrass = vec3(0.2, 0.45, 0.15);
-const vec3 dryGrass = vec3(0.4, 0.45, 0.2);
+const vec3 tree = vec3(0.16, 0.27, 0.23);
+const vec3 grass = vec3(0.45, 0.65, 0.3);
 
 const vec3 darkRock = vec3(0.3, 0.3, 0.25);
 const vec3 lightRock = vec3(0.5, 0.45, 0.45);
@@ -42,93 +36,82 @@ const vec3 lightRock = vec3(0.5, 0.45, 0.45);
 const vec3 sand = vec3(0.7, 0.6, 0.4);
 const vec3 snow = vec3(0.9, 0.9, 0.95);
 
-float noise(vec2 position){
-	return fract(sin(dot(position.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+float hash(vec2 p){
+	return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
-float smoothNoise(vec2 position){
-	vec2 i = floor(position);
-	vec2 f = fract(position);
-
-	float a = noise(i);
-	float b = noise(i + vec2(1.0, 0.0));
-	float c = noise(i + vec2(0.0, 1.0));
-	float d = noise(i + vec2(1.0, 1.0));
-
-	vec2 u = f * f * (3.0 - 2.0 * f);
-
-	return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+vec2 getGradientVector(vec2 point){
+	float hashValue = hash(point);
+	hashValue *= 6.283185; 
+	return vec2(cos(hashValue), sin(hashValue));
 }
 
-TerrainSample getProceduralColor(vec2 uv){
-	float noiseLarge = smoothNoise(uv * 0.005);
-    
-    vec2 detailUV = uv * 0.02 + vec2(noiseLarge * 2.0);
-    float noiseDetail = smoothNoise(detailUV);
+float perlinNoise(vec2 uv){
+	vec2 cornerA = floor(uv);
+	vec2 cornerB = cornerA + vec2(1.0, 0.0);
+	vec2 cornerC = cornerA + vec2(0.0, 1.0);
+	vec2 cornerD = cornerA + vec2(1.0, 1.0);
+	vec2 f = fract(uv);
 
-    TerrainSample mat;
-    mat.grass = mix(lushGrass, dryGrass, noiseLarge * 0.7 + noiseDetail * 0.3);
-    mat.rock  = mix(darkRock, lightRock, noiseDetail);
-    return mat;
+	vec2 gradA = getGradientVector(cornerA);
+	vec2 gradB = getGradientVector(cornerB);
+	vec2 gradC = getGradientVector(cornerC);
+	vec2 gradD = getGradientVector(cornerD);
+
+	vec2 offsetA = uv - cornerA;
+	vec2 offsetB = uv - cornerB;
+	vec2 offsetC = uv - cornerC;
+	vec2 offsetD = uv - cornerD;
+
+	float dotA = dot(gradA, offsetA);
+	float dotB = dot(gradB, offsetB);
+	float dotC = dot(gradC, offsetC);
+	float dotD = dot(gradD, offsetD);
+
+	vec2 w = 6 * (f * f * f * f * f) - 15 * (f * f * f * f) + 10 * (f * f * f);
+	float u1 = dotA + w.x * (dotB - dotA);
+	float u2 = dotC + w.x * (dotD - dotC);
+
+	return (u1 + w.y * (u2 - u1)) * 0.5 + 0.5;
 }
 
 vec3 colorTerrain(float slope, vec3 normal){
-	vec3 weights = abs(normal);
-	weights = max(weights - vec3(triplanar_projections_threshold), vec3(0.0));
-	weights = pow(weights, vec3(4.0));
-	
-	float totalWeight = weights.x + weights.y + weights.z;
-	weights = totalWeight > 0.0 ? (weights / totalWeight) : vec3(0.0, 1.0, 0.0);
+	vec2 uv = WorldPos.xz;
 
-	vec3 finalGrass = vec3(0.0);
-	vec3 finalRock = vec3(0.0);
+	float noiseLarge = perlinNoise(uv * 0.005);
+    float noiseDetail = perlinNoise(uv * 0.02);
+	float noiseMicro = perlinNoise(uv * 0.08);
+	float combinedNoise = noiseLarge * 0.7 + noiseDetail * 0.3;
 
-	int activeProjections = 0;
+	float warpedY = WorldPos.y + (noiseLarge * 100.0 + noiseDetail * 50.0);
 
-	if(weights.x > 0.0){
-		activeProjections++;
-		TerrainSample sampleX = getProceduralColor(WorldPos.zy);
-		finalGrass += sampleX.grass * weights.x;
-		finalRock += sampleX.rock * weights.x;
-	}
+	vec3 sandMask = sand;
 
-	if(weights.y > 0.0){
-		activeProjections++;
-		TerrainSample sampleY = getProceduralColor(WorldPos.xz);
-		finalGrass += sampleY.grass * weights.y;
-		finalRock += sampleY.rock * weights.y;
-	}
-	
-	if(weights.z > 0.0){
-		activeProjections++;
-		TerrainSample sampleZ = getProceduralColor(WorldPos.xy);
-		finalGrass += sampleZ.grass * weights.z;
-		finalRock += sampleZ.rock * weights.z;
-	}
+	float grassNoise = smoothstep(0.4, 0.75, combinedNoise);
+	vec3 grassMask = mix(tree, grass, grassNoise);
 
-	if(show_triplanar_projections_map) {
-        if (activeProjections == 1) return vec3(0.0, 1.0, 0.0);
-        if (activeProjections == 2) return vec3(1.0, 1.0, 0.0);
-        if (activeProjections == 3) return vec3(1.0, 0.0, 0.0);
-    }
+	float rockNoise = smoothstep(0.5, 0.75, noiseDetail);
+	vec3 rockMask = mix(darkRock, lightRock, rockNoise);
 
-    float noiseHeight = (smoothNoise(WorldPos.xz * 0.01) - 0.5) * 30.0;
-    float noisyY = max(WorldPos.y + noiseHeight, 0.0); 
-	
-	float rockSlopeMask = smoothstep(0.4, 0.7, 1.0 - slope);
-	float rockHeightMask = smoothstep(200.0, 320.0, noisyY);
-	float rockFactor = max(rockSlopeMask, rockHeightMask);
-	vec3 ground = mix(finalGrass, finalRock, rockFactor);
+	vec3 snowMask = mix(snow, vec3(1.0), noiseMicro * 0.3);
 
-    float sandFactor = smoothstep(sandLevel, 30.0, noisyY);
-    ground = mix(sand, ground, sandFactor);      
+	float grassWeight = smoothstep(sandLevel, sandLevel + 20.0, warpedY);
+	float rockWeight = smoothstep(rockLevel, rockLevel + 40.0, warpedY);
+	float snowWeight = smoothstep(snowLevel, snowLevel + 30.0, warpedY);
 
-    float snowHeightMask = smoothstep(370.0, snowLevel + 50.0, noisyY);
-    float snowSlopeMask = smoothstep(0.3, 0.6, slope); 
-    float snowFactor = snowHeightMask * snowSlopeMask;
-    ground = mix(ground, snow, snowFactor);    
+	vec3 ground = sandMask;
+	ground = mix(ground, grassMask, grassWeight);
+	ground = mix(ground, rockMask, rockWeight);
 
-    return ground;
+	float cliffFactor = smoothstep(0.6, 0.4, slope);
+	ground = mix(ground, rockMask, cliffFactor);
+
+	float snowSlopeFactor = smoothstep(0.45, 0.8, slope);
+	float snowPatchiness = snowWeight * snowSlopeFactor - noiseMicro * 0.4;
+	float snowCoverage = smoothstep(0.15, 0.7, snowPatchiness) * 0.85;
+	ground = mix(ground, snowMask, snowCoverage);
+
+	return ground;
 }
 
 vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float ambientStrength, float diffuseStrength, float shadow){
