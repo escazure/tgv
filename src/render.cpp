@@ -262,13 +262,6 @@ void render_gui(){
 
 			ImGui::Checkbox("Show light marker", &show_light_marker);
 			ImGui::NewLine();
-
-			ImGui::Checkbox("Show triplanar projections map", &show_triplanar_projections_map);
-			ImGui::NewLine();
-
-			ImGui::Indent();
-			ImGui::SliderFloat("Threshold value", &triplanar_projections_threshold, 0.0f, 1.0f);
-			ImGui::Unindent();
 		}
 		ImGui::End();
 	}

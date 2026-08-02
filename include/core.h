@@ -31,9 +31,7 @@ extern bool show_normals;
 extern bool calculate_lighting;
 extern bool show_light_frustum;
 extern bool show_light_marker;
-extern bool show_triplanar_projections_map;
 
-extern float triplanar_projections_threshold;
 extern float window_width;
 extern float window_height;
 
