@@ -135,8 +135,8 @@ void run(GLFWwindow* window){
 
 			shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
 
-			shader.set_float("max_bias", 0.0001);
-			shader.set_float("min_bias", 0.00001);
+			shader.set_float("max_bias", 0.005);
+			shader.set_float("min_bias", 0.0005);
 			shader.set_bool("show_normals", show_normals);
 			shader.set_bool("calculate_lighting", calculate_lighting);
 			shader.set_vec3("lightDir", lightDir);

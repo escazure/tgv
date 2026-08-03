@@ -4,7 +4,6 @@ in vec3 Normal;
 in vec3 Position;
 in vec3 WorldPos;
 in vec4 FragPosLightSpace;
-in mat4 LightSpaceMatrix;
 
 out vec4 FragColor;
 
@@ -36,125 +35,131 @@ const vec3 lightRock = vec3(0.5, 0.45, 0.45);
 const vec3 sand = vec3(0.7, 0.6, 0.4);
 const vec3 snow = vec3(0.9, 0.9, 0.95);
 
-float hash(vec2 p){
-	return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-}
-
-vec2 getGradientVector(vec2 point){
-	float hashValue = hash(point);
-	hashValue *= 6.283185; 
-	return vec2(cos(hashValue), sin(hashValue));
+vec2 hash(vec2 p){
+	p = fract(p * vec2(0.1031, 0.1030));
+    p += dot(p, p.yx + 33.33);
+    return fract((p.xx + p.yy) * p.yx) * 2.0 - 1.0;
 }
 
 float perlinNoise(vec2 uv){
-	vec2 cornerA = floor(uv);
-	vec2 cornerB = cornerA + vec2(1.0, 0.0);
-	vec2 cornerC = cornerA + vec2(0.0, 1.0);
-	vec2 cornerD = cornerA + vec2(1.0, 1.0);
+	vec2 i = floor(uv);
 	vec2 f = fract(uv);
 
-	vec2 gradA = getGradientVector(cornerA);
-	vec2 gradB = getGradientVector(cornerB);
-	vec2 gradC = getGradientVector(cornerC);
-	vec2 gradD = getGradientVector(cornerD);
+	vec2 gradA = hash(i);
+	vec2 gradB = hash(i + vec2(1.0, 0.0));
+	vec2 gradC = hash(i + vec2(0.0, 1.0));
+	vec2 gradD = hash(i + vec2(1.0, 1.0));
 
-	vec2 offsetA = uv - cornerA;
-	vec2 offsetB = uv - cornerB;
-	vec2 offsetC = uv - cornerC;
-	vec2 offsetD = uv - cornerD;
+	float dotA = dot(gradA, f);
+	float dotB = dot(gradB, f - vec2(1.0, 0.0));
+	float dotC = dot(gradC, f - vec2(0.0, 1.0));
+	float dotD = dot(gradD, f - vec2(1.0, 1.0));
 
-	float dotA = dot(gradA, offsetA);
-	float dotB = dot(gradB, offsetB);
-	float dotC = dot(gradC, offsetC);
-	float dotD = dot(gradD, offsetD);
+	vec2 w = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
 
-	vec2 w = 6 * (f * f * f * f * f) - 15 * (f * f * f * f) + 10 * (f * f * f);
-	float u1 = dotA + w.x * (dotB - dotA);
-	float u2 = dotC + w.x * (dotD - dotC);
+	float u1 = mix(dotA, dotB, w.x);
+	float u2 = mix(dotC, dotD, w.x);
 
-	return (u1 + w.y * (u2 - u1)) * 0.5 + 0.5;
+	return mix(u1, u2, w.y) * 0.5 + 0.5;
 }
 
-vec3 colorTerrain(float slope, vec3 normal){
+vec3 colorTerrain(float slope){
 	vec2 uv = WorldPos.xz;
 
-	float noiseLarge = perlinNoise(uv * 0.005);
+    float noiseLarge  = perlinNoise(uv * 0.005);
     float noiseDetail = perlinNoise(uv * 0.02);
-	float noiseMicro = perlinNoise(uv * 0.08);
-	float combinedNoise = noiseLarge * 0.7 + noiseDetail * 0.3;
-
-	float warpedY = WorldPos.y + (noiseLarge * 100.0 + noiseDetail * 50.0);
-
-	vec3 sandMask = sand;
-
-	float grassNoise = smoothstep(0.4, 0.75, combinedNoise);
-	vec3 grassMask = mix(tree, grass, grassNoise);
-
-	float rockNoise = smoothstep(0.5, 0.75, noiseDetail);
-	vec3 rockMask = mix(darkRock, lightRock, rockNoise);
-
-	vec3 snowMask = mix(snow, vec3(1.0), noiseMicro * 0.3);
+    float combinedNoise = noiseLarge * 0.7 + noiseDetail * 0.3;
+    float warpedY = WorldPos.y + noiseLarge * 100.0 + noiseDetail * 50.0;
 
 	float grassWeight = smoothstep(sandLevel, sandLevel + 20.0, warpedY);
-	float rockWeight = smoothstep(rockLevel, rockLevel + 40.0, warpedY);
-	float snowWeight = smoothstep(snowLevel, snowLevel + 30.0, warpedY);
+    float rockWeight = smoothstep(rockLevel, rockLevel + 40.0, warpedY);
+    float snowWeight = smoothstep(snowLevel, snowLevel + 30.0, warpedY);
+    float cliffFactor = smoothstep(0.6, 0.4, slope);
 
-	vec3 ground = sandMask;
-	ground = mix(ground, grassMask, grassWeight);
-	ground = mix(ground, rockMask, rockWeight);
+    float grassNoise = smoothstep(0.4, 0.75, combinedNoise);
+    vec3 grassMask = mix(tree, grass, grassNoise);
+    vec3 ground = mix(sand, grassMask, grassWeight);
 
-	float cliffFactor = smoothstep(0.6, 0.4, slope);
-	ground = mix(ground, rockMask, cliffFactor);
+    float totalRockFactor = max(rockWeight, cliffFactor);
+    if (totalRockFactor > 0.0) {
+        float rockNoise = smoothstep(0.5, 0.75, noiseDetail);
+        vec3 rockMask = mix(darkRock, lightRock, rockNoise);
+        ground = mix(ground, rockMask, totalRockFactor);
+    }
 
-	float snowSlopeFactor = smoothstep(0.45, 0.8, slope);
-	float snowPatchiness = snowWeight * snowSlopeFactor - noiseMicro * 0.4;
-	float snowCoverage = smoothstep(0.15, 0.7, snowPatchiness) * 0.85;
-	ground = mix(ground, snowMask, snowCoverage);
+    float snowSlopeFactor = smoothstep(0.45, 0.8, slope);
+    float maxSnowPotential = snowWeight * snowSlopeFactor;
 
-	return ground;
+    if (maxSnowPotential > 0.05) {
+        float noiseMicro = perlinNoise(uv * 0.08);
+        
+        vec3 snowMask = mix(snow, vec3(1.0), noiseMicro * 0.3);
+        float snowPatchiness = maxSnowPotential - noiseMicro * 0.4;
+        float snowCoverage = smoothstep(0.15, 0.7, snowPatchiness) * 0.85;
+
+        ground = mix(ground, snowMask, snowCoverage);
+    }
+
+    return ground;
 }
 
-vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float ambientStrength, float diffuseStrength, float shadow){
-	vec3 ambient = fragmentColor * lightColor * ambientStrength;
+vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float shadow){
+	vec3 L = -lightDirection;
+	float skyFactor = normal.y * 0.5 + 0.5;
+	vec3 skyColor = vec3(0.25, 0.3, 0.4);
+	vec3 groundColor = vec3(0.1, 0.08, 0.05);
+	vec3 ambient = fragmentColor * mix(groundColor, skyColor, skyFactor);
 
-	vec3 fragmentToLight = normalize(-lightDirection);
-	float diff = max(dot(normal, fragmentToLight), 0.0);
-	vec3 diffuse = fragmentColor * lightColor * diff * diffuseStrength;
+	float diff = max(dot(normal, L), 0.0);
+	vec3 diffuse = fragmentColor * lightColor * diff * 0.8;
 
-	return (ambient + (1.0 - shadow) * diffuse);
+	return ambient + shadow * diffuse;
 }
 
-float calculateShadows(vec4 fragPosLightSpace, vec3 normal, vec3 lightDirection){
-	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	projCoords = projCoords * 0.5 + 0.5;
-	if(projCoords.z > 1.0) return 0.0;
+float calculateShadow(vec4 fragPosLightSpace, float slope){
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    if (projCoords.z > 1.0) return 1.0;
 
-	float bias = max(max_bias * (1.0 - dot(normal, -lightDirection)), min_bias);
-	float shadow = texture(shadowMap, vec3(projCoords.xy, projCoords.z - bias));
+    float bias = max(max_bias * (1.0 - slope), min_bias);
+    float currentDepth = projCoords.z - bias;
 
-	return 1.0 - shadow;
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
+    
+    for (int x = -1; x <= 1; ++x) {
+        for (int y = -1; y <= 1; ++y) {
+            vec2 offset = vec2(x, y) * texelSize;
+            shadow += texture(shadowMap, vec3(projCoords.xy + offset, currentDepth));
+        }
+    }
+    
+    return shadow / 9.0;
 }
 
 void main(){
 	vec3 normal = normalize(Normal);
-	float slope = dot(normal, up);
-	slope = clamp(slope, 0.0, 1.0);
+	float slope = clamp(normal.y, 0.0, 1.0);
 
-	vec3 color = colorTerrain(slope, normal);
+	vec3 color = colorTerrain(slope);
 
-	if(show_normals) color = normal * 0.5 + 0.5;
-
-	FragColor = vec4(color, 1.0);
+	if(show_normals){
+		FragColor = vec4(normal * 0.5 + 0.5, 1.0);
+		return;
+	}
 
 	if(calculate_lighting){
-		vec3 fragmentToLight = normalize(-lightDir);
-		float shadow = 1.0;
+		vec3 L = normalize(-lightDir);
+		float shadow = 0.0;
 
-		if(dot(normal, fragmentToLight) > 0.0){
-			shadow = calculateShadows(FragPosLightSpace, normal, lightDir);
+		if(dot(normal, L) > 0.0){
+			shadow = calculateShadow(FragPosLightSpace, slope);
 		}
 
-		FragColor = vec4(calculateLight(color, normal, lightDir, lightCol, 0.2, 0.8, shadow), 1.0);
+		color = calculateLight(color, normal, lightDir, lightCol, shadow);
 	}
+
+	FragColor = vec4(color, 1.0);
 }
 
