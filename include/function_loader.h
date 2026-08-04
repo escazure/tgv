@@ -24,9 +24,10 @@ struct FunctionLoader{
 	bool compileFunction(){
 		std::string include_path = PROJECT_INCLUDE_DIR;
 		std::string functions_path = PROJECT_FUNCTIONS_DIR;
+		std::string external_path = PROJECT_EXTERNAL_DIR;
 
 		std::string output = functions_path + "/" + function_name + ".so";
-		std::string cmd = "g++ -I" + include_path + " -shared -fPIC -O2 " + functions_path + "/" + function_name + ".cpp -o " + output;
+		std::string cmd = "g++ -I" + include_path + " -isystem" + external_path + " -shared -fPIC -O2 " + functions_path + "/" + function_name + ".cpp -o " + output;
 
 		int result = std::system(cmd.c_str());
 		if(result != 0){
