@@ -398,5 +398,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o: \
  /usr/include/c++/14.2/bits/stl_bvector.h \
  /usr/include/c++/14.2/bits/vector.tcc \
  /home/escazure/cpp_projects/tgv/include/chunk.h \
+ /home/escazure/cpp_projects/tgv/include/state.h \
  /home/escazure/cpp_projects/tgv/include/helper.h \
  /home/escazure/cpp_projects/tgv/include/render.h

@@ -14,26 +14,13 @@
 #include "shader_program.h"
 #include "simple_camera.h"
 #include "terrain.h"
+#include "state.h"
 
 #include <cmath>
 #include <string>
 #include <vector>
 
-extern Camera camera;
-extern FunctionLoader function_loader;
-extern Terrain* terrain;
-
-extern bool terrain_generated;
-extern bool is_wireframe_mode;
-extern bool cull_backface;
-extern bool render_skybox;
-extern bool show_normals;
-extern bool calculate_lighting;
-extern bool show_light_frustum;
-extern bool show_light_marker;
-
-extern float window_width;
-extern float window_height;
+extern AppState state;
 
 GLFWwindow* init();
 void run(GLFWwindow* window);

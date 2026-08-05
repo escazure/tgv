@@ -1459,6 +1459,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
+  /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
@@ -1946,6 +1947,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
+  /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
@@ -2432,6 +2434,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
+  /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
@@ -2920,7 +2923,9 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
+  /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
+  /home/escazure/cpp_projects/tgv/include/ui.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
@@ -3387,6 +3392,8 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 
 /lib64/libGLdispatch.so.0:
 
+/home/escazure/cpp_projects/tgv/include/ui.h:
+
 /home/escazure/cpp_projects/tgv/src/render.cpp:
 
 /home/escazure/cpp_projects/tgv/src/main.cpp:
@@ -3402,6 +3409,8 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 /usr/include/sched.h:
 
 /usr/include/pthread.h:
+
+/usr/include/locale.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/lwpintrin.h:
 
@@ -3706,8 +3715,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o:
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_mat2x4.inl:
 
 /usr/include/bits/mathcalls-macros.h:
-
-/usr/include/bits/uintn-identity.h:
 
 CMakeFiles/tgv.dir/external/imgui/imgui_tables.cpp.o:
 
@@ -4053,8 +4060,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/avx512bitalgvlintrin.h:
 
-/usr/include/locale.h:
-
 /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h:
 
 /usr/include/bits/libm-simd-decl-stubs.h:
@@ -4348,6 +4353,10 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /home/escazure/cpp_projects/tgv/external/glm/packing.hpp:
 
 /home/escazure/cpp_projects/tgv/include/shader_program.h:
+
+/usr/include/bits/uintn-identity.h:
+
+/home/escazure/cpp_projects/tgv/include/state.h:
 
 /home/escazure/cpp_projects/tgv/include/terrain.h:
 

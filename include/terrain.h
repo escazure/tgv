@@ -24,7 +24,6 @@ class Terrain {
 		
 			std::size_t chunks_count = _size/_chunk_size;
 			chunks.reserve(chunks_count * chunks_count);
-			std::cout << "Resized to " << chunks_count << ":" << chunks_count << " chunks\n";
 
 			for(std::size_t x = 0; x < chunks_count; x++){
 				for(std::size_t z = 0; z < chunks_count; z++){
@@ -34,7 +33,7 @@ class Terrain {
 		}
 
 		void generate(float (*fun)(float, float)){
-			std::cout << "Started chunks generation, for " << chunks.size() << " chunks\n";
+			std::cout << "Started chunks generation for " << chunks.size() << " chunks\n";
 			auto start_time = std::chrono::high_resolution_clock::now();
 			for(std::size_t i = 0; i < chunks.size(); i++){
 				chunks[i].generate(fun);

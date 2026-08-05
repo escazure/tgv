@@ -1,20 +1,14 @@
 #include "core.h"
 #include "helper.h"
 #include "render.h"
+#include "state.h"
+
+AppState state;
 
 Camera camera(glm::vec3(0.0, 500.0, 0.0), 150.0, 0.07);
 Terrain* terrain;
 FunctionLoader function_loader;
 
-bool terrain_generated = false;
-bool is_wireframe_mode = false;
-bool cull_backface = true;
-bool render_skybox = true;
-bool show_normals = false;
-bool calculate_lighting = false;
-bool show_light_frustum = false;
-bool show_light_marker = false;
-float window_width, window_height;
 float bias;
 unsigned int depthMapFBO, depthMap;
 
@@ -27,8 +21,6 @@ GLFWwindow* init(){
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "tgv", NULL, NULL);
-	window_width = mode->width;
-	window_height = mode->height;
 
 	glfwMakeContextCurrent(window);
 
@@ -57,6 +49,12 @@ GLFWwindow* init(){
 
 	glEnable(GL_DEPTH_TEST);
 
+	state.camera = &camera;
+	state.terrain = terrain;
+	state.function_loader = &function_loader;
+	state.window_width = mode->width;
+	state.window_height = mode->height;
+
 	return window;
 }
 
@@ -78,10 +76,10 @@ void run(GLFWwindow* window){
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
-		if(cull_backface) glEnable(GL_CULL_FACE);
+		if(state.cull_backface) glEnable(GL_CULL_FACE);
 		else glDisable(GL_CULL_FACE);
 
-		if(is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		if(state.is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		glClearColor(0.2, 0.6, 0.8, 1.0);
@@ -97,8 +95,8 @@ void run(GLFWwindow* window){
 		
 		process_input(window, delta_time);
 
-		if(terrain_generated){
-			calculateTightLightProjection(float(terrain->max_height), float(terrain->min_height), float(terrain->terrain_length >> 1), lightProjection, lightView, lightDir);
+		if(state.terrain_generated){
+			calculateTightLightProjection(float(state.terrain->max_height), float(state.terrain->min_height), float(state.terrain->terrain_length >> 1), lightProjection, lightView, lightDir);
 
 			lightSpaceMatrix = lightProjection * lightView;
 
@@ -115,36 +113,36 @@ void run(GLFWwindow* window){
 			depth_shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
 			depth_shader.set_mat4("model", model);
 
-			terrain->draw();
+			state.terrain->draw();
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glDisable(GL_POLYGON_OFFSET_FILL);
-			if(cull_backface) glEnable(GL_CULL_FACE);
+			if(state.cull_backface) glEnable(GL_CULL_FACE);
 
-			glViewport(0, 0, int(window_width), int(window_height));
+			glViewport(0, 0, int(state.window_width), int(state.window_height));
 			glBindTexture(GL_TEXTURE_2D, depthMap);
 
 			shader.use();
 			shader.set_mat4("model", model);
 			
-			glm::mat4 view = camera.get_view_mat();
+			glm::mat4 view = state.camera->get_view_mat();
 			shader.set_mat4("view", view);
 
-			glm::mat4 projection = glm::perspective(glm::radians(45.0f), window_width/window_height, 0.1f, camera.view_distance);
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
 			shader.set_mat4("projection", projection);
 
 			shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
 
 			shader.set_float("max_bias", 0.005);
 			shader.set_float("min_bias", 0.0005);
-			shader.set_bool("show_normals", show_normals);
-			shader.set_bool("calculate_lighting", calculate_lighting);
+			shader.set_bool("show_normals", state.show_normals);
+			shader.set_bool("calculate_lighting", state.calculate_lighting);
 			shader.set_vec3("lightDir", lightDir);
 
-			terrain->draw();
+			state.terrain->draw();
 		}
 
-		if(render_skybox){
+		if(state.render_skybox){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDepthMask(GL_FALSE); 
 			glDepthFunc(GL_LEQUAL);
@@ -154,13 +152,13 @@ void run(GLFWwindow* window){
 			glDepthFunc(GL_LESS);
 		}
 
-		if(show_light_frustum) 
+		if(state.show_light_frustum) 
 			DrawLightFrustum(lightSpaceMatrix, debug_line_shader);
 			
-		if(show_light_marker)
+		if(state.show_light_marker)
 			DrawLightMarker(lightPos, lightDir, debug_line_shader);
 		
-		render_gui();
+		render_gui(state);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -173,5 +171,5 @@ void shutdown(GLFWwindow* window){
 	ImGui::DestroyContext();
 	glfwDestroyWindow(window);	
 	glfwTerminate();
-	function_loader.destroy();
+	state.function_loader->destroy();
 }
