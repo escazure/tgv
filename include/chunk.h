@@ -24,15 +24,6 @@ class Chunk{
 			generate_vertices();
 			generate_indices();
 
-			std::vector<float> vertex_data;
-			vertex_data.resize(vertex_count * 6);
-			for(std::size_t i = 0, j = 0;  i < vertices.size(); i += 3, j += 6){
-				vertex_data[j] = vertices[i];	
-				vertex_data[j+1] = vertices[i+1];	
-				vertex_data[j+2] = vertices[i+2];	
-			}
-
-
 			glGenVertexArrays(1, &VAO);
 			glBindVertexArray(VAO);
 
@@ -42,10 +33,10 @@ class Chunk{
 			glGenBuffers(1, &EBO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-			glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(float), vertex_data.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
 			glBindVertexArray(0);
 		}
@@ -68,8 +59,9 @@ class Chunk{
 		void generate_vertices(){
 			int x0 = x_pos * chunk_size - (terrain_size * 0.5f);
 			int z0 = z_pos * chunk_size - (terrain_size * 0.5f);
+
 			std::size_t vertex_count_axis = std::floor(chunk_size/step_size)+1;
-			vertices.resize(vertex_count_axis * vertex_count_axis * 3);
+			vertices.resize(vertex_count_axis * vertex_count_axis * 2);
 			vertex_count = vertex_count_axis * vertex_count_axis;
 
 			int temp = 0;
@@ -81,10 +73,9 @@ class Chunk{
 					float world_z = z0 + j * step_size;
 
 					vertices[temp] = world_x;	
-					vertices[temp+1] = 0;	
-					vertices[temp+2] = world_z;	
+					vertices[temp+1] = world_z;	
 
-					temp+=3;
+					temp+=2;
 				}
 			}
 			max_height = max_y;

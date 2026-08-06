@@ -1,5 +1,5 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec2 aPos;
 
 uniform bool renderTerrainSkirt;
 out vec3 WorldPos;
@@ -12,7 +12,7 @@ uniform float halfTerrainLength;
 uniform sampler2D heightMap;
 
 void main(){
-	vec2 uv = (aPos.xz + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
+	vec2 uv = (aPos + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
 	float height = texture(heightMap, uv).r;
 
 	if(renderTerrainSkirt){
@@ -22,7 +22,7 @@ void main(){
 		if(isBorder) height = -500.0;
 	}
 
-	vec4 worldPos = model * vec4(aPos.x, height, aPos.z, 1.0);
+	vec4 worldPos = model * vec4(aPos.x, height, aPos.y, 1.0);
 	WorldPos = vec3(worldPos);
 	gl_Position = projection * view * worldPos;
 }
