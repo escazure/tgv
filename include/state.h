@@ -17,6 +17,7 @@ struct AppState{
     int size = 1024;
     int chunk_size = 128;
 	int step_size = 1;
+	int seed = 0;
 
     char fun_buf[512] = "example(x,z)";
     char fun_name[128] = "example_terrain";
@@ -27,12 +28,14 @@ struct AppState{
 
     float window_width = 1920.0f;
     float window_height = 1080.0f;
+	float gen_time = 0.0f;
 
     FunctionLoader* function_loader = nullptr;
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
 
     bool terrain_generated = false;
+	bool generate_terrain = false;
     bool calculate_lighting = false;
     bool is_wireframe_mode = false;
     bool cull_backface = true;
@@ -40,4 +43,5 @@ struct AppState{
     bool show_normals = false;
     bool show_light_frustum = false;
     bool show_light_marker = false;
+	bool render_terrain_skirt = false;
 };

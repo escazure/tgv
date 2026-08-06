@@ -169,26 +169,25 @@ namespace UI {
                 ImGui::InputText("##fun_name", state.fun_name, IM_ARRAYSIZE(state.fun_name));
 
                 ImGui::Spacing();
+
+                ImGui::Text("Terrain seed:");
+				float button_width = 90.0f;
+				float input_width = ImGui::GetContentRegionAvail().x - button_width - ImGui::GetStyle().ItemSpacing.x;
+				ImGui::SetNextItemWidth(input_width);
+				ImGui::InputInt("##fun_seed_int", &state.seed, 1, 100);
+				
+				ImGui::SameLine();
+
+				if (ImGui::Button("Random", ImVec2(button_width, 0.0f))) {
+				    state.seed = rand() % 999999; 
+				}
+
+                ImGui::Spacing();
                 
                 if (ImGui::Button("Compile & Generate Terrain", ImVec2(-FLT_MIN, 36.0f))) {
-                    if (state.function_loader) {
-                        state.function_loader->function_buffer = std::string(state.fun_buf);
-                        state.function_loader->function_name = std::string(state.fun_name);
-
-                        if (!state.function_loader->load()) {
-                            std::cerr << "ERROR::FUNCTION_LOADER::FAILED_TO_LOAD_FUNCTION\n";
-                        }
-
-                        float (*fun)(float, float) = nullptr;
-                        if (!state.function_loader->getFunctionPointer(&fun)) {
-                            std::cerr << "ERROR::FUNCTION_LOADER::FAILED_TO_GET_FUNCTION_POINTER\n";
-                        }
-
-                        if (state.terrain) delete state.terrain;
-                        state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
-                        state.terrain->generate(fun);
-                        state.terrain_generated = true;
-                    }
+                    state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
+                    state.terrain->generate();
+					state.generate_terrain = true;
                 }
 
                 ImGui::Spacing();
@@ -284,7 +283,7 @@ namespace UI {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("Generation Time:");
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f ms", (state.terrain_generated && state.terrain) ? state.terrain->gen_time : 0.0f);
+                    ImGui::Text("%.2f ms", (state.terrain_generated && state.terrain) ? state.gen_time : 0.0f);
 
                     ImGui::EndTable();
                 }
@@ -341,6 +340,7 @@ namespace UI {
                 ImGui::Checkbox("Wireframe Overlay Mode", &state.is_wireframe_mode);
                 ImGui::Checkbox("Backface Culling", &state.cull_backface);
                 ImGui::Checkbox("Render Skybox Environment", &state.render_skybox);
+                ImGui::Checkbox("Render Terrain Skirt", &state.render_terrain_skirt);
 
                 ImGui::Spacing();
                 ImGui::Separator();

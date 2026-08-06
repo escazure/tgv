@@ -1,13 +1,7 @@
 #version 330 core
 
-in vec3 Normal;
-in vec3 Position;
 in vec3 WorldPos;
-in vec4 FragPosLightSpace;
-
 out vec4 FragColor;
-
-uniform sampler2DShadow shadowMap;
 
 uniform bool show_normals;
 uniform bool calculate_lighting;
@@ -103,6 +97,7 @@ vec3 colorTerrain(float slope){
     return ground;
 }
 
+/*
 vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float shadow){
 	vec3 L = -lightDirection;
 	float skyFactor = normal.y * 0.5 + 0.5;
@@ -137,18 +132,20 @@ float calculateShadow(vec4 fragPosLightSpace, float slope){
     
     return shadow / 9.0;
 }
+*/
 
 void main(){
-	vec3 normal = normalize(Normal);
-	float slope = clamp(normal.y, 0.0, 1.0);
-
+	float slope = 1.0;
 	vec3 color = colorTerrain(slope);
 
+	/*
 	if(show_normals){
 		FragColor = vec4(normal * 0.5 + 0.5, 1.0);
 		return;
 	}
+	*/
 
+	/*
 	if(calculate_lighting){
 		vec3 L = normalize(-lightDir);
 		float shadow = 0.0;
@@ -159,6 +156,7 @@ void main(){
 
 		color = calculateLight(color, normal, lightDir, lightCol, shadow);
 	}
+	*/
 
 	FragColor = vec4(color, 1.0);
 }

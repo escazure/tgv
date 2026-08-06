@@ -84,28 +84,35 @@ void init_skybox(){
 	skybox_cubemap = loadCubeMap(faces);
 }
 
-void init_fbo(unsigned int& depthMapFBO, unsigned int& depthMap){
-	glGenFramebuffers(1, &depthMapFBO);
+void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, bool isDepth){
+	glGenFramebuffers(1, &fbo);
 
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glGenTextures(1, &textureMap);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, isDepth ? GL_DEPTH_COMPONENT32F : GL_R32F, width, height, 0, isDepth ? GL_DEPTH_COMPONENT : GL_RED, GL_FLOAT, NULL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, isDepth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
+	if(isDepth){
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void resize_fbo(unsigned int textureMap, unsigned int newWidth, unsigned int newHeight, bool isDepth) {
+    glBindTexture(GL_TEXTURE_2D, textureMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, 
+                 isDepth ? GL_DEPTH_COMPONENT32F : GL_R32F, 
+                 newWidth, newHeight, 0, 
+                 isDepth ? GL_DEPTH_COMPONENT : GL_RED, 
+                 GL_FLOAT, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void init_light_frustum(){
@@ -200,4 +207,41 @@ void DrawLightMarker(glm::vec3 lightPos, glm::vec3 lightDir, Shader& debugLineSh
 
     glDeleteBuffers(1, &lineVBO);
     glDeleteVertexArrays(1, &lineVAO);
+}
+
+void renderQuad(){
+    static unsigned int quadVAO = 0;
+    static unsigned int quadVBO = 0;
+
+    if(quadVAO == 0){
+        float quadVertices[] = {
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+
+            -1.0f,  1.0f,  0.0f, 1.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f 
+        };
+
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
 }

@@ -32,20 +32,14 @@ class Terrain {
 			}
 		}
 
-		void generate(float (*fun)(float, float)){
-			std::cout << "Started chunks generation for " << chunks.size() << " chunks\n";
-			auto start_time = std::chrono::high_resolution_clock::now();
+		void generate(){
 			for(std::size_t i = 0; i < chunks.size(); i++){
-				chunks[i].generate(fun);
+				chunks[i].generate();
 				vertex_count += chunks[i].vertex_count;
 				triangle_count += chunks[i].triangle_count;
-				if(max_height < chunks[i].max_height) max_height = chunks[i].max_height;
-				if(min_height > chunks[i].min_height) min_height = chunks[i].min_height;
+				//if(max_height < chunks[i].max_height) max_height = chunks[i].max_height;
+				//if(min_height > chunks[i].min_height) min_height = chunks[i].min_height;
 			}	
-			auto end_time = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<float, std::milli> duration = end_time - start_time;
-			gen_time = duration.count();
-			std::cout << "Finished chunks generation, for " << chunks.size() << " chunks\n";
 		}
 		
 		void draw(){

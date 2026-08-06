@@ -9,8 +9,7 @@ Camera camera(glm::vec3(0.0, 500.0, 0.0), 150.0, 0.07);
 Terrain* terrain;
 FunctionLoader function_loader;
 
-float bias;
-unsigned int depthMapFBO, depthMap;
+unsigned int heightMapFBO, heightMap;
 
 GLFWwindow* init(){
 	glfwInit();
@@ -44,7 +43,7 @@ GLFWwindow* init(){
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	init_skybox();
-	init_fbo(depthMapFBO, depthMap);
+	init_fbo(heightMapFBO, heightMap, 4096, 4096, false);
 	init_light_frustum();
 
 	glEnable(GL_DEPTH_TEST);
@@ -72,8 +71,8 @@ void run(GLFWwindow* window){
 
 	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
-	Shader depth_shader("shaders/depth_vertex.glsl", "shaders/depth_fragment.glsl");
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
+	Shader height_map_shader("shaders/height_map_vertex.glsl", "shaders/height_map_fragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
@@ -95,34 +94,46 @@ void run(GLFWwindow* window){
 		
 		process_input(window, delta_time);
 
-		if(state.terrain_generated){
-			calculateTightLightProjection(float(state.terrain->max_height), float(state.terrain->min_height), float(state.terrain->terrain_length >> 1), lightProjection, lightView, lightDir);
+		if(state.generate_terrain){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			std::cout << "Started generating terrain\n";
+			auto start_time = std::chrono::high_resolution_clock::now();
 
-			lightSpaceMatrix = lightProjection * lightView;
-
-			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-			glDisable(GL_CULL_FACE);
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_POLYGON_OFFSET_FILL);
-			glPolygonOffset(2.0f, 4.0f);
-
+			glBindFramebuffer(GL_FRAMEBUFFER, heightMapFBO);
+			glViewport(0, 0, state.size, state.size);
+			resize_fbo(heightMap, state.size, state.size, false);
 			glm::mat4 model(1.0f);
 
-			depth_shader.use();
-			depth_shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
-			depth_shader.set_mat4("model", model);
+			height_map_shader.use();
+			height_map_shader.set_float("uWorldSize", state.size);
+			height_map_shader.set_int("uSeed", state.seed);
+			renderQuad();	
 
-			state.terrain->draw();
+			auto end_time = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<float, std::milli> duration = end_time - start_time;
+			state.gen_time = duration.count();
+			std::cout << "Finished generating terrain - " << duration.count() << "ms\n";
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glDisable(GL_POLYGON_OFFSET_FILL);
+			state.generate_terrain = false;
+			state.terrain_generated = true;
+			if(state.is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
+		if(state.terrain_generated){
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			if(state.cull_backface) glEnable(GL_CULL_FACE);
 
 			glViewport(0, 0, int(state.window_width), int(state.window_height));
-			glBindTexture(GL_TEXTURE_2D, depthMap);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, heightMap);
 
 			shader.use();
+			shader.set_int("heightMap", 0);
+			shader.set_float("halfTerrainLength", float(state.terrain->terrain_length) * 0.5f);
+			shader.set_bool("renderTerrainSkirt", state.render_terrain_skirt);
+
+			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
 			
 			glm::mat4 view = state.camera->get_view_mat();
@@ -131,12 +142,6 @@ void run(GLFWwindow* window){
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
 			shader.set_mat4("projection", projection);
 
-			shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
-
-			shader.set_float("max_bias", 0.005);
-			shader.set_float("min_bias", 0.0005);
-			shader.set_bool("show_normals", state.show_normals);
-			shader.set_bool("calculate_lighting", state.calculate_lighting);
 			shader.set_vec3("lightDir", lightDir);
 
 			state.terrain->draw();

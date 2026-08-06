@@ -1,24 +1,29 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
 
-out vec3 Normal;
-out vec3 Position;
+uniform bool renderTerrainSkirt;
 out vec3 WorldPos;
-out float normalized_y;
-out vec4 FragPosLightSpace;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform mat4 lightSpaceMatrix;
+uniform float halfTerrainLength;
+
+uniform sampler2D heightMap;
 
 void main(){
-	vec4 worldPos = model * vec4(aPos, 1.0);
+	vec2 uv = (aPos.xz + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
+	float height = texture(heightMap, uv).r;
+
+	if(renderTerrainSkirt){
+		bool isBorder = (uv.x <= 0.001 || uv.x >= 0.999 ||
+    		             uv.y <= 0.001 || uv.y >= 0.999);
+
+		if(isBorder) height = -500.0;
+	}
+
+	vec4 worldPos = model * vec4(aPos.x, height, aPos.z, 1.0);
 	WorldPos = vec3(worldPos);
 	gl_Position = projection * view * worldPos;
-	Normal = aNormal;
-	Position = vec3(model * vec4(aPos, 1.0));
-	FragPosLightSpace = lightSpaceMatrix * vec4(Position, 1.0);
 }
 
