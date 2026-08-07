@@ -71,7 +71,7 @@ vec3 colorTerrain(float slope){
 	float grassWeight = smoothstep(sandLevel, sandLevel + 20.0, warpedY);
     float rockWeight = smoothstep(rockLevel, rockLevel + 40.0, warpedY);
     float snowWeight = smoothstep(snowLevel, snowLevel + 30.0, warpedY);
-    float cliffFactor = smoothstep(0.6, 0.4, slope);
+    float cliffFactor = smoothstep(0.4, 0.6, slope);
 
     float grassNoise = smoothstep(0.4, 0.75, combinedNoise);
     vec3 grassMask = mix(tree, grass, grassNoise);
@@ -84,12 +84,11 @@ vec3 colorTerrain(float slope){
         ground = mix(ground, rockMask, totalRockFactor);
     }
 
-    float snowSlopeFactor = smoothstep(0.45, 0.8, slope);
+    float snowSlopeFactor = smoothstep(0.5, 0.15, slope);
     float maxSnowPotential = snowWeight * snowSlopeFactor;
 
-    if (maxSnowPotential > 0.05) {
+    if(maxSnowPotential > 0.05){
         float noiseMicro = perlinNoise(uv * 0.08);
-        
         vec3 snowMask = mix(snow, vec3(1.0), noiseMicro * 0.3);
         float snowPatchiness = maxSnowPotential - noiseMicro * 0.4;
         float snowCoverage = smoothstep(0.15, 0.7, snowPatchiness) * 0.85;
@@ -113,33 +112,12 @@ vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 l
 
 	return ambient + shadow * diffuse;
 }
-
-float calculateShadow(vec4 fragPosLightSpace, float slope){
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;
-    
-    if (projCoords.z > 1.0) return 1.0;
-
-    float bias = max(max_bias * (1.0 - slope), min_bias);
-    float currentDepth = projCoords.z - bias;
-
-    float shadow = 0.0;
-    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-    
-    for (int x = -1; x <= 1; ++x) {
-        for (int y = -1; y <= 1; ++y) {
-            vec2 offset = vec2(x, y) * texelSize;
-            shadow += texture(shadowMap, vec3(projCoords.xy + offset, currentDepth));
-        }
-    }
-    
-    return shadow / 9.0;
-}
 */
 
 void main(){
-	vec3 normal = texture(normalMap, uv).rgb;
-	vec3 color = colorTerrain(normal.y);
+	vec3 normal = texture(normalMap, uv).rgb * 2.0 - 1.0;
+	float slope = 1.0 - normal.y;
+	vec3 color = colorTerrain(slope);
 
 	if(show_normals){
 		FragColor = vec4(normal * 0.5 + 0.5, 1.0);

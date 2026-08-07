@@ -165,5 +165,5 @@ inline float example(float x, float z, int seed = 1){
 	float sx = x + offsetX;
 	float sz = z + offsetZ;
 
-	return erosion_fbm(sx, sz, 1.0f, baseFrequency, baseAmplitude) + baseLevel;
+	return fbm(sx, sz, 1.0f, baseFrequency, baseAmplitude) + baseLevel;
 }

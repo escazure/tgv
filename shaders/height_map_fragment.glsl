@@ -12,18 +12,13 @@ vec2 hash(vec2 p){
     return fract((p.xx + p.yy) * p.yx) * 2.0 - 1.0;
 }
 
-float hash21(ivec2 p, int seed) {
-	uvec2 v = uvec2(p + ivec2(seed, seed * 1973));
-	
-	v = v * 1664525u + 1013904223u;
-    v.x += v.y * 1664525u;
-    v.y += v.x * 1664525u;
-    v = v ^ (v >> 16u);
-    v.x += v.y * 1664525u;
-    v.y += v.x * 1664525u;
-    v = v ^ (v >> 16u);
-
-	return float(v.x) * (1.0 / 4294967295.0);
+uint hashSeed(uint seed) {
+    seed ^= seed >> 16u;
+    seed *= 0x85ebac88u;
+    seed ^= seed >> 13u;
+    seed *= 0x4ac849bau;
+    seed ^= seed >> 16u;
+    return seed;
 }
 
 float perlinNoise(vec2 uv){
@@ -60,13 +55,17 @@ float fbm(vec2 uv){
 }
 
 void main(){
-	float baseFrequency = 0.0005;
-	float baseAmplitude = 1000.0;
+	const float baseFrequency = 0.0005;
+	const float baseAmplitude = 1000.0;
+	const float shiftSize = 500000.0;
 
-	float offsetX = (hash21(ivec2(uSeed, 0), uSeed) - 0.5) * 1000.0;
-	float offsetZ = (hash21(ivec2(0, uSeed), uSeed) - 0.5) * 1000.0;
+	uint hashX = hashSeed(uint(uSeed));
+	uint hashZ = hashSeed(hashX);
 
-	vec2 offsetUV = vec2(offsetX, offsetZ) + uv;
+	float normalizedX = (float(hashX) / 4294967295.0) * 2.0 - 1.0;
+	float normalizedZ = (float(hashZ) / 4294967295.0) * 2.0 - 1.0;
+
+	vec2 offsetUV = vec2(normalizedX, normalizedZ) * shiftSize + uv;
 
 	float height = fbm(offsetUV * baseFrequency) * baseAmplitude;
 	FragColor = height;
