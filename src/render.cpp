@@ -84,12 +84,40 @@ void init_skybox(){
 	skybox_cubemap = loadCubeMap(faces);
 }
 
-void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, bool isDepth){
+void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, bool isDepth){
+	unsigned int container = GL_RGBA;
+	unsigned int data = GL_RGBA32F;
+	unsigned int attachment = GL_COLOR_ATTACHMENT0;
+	switch(numberOfChannels){
+		case 1: 
+			container = GL_RED;
+			data = GL_R32F;
+			break;
+		case 2:
+			container = GL_RG;
+			data = GL_RG32F;
+			break;
+		case 3:
+			container = GL_RGB;
+			data = GL_RGB32F;
+			break;
+		default:
+			container = GL_RGBA;
+			data = GL_RGBA32F;
+			break;
+	}
+
+	if(isDepth){
+		container = GL_DEPTH_COMPONENT;
+		data = GL_DEPTH_COMPONENT32F;
+		attachment = GL_DEPTH_ATTACHMENT;
+	}
+
 	glGenFramebuffers(1, &fbo);
 
 	glGenTextures(1, &textureMap);
 	glBindTexture(GL_TEXTURE_2D, textureMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, isDepth ? GL_DEPTH_COMPONENT32F : GL_R32F, width, height, 0, isDepth ? GL_DEPTH_COMPONENT : GL_RED, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, data, width, height, 0, container, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -97,7 +125,7 @@ void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, u
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, isDepth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, textureMap, 0);
 	if(isDepth){
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
@@ -105,13 +133,36 @@ void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, u
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void resize_fbo(unsigned int textureMap, unsigned int newWidth, unsigned int newHeight, bool isDepth) {
+void resize_fbo(unsigned int textureMap, unsigned int newWidth, unsigned int newHeight, unsigned int numberOfChannels, bool isDepth) {
+	unsigned int container = GL_RGBA;
+	unsigned int data = GL_RGBA32F;
+
+	switch(numberOfChannels){
+		case 1: 
+			container = GL_RED;
+			data = GL_R32F;
+			break;
+		case 2:
+			container = GL_RG;
+			data = GL_RG32F;
+			break;
+		case 3:
+			container = GL_RGB;
+			data = GL_RGB32F;
+			break;
+		default:
+			container = GL_RGBA;
+			data = GL_RGBA32F;
+			break;
+	}
+
+	if(isDepth){
+		container = GL_DEPTH_COMPONENT;
+		data = GL_DEPTH_COMPONENT32F;
+	}
+
     glBindTexture(GL_TEXTURE_2D, textureMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, 
-                 isDepth ? GL_DEPTH_COMPONENT32F : GL_R32F, 
-                 newWidth, newHeight, 0, 
-                 isDepth ? GL_DEPTH_COMPONENT : GL_RED, 
-                 GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, data, newWidth, newHeight, 0, container, GL_FLOAT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

@@ -3,6 +3,7 @@ layout (location = 0) in vec2 aPos;
 
 uniform bool renderTerrainSkirt;
 out vec3 WorldPos;
+out vec2 uv;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -12,7 +13,7 @@ uniform float halfTerrainLength;
 uniform sampler2D heightMap;
 
 void main(){
-	vec2 uv = (aPos + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
+	uv = (aPos + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
 	float height = texture(heightMap, uv).r;
 
 	if(renderTerrainSkirt){

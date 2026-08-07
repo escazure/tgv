@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec3 WorldPos;
+in vec2 uv;
 out vec4 FragColor;
 
 uniform bool show_normals;
@@ -10,6 +11,8 @@ uniform float min_bias;
 uniform float max_bias;
 
 uniform vec3 lightDir;
+
+uniform sampler2D normalMap;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
@@ -135,15 +138,13 @@ float calculateShadow(vec4 fragPosLightSpace, float slope){
 */
 
 void main(){
-	float slope = 1.0;
-	vec3 color = colorTerrain(slope);
+	vec3 normal = texture(normalMap, uv).rgb;
+	vec3 color = colorTerrain(normal.y);
 
-	/*
 	if(show_normals){
 		FragColor = vec4(normal * 0.5 + 0.5, 1.0);
 		return;
 	}
-	*/
 
 	/*
 	if(calculate_lighting){

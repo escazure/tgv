@@ -10,6 +10,7 @@ Terrain* terrain;
 FunctionLoader function_loader;
 
 unsigned int heightMapFBO, heightMap;
+unsigned int normalMapFBO, normalMap;
 
 GLFWwindow* init(){
 	glfwInit();
@@ -43,7 +44,8 @@ GLFWwindow* init(){
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	init_skybox();
-	init_fbo(heightMapFBO, heightMap, 4096, 4096, false);
+	init_fbo(heightMapFBO, heightMap, 2048, 2048, 1, false);
+	init_fbo(normalMapFBO, normalMap, 2048, 2048, 4, false);
 	init_light_frustum();
 
 	glEnable(GL_DEPTH_TEST);
@@ -73,6 +75,7 @@ void run(GLFWwindow* window){
 	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
 	Shader height_map_shader("shaders/height_map_vertex.glsl", "shaders/height_map_fragment.glsl");
+	Shader normal_map_shader("shaders/normal_map_vertex.glsl", "shaders/normal_map_fragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
@@ -88,10 +91,6 @@ void run(GLFWwindow* window){
 		delta_time = current_frame - last_frame;	
 		last_frame = current_frame;
 
-		// ----------------------------------------------------------------------------------- //
-		//  Process input, send data to shader and render only if terrain is already generated //
-		// ----------------------------------------------------------------------------------- //
-		
 		process_input(window, delta_time);
 
 		if(state.generate_terrain){
@@ -101,7 +100,8 @@ void run(GLFWwindow* window){
 
 			glBindFramebuffer(GL_FRAMEBUFFER, heightMapFBO);
 			glViewport(0, 0, state.size, state.size);
-			resize_fbo(heightMap, state.size, state.size, false);
+			resize_fbo(heightMap, state.size, state.size, 1, false);
+			resize_fbo(normalMap, state.size, state.size, 3, false);
 			glm::mat4 model(1.0f);
 
 			height_map_shader.use();
@@ -114,10 +114,29 @@ void run(GLFWwindow* window){
 			state.gen_time = duration.count();
 			std::cout << "Finished generating terrain - " << duration.count() << "ms\n";
 
+			glBindFramebuffer(GL_FRAMEBUFFER, normalMapFBO);
+
+			std::cout << "Started computing normals\n";
+			start_time = std::chrono::high_resolution_clock::now();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, heightMap);
+
+			normal_map_shader.use();
+			normal_map_shader.set_int("uHeightMap", 0);
+			normal_map_shader.set_float("uTerrainSize", state.size);
+			renderQuad();	
+
+			end_time = std::chrono::high_resolution_clock::now();
+			duration = end_time - start_time;
+			std::cout << "Finished computing normals - " << duration.count() << "ms\n";
+
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 			state.generate_terrain = false;
 			state.terrain_generated = true;
 			if(state.is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		}
 
 		if(state.terrain_generated){
@@ -127,11 +146,15 @@ void run(GLFWwindow* window){
 			glViewport(0, 0, int(state.window_width), int(state.window_height));
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, heightMap);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, normalMap);
 
 			shader.use();
 			shader.set_int("heightMap", 0);
+			shader.set_int("normalMap", 1);
 			shader.set_float("halfTerrainLength", float(state.terrain->terrain_length) * 0.5f);
 			shader.set_bool("renderTerrainSkirt", state.render_terrain_skirt);
+			shader.set_bool("show_normals", state.show_normals);
 
 			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
