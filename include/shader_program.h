@@ -13,6 +13,54 @@
 struct Shader {
 	unsigned int id;
 
+	Shader(const char* compute_path){
+		std::string compute_code;
+		std::ifstream shader_file;
+		
+		shader_file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+
+		try{
+			shader_file.open(compute_path);
+			std::stringstream shader_stream;
+			
+			shader_stream << shader_file.rdbuf();
+
+			shader_file.close();
+
+			compute_code = shader_stream.str();
+		}
+		catch(std::ifstream::failure e){
+			std::cerr << "SHADER: File not read" << std::endl;
+		}
+		const char* code = compute_code.c_str();
+
+		unsigned int shader;
+		int success;
+		char info_log[512];
+
+		shader = glCreateShader(GL_COMPUTE_SHADER);
+		glShaderSource(shader, 1, &code, NULL);
+		glCompileShader(shader);
+		
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if(!success){
+			glGetShaderInfoLog(shader, 512, NULL, info_log);	
+			std::cerr << "SHADER: Compute shader compilation failed:\n" << info_log << std::endl;
+		}
+
+		id = glCreateProgram();
+		glAttachShader(id, shader);
+		glLinkProgram(id);
+
+		glGetProgramiv(id, GL_LINK_STATUS, &success);
+		if(!success){
+			glGetProgramInfoLog(id, 512, NULL, info_log);
+			std::cerr << "SHADER: Failed to link shaders:\n" << info_log << std::endl;
+		}
+
+		glDeleteShader(shader);
+	}
+
 	Shader(const char* vertex_path, const char* fragment_path){
 		std::string vertex_code;
 		std::string fragment_code;

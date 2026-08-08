@@ -1,4 +1,5 @@
 #include "helper.h"
+#include "render.h"
 
 bool g_is_capturing = false;
 
@@ -122,4 +123,61 @@ unsigned int build_shader(const std::string& udf, const std::string& udf_name, c
 	}	
 
 	return SUCCESS;
+}
+
+void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, unsigned int width, unsigned int height) {
+    int maxMipLevels = 1 + std::floor(std::log2(std::max(width, height)));
+
+    unsigned int minMaxTexture = 0;
+    init_texture(minMaxTexture, width, height, 2, maxMipLevels, false);
+
+    shader.use();
+
+    int currentWidth = width;
+    int currentHeight = height;
+
+    for(int srcMip = -1; srcMip < maxMipLevels - 1; srcMip++){
+        int dstMip = srcMip + 1;
+        int dstWidth = std::max(1, currentWidth / 2);
+        int dstHeight = std::max(1, currentHeight / 2);
+
+        if(srcMip == -1){
+            glBindTextureUnit(0, heightMap);
+            shader.set_int("u_SrcMipLevel", -1);
+        }
+		else{
+            glBindTextureUnit(0, minMaxTexture);
+            shader.set_int("u_SrcMipLevel", srcMip);
+        }
+
+        glBindImageTexture(1, minMaxTexture, dstMip, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG32F);
+
+        int groupsX = (dstWidth + 7) / 8;
+        int groupsY = (dstHeight + 7) / 8;
+        glDispatchCompute(groupsX, groupsY, 1);
+
+        glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
+
+        currentWidth = dstWidth;
+        currentHeight = dstHeight;
+    }
+
+    glMemoryBarrier(GL_TEXTURE_UPDATE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+
+    float result[2] = { 0.0f, 0.0f };
+
+    glGetTextureSubImage(
+        minMaxTexture,
+        maxMipLevels - 1,
+        0, 0, 0,         
+        1, 1, 1,         
+        GL_RG, GL_FLOAT,
+        sizeof(result),
+        result
+    );
+
+    state.min_height = result[0];
+    state.max_height = result[1];
+
+    glDeleteTextures(1, &minMaxTexture);
 }

@@ -83,86 +83,61 @@ void init_skybox(){
 	skybox_cubemap = load_cube_map(faces);
 }
 
-void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, bool isDepth){
-	unsigned int container = GL_RGBA;
-	unsigned int data = GL_RGBA32F;
-	unsigned int attachment = GL_COLOR_ATTACHMENT0;
-	switch(numberOfChannels){
-		case 1: 
-			container = GL_RED;
-			data = GL_R32F;
-			break;
-		case 2:
-			container = GL_RG;
-			data = GL_RG32F;
-			break;
-		case 3:
-			container = GL_RGB;
-			data = GL_RGB32F;
-			break;
-		default:
-			container = GL_RGBA;
-			data = GL_RGBA32F;
-			break;
-	}
-
-	if(isDepth){
-		container = GL_DEPTH_COMPONENT;
-		data = GL_DEPTH_COMPONENT32F;
-		attachment = GL_DEPTH_ATTACHMENT;
-	}
-
+void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate){
 	glGenFramebuffers(1, &fbo);
-
-	glGenTextures(1, &textureMap);
-	glBindTexture(GL_TEXTURE_2D, textureMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, data, width, height, 0, container, GL_FLOAT, NULL);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	init_texture(textureMap, width, height, numberOfChannels, mipMapLevels, interpolate);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, textureMap, 0);
-	if(isDepth){
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-	}
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void resize_fbo(unsigned int textureMap, unsigned int newWidth, unsigned int newHeight, unsigned int numberOfChannels, bool isDepth) {
-	unsigned int container = GL_RGBA;
-	unsigned int data = GL_RGBA32F;
+void init_texture(unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate) {
+    unsigned int data = GL_RGBA32F;
 
-	switch(numberOfChannels){
-		case 1: 
-			container = GL_RED;
-			data = GL_R32F;
-			break;
-		case 2:
-			container = GL_RG;
-			data = GL_RG32F;
-			break;
-		case 3:
-			container = GL_RGB;
-			data = GL_RGB32F;
-			break;
-		default:
-			container = GL_RGBA;
-			data = GL_RGBA32F;
-			break;
-	}
+    switch (numberOfChannels) {
+        case 1: 
+            data = GL_R32F; 
+            break;
+        case 2: 
+            data = GL_RG32F; 
+            break;
+        case 3: 
+            data = GL_RGB32F; 
+            break;
+        default: 
+            data = GL_RGBA32F; 
+            break;
+    }
 
-	if(isDepth){
-		container = GL_DEPTH_COMPONENT;
-		data = GL_DEPTH_COMPONENT32F;
-	}
+    if(textureMap == 0){
+        glGenTextures(1, &textureMap);
+    }
 
     glBindTexture(GL_TEXTURE_2D, textureMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, data, newWidth, newHeight, 0, container, GL_FLOAT, NULL);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glTexStorage2D(GL_TEXTURE_2D, mipMapLevels, data, width, height);
+
+    if (mipMapLevels > 1)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolate ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST);
+	else
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolate ? GL_LINEAR : GL_NEAREST);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolate ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+void resize_fbo_attachment(unsigned int fbo, unsigned int& textureMap, unsigned int newWidth, unsigned int newHeight, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate) {
+    if (textureMap != 0) {
+        glDeleteTextures(1, &textureMap);
+        textureMap = 0;
+    }
+
+    init_texture(textureMap, newWidth, newHeight, numberOfChannels, mipMapLevels, interpolate);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void draw_skybox(Shader shader){

@@ -29,8 +29,9 @@ struct AppState{
     float window_width = 1920.0f;
     float window_height = 1080.0f;
 	float gen_time = 0.0f;
+	float min_height = 0.0f;
+	float max_height = 0.0f;
 
-    FunctionLoader* function_loader = nullptr;
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
 

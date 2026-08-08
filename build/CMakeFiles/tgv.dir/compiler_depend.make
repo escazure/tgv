@@ -1940,6 +1940,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
+  /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \

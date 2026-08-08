@@ -319,19 +319,19 @@ namespace UI {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("Min Height:");
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f units", (state.terrain_generated && state.terrain) ? state.terrain->min_height : 0.0f);
+                    ImGui::Text("%.2f units", (state.terrain_generated && state.terrain) ? state.min_height : 0.0f);
 
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("Max Height:");
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f units", (state.terrain_generated && state.terrain) ? state.terrain->max_height : 0.0f);
+                    ImGui::Text("%.2f units", (state.terrain_generated && state.terrain) ? state.max_height : 0.0f);
 
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("Height Range:");
                     ImGui::TableSetColumnIndex(1);
-                    float height_range = (state.terrain_generated && state.terrain) ? (state.terrain->max_height - state.terrain->min_height) : 0.0f;
+                    float height_range = (state.terrain_generated && state.terrain) ? (state.max_height - state.min_height) : 0.0f;
                     ImGui::Text("%.2f units", height_range);
 
                     ImGui::EndTable();
