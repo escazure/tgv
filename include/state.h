@@ -19,7 +19,7 @@ struct AppState{
 	int step_size = 1;
 	int seed = 0;
 
-    char fun_buf[512] = "example(x,z)";
+    char fun_buf[512] = "return example(uv);";
     char fun_name[128] = "example_terrain";
 
     bool show_noise_window = false;

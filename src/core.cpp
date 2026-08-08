@@ -74,7 +74,6 @@ void run(GLFWwindow* window){
 	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
 	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
-	Shader height_map_shader("shaders/height_map_vertex.glsl", "shaders/height_map_fragment.glsl");
 	Shader normal_map_shader("shaders/normal_map_vertex.glsl", "shaders/normal_map_fragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
@@ -94,8 +93,9 @@ void run(GLFWwindow* window){
 		process_input(window, delta_time);
 
 		if(state.generate_terrain){
+			std::string path = std::string(PROJECT_FUNCTIONS_DIR) + "/";
+			Shader height_map_shader((path + "height_map_vertex.glsl").c_str(), (path + "height_map_fragment.glsl").c_str());
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			std::cout << "Started generating terrain\n";
 			auto start_time = std::chrono::high_resolution_clock::now();
 
 			glBindFramebuffer(GL_FRAMEBUFFER, heightMapFBO);
@@ -116,7 +116,6 @@ void run(GLFWwindow* window){
 
 			glBindFramebuffer(GL_FRAMEBUFFER, normalMapFBO);
 
-			std::cout << "Started computing normals\n";
 			start_time = std::chrono::high_resolution_clock::now();
 
 			glActiveTexture(GL_TEXTURE0);

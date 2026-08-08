@@ -1,5 +1,6 @@
 #pragma once 
 #include "state.h"
+#include "helper.h"
 
 namespace UI {
 	void drawMenuBar(AppState& state) {
@@ -185,6 +186,16 @@ namespace UI {
                 ImGui::Spacing();
                 
                 if (ImGui::Button("Compile & Generate Terrain", ImVec2(-FLT_MIN, 36.0f))) {
+					std::string udf = wrap_user_input(state.fun_buf, state.fun_name);
+					unsigned int status = build_shader(udf, state.fun_name, "height_map_fragment");
+					std::string result;
+					switch(status){
+						case 0: result = "SUCCESS"; break;
+						case 1: result = "FAILED_TO_OPEN_FILE"; break;
+						case 2: result = "FAILED_TO_WRITE_FILE"; break;
+					}
+
+					std::cout << "Shader build finished with status: [" << result << "]\n";
                     state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
                     state.terrain->generate();
 					state.generate_terrain = true;

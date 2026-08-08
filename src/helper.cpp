@@ -146,3 +146,42 @@ void calculateTightLightProjection(float maxH, float minH, float halfLen, glm::m
 	    -maxZ - padding, -minZ + padding
 	);
 }
+
+std::string wrap_user_input(const std::string& function_body, const std::string& function_name){
+	std::string result;		
+	result = "float " + function_name + "(){\n" + function_body + "\n}";
+	return result;
+}
+
+unsigned int build_shader(const std::string& udf, const std::string& udf_name, const std::string& shader_name){
+	std::string functions_dir = PROJECT_FUNCTIONS_DIR;
+
+	std::ifstream is(functions_dir + "/generation_lib.glsl");
+	if(!is.is_open()) return FAILED_TO_OPEN_FILE;
+	std::stringstream buffer;
+	buffer << is.rdbuf();
+	std::string lib = buffer.str();
+
+	std::ofstream os(functions_dir + "/" + shader_name + ".glsl");	
+	if(!os.is_open()) return FAILED_TO_OPEN_FILE;
+	os << "#version 330 core\n"
+	      "in vec2 uv;\n"
+		  "out float FragColor;\n\n"
+		  "uniform int uSeed;\n\n";
+
+	os << lib << "\n\n";
+
+	os << "/*** USER DEFINED FUNCTION BEGIN ***/\n";
+	os << udf << "\n";
+	os << "/*** USER DEFINED FUNCTION END ***/\n\n";
+
+	os << "void main(){\n"
+		  " FragColor = " << udf_name << "();\n"
+		  "}";
+
+	if(os.fail()){
+		return FAILED_TO_WRITE_FILE;
+	}	
+
+	return SUCCESS;
+}

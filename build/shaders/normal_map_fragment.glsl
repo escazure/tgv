@@ -4,7 +4,7 @@ in vec2 uv;
 out vec4 FragColor;
 
 uniform sampler2D uHeightMap;
-unifomr float uTerrainSize;
+uniform float uTerrainSize;
 
 void main(){
 	vec2 texelSize = 1.0 / textureSize(uHeightMap, 0);

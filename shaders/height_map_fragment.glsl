@@ -6,7 +6,7 @@ uniform int uSeed;
 out float FragColor;
 in vec2 uv;
 
-vec2 hash(vec2 p){
+vec2 hash22(vec2 p){
 	p = fract(p * vec2(0.1031, 0.1030));
     p += dot(p, p.yx + 33.33);
     return fract((p.xx + p.yy) * p.yx) * 2.0 - 1.0;
@@ -25,10 +25,10 @@ float perlinNoise(vec2 uv){
 	vec2 i = floor(uv);
 	vec2 f = fract(uv);
 
-	vec2 gradA = hash(i);
-	vec2 gradB = hash(i + vec2(1.0, 0.0));
-	vec2 gradC = hash(i + vec2(0.0, 1.0));
-	vec2 gradD = hash(i + vec2(1.0, 1.0));
+	vec2 gradA = hash22(i);
+	vec2 gradB = hash22(i + vec2(1.0, 0.0));
+	vec2 gradC = hash22(i + vec2(0.0, 1.0));
+	vec2 gradD = hash22(i + vec2(1.0, 1.0));
 
 	float dotA = dot(gradA, f);
 	float dotB = dot(gradB, f - vec2(1.0, 0.0));
@@ -54,7 +54,7 @@ float fbm(vec2 uv){
 	return value;
 }
 
-void main(){
+float example(){
 	const float baseFrequency = 0.0005;
 	const float baseAmplitude = 1000.0;
 	const float shiftSize = 500000.0;
@@ -67,6 +67,10 @@ void main(){
 
 	vec2 offsetUV = vec2(normalizedX, normalizedZ) * shiftSize + uv;
 
-	float height = fbm(offsetUV * baseFrequency) * baseAmplitude;
+	return fbm(offsetUV * baseFrequency) * baseAmplitude;
+}
+
+void main(){
+	float height = example();
 	FragColor = height;
 }
