@@ -1,8 +1,7 @@
 ### Terrain generator and visualizer
 *Project for university*
 
-Wraps user defined function into a C++ code and saves to a file, which then gets loaded using ```dlopen()```. It then computes height values for all vertices of user defined plane and renders terrain.
-The plane's dimensions can be changed on the fly. As well as function used for generation itself.
+Wraps UDF into a glsl file, which gets used for height map generation.
 
 #### Examples
 ---
