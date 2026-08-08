@@ -52,7 +52,7 @@ namespace UI {
                 ImGui::Spacing();
 
                 if (ImGui::BeginTable("ApiDocsTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
-                    ImGui::TableSetupColumn("Function Signature", ImGuiTableColumnFlags_WidthFixed, 280.0f);
+                    ImGui::TableSetupColumn("Function Signature", ImGuiTableColumnFlags_WidthFixed, 350.0f);
                     ImGui::TableSetupColumn("Description", ImGuiTableColumnFlags_WidthStretch);
                     ImGui::TableHeadersRow();
 
@@ -64,13 +64,12 @@ namespace UI {
                         ImGui::TextWrapped("%s", desc);
                     };
 
-                    AddRow("random(x, z, seed)", "Returns semi-random deterministic float in range [0.0, 1.0].");
-                    AddRow("lerp(a, b, t)", "Linear interpolation between value a and b by factor t.");
-                    AddRow("smooth(t)", "Smoothstep S-curve function (3t² - 2t³) for continuous blending.");
-                    AddRow("bell_curve(x, z, r, amp)", "Generates a radial bell curve with specified radius and height.");
-                    AddRow("value_noise(x, z)", "2D value noise interpolation map.");
-                    AddRow("fbm(x, z, octaves=4)", "Fractional Brownian Motion noise over multiple layered octaves.");
-                    AddRow("example(x, z, seed=1000)", "Pre-built complex terrain function stacking multi-octave fBm.");
+                    AddRow("vec2 hash22(vec2 p)", "Returns semi-random gradient vector.");
+                    AddRow("uint hashSeed(uint seed)", "Returns semi-random seed value.");
+                    AddRow("vec2 shiftUV(vec2 uv, float shiftSize, int seed)", "Helper function to shift uv coordinates based on seed");
+                    AddRow("float perlinNoise(vec2 uv)", "2D perlin noise interpolation map.");
+                    AddRow("float fbm(vec2 uv, int octaves)", "Fractional Brownian Motion noise over multiple layered octaves.");
+                    AddRow("float example(vec2 uv)", "Pre-built terrain function based on fBm.");
 
                     ImGui::EndTable();
                 }
@@ -348,7 +347,6 @@ namespace UI {
                 ImGui::Spacing();
 
                 ImGui::Checkbox("Enable Realtime Lighting", &state.calculate_lighting);
-                ImGui::Checkbox("Wireframe Overlay Mode", &state.is_wireframe_mode);
                 ImGui::Checkbox("Backface Culling", &state.cull_backface);
                 ImGui::Checkbox("Render Skybox Environment", &state.render_skybox);
                 ImGui::Checkbox("Render Terrain Skirt", &state.render_terrain_skirt);
@@ -361,8 +359,7 @@ namespace UI {
                 ImGui::Spacing();
 
                 ImGui::Checkbox("Show Surface Normals", &state.show_normals);
-                ImGui::Checkbox("Show Light Frustum", &state.show_light_frustum);
-                ImGui::Checkbox("Show Light Marker Gizmo", &state.show_light_marker);
+                ImGui::Checkbox("Wireframe Overlay Mode", &state.is_wireframe_mode);
 
                 ImGui::Spacing();
                 ImGui::Separator();

@@ -10,7 +10,6 @@
 #include "imgui_impl_opengl3.h"
 #include "stb_image.h"
 
-#include "function_loader.h"
 #include "shader_program.h"
 #include "simple_camera.h"
 #include "terrain.h"

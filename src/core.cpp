@@ -7,7 +7,6 @@ AppState state;
 
 Camera camera(glm::vec3(0.0, 500.0, 0.0), 150.0, 0.07);
 Terrain* terrain;
-FunctionLoader function_loader;
 
 unsigned int heightMapFBO, heightMap;
 unsigned int normalMapFBO, normalMap;
@@ -46,13 +45,11 @@ GLFWwindow* init(){
 	init_skybox();
 	init_fbo(heightMapFBO, heightMap, 2048, 2048, 1, false);
 	init_fbo(normalMapFBO, normalMap, 2048, 2048, 4, false);
-	init_light_frustum();
 
 	glEnable(GL_DEPTH_TEST);
 
 	state.camera = &camera;
 	state.terrain = terrain;
-	state.function_loader = &function_loader;
 	state.window_width = mode->width;
 	state.window_height = mode->height;
 
@@ -71,10 +68,9 @@ void run(GLFWwindow* window){
 	glm::mat4 lightProjection = glm::ortho(-512.0f, 512.0f, -512.0f, 512.0f, 1.0f, 512.0f);
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
-	Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
-	Shader skybox_shader("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
-	Shader debug_line_shader("shaders/debugLineVertex.glsl", "shaders/debugLineFragment.glsl");
-	Shader normal_map_shader("shaders/normal_map_vertex.glsl", "shaders/normal_map_fragment.glsl");
+	Shader shader("shaders/final/vertex.glsl", "shaders/final/fragment.glsl");
+	Shader skybox_shader("shaders/skybox/skybox_vertex.glsl", "shaders/skybox/skybox_fragment.glsl");
+	Shader normal_map_shader("shaders/normalMapping/normal_map_vertex.glsl", "shaders/normalMapping/normal_map_fragment.glsl");
 
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
@@ -107,7 +103,7 @@ void run(GLFWwindow* window){
 			height_map_shader.use();
 			height_map_shader.set_float("uWorldSize", state.size);
 			height_map_shader.set_int("uSeed", state.seed);
-			renderQuad();	
+			render_quad();	
 
 			auto end_time = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<float, std::milli> duration = end_time - start_time;
@@ -124,7 +120,7 @@ void run(GLFWwindow* window){
 			normal_map_shader.use();
 			normal_map_shader.set_int("uHeightMap", 0);
 			normal_map_shader.set_float("uTerrainSize", state.size);
-			renderQuad();	
+			render_quad();	
 
 			end_time = std::chrono::high_resolution_clock::now();
 			duration = end_time - start_time;
@@ -178,12 +174,6 @@ void run(GLFWwindow* window){
 			glDepthMask(GL_TRUE); 
 			glDepthFunc(GL_LESS);
 		}
-
-		if(state.show_light_frustum) 
-			DrawLightFrustum(lightSpaceMatrix, debug_line_shader);
-			
-		if(state.show_light_marker)
-			DrawLightMarker(lightPos, lightDir, debug_line_shader);
 		
 		render_gui(state);
 
@@ -198,5 +188,4 @@ void shutdown(GLFWwindow* window){
 	ImGui::DestroyContext();
 	glfwDestroyWindow(window);	
 	glfwTerminate();
-	state.function_loader->destroy();
 }

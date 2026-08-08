@@ -60,7 +60,7 @@ void process_input(GLFWwindow* window, float delta_time){
 		state.camera->move_down(delta_time);
 }
 
-unsigned int loadCubeMap(std::vector<std::string>& faces){
+unsigned int load_cube_map(std::vector<std::string>& faces){
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -83,68 +83,6 @@ unsigned int loadCubeMap(std::vector<std::string>& faces){
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
-}
-
-std::vector<glm::vec3> GetLightFrustumCornersWorldSpace(const glm::mat4& lightSpaceMatrix) {
-    glm::mat4 invLightSpace = glm::inverse(lightSpaceMatrix);
-    
-    std::vector<glm::vec3> corners;
-    for (int x = 0; x < 2; ++x) {
-        for (int y = 0; y < 2; ++y) {
-            for (int z = 0; z < 2; ++z) {
-                glm::vec4 pt = invLightSpace * glm::vec4(
-                    x * 2.0f - 1.0f,
-                    y * 2.0f - 1.0f,
-                    z * 2.0f - 1.0f,
-                    1.0f
-                );
-                corners.push_back(glm::vec3(pt) / pt.w);
-            }
-        }
-    }
-    return corners;
-}
-
-void calculateTightLightProjection(float maxH, float minH, float halfLen, glm::mat4& lightProjection, glm::mat4& lightView, glm::vec3 lightDir){
-	glm::vec3 terrainCenter = glm::vec3(0.0f, (minH + maxH) * 0.5f, 0.0f);
-
-	float sceneRadius = glm::length(glm::vec3(halfLen, (maxH - minH) * 0.5f, halfLen));
-	glm::vec3 lightPos = terrainCenter - glm::normalize(lightDir) * sceneRadius * 1.5f;
-
-	glm::vec3 corners[8] = {
-    	glm::vec3(-halfLen, minH, -halfLen),
-    	glm::vec3( halfLen, minH, -halfLen),
-    	glm::vec3(-halfLen, maxH, -halfLen),
-    	glm::vec3( halfLen, maxH, -halfLen),
-    	glm::vec3(-halfLen, minH,  halfLen),
-    	glm::vec3( halfLen, minH,  halfLen),
-    	glm::vec3(-halfLen, maxH,  halfLen),
-    	glm::vec3( halfLen, maxH,  halfLen)
-	};
-
-	float minX =  std::numeric_limits<float>::max();
-	float maxX = -std::numeric_limits<float>::max();
-	float minY =  std::numeric_limits<float>::max();
-	float maxY = -std::numeric_limits<float>::max();
-	float minZ =  std::numeric_limits<float>::max();
-	float maxZ = -std::numeric_limits<float>::max();
-
-	for (int i = 0; i < 8; ++i) {
-	    glm::vec4 pt = lightView * glm::vec4(corners[i], 1.0f);
-	    minX = std::min(minX, pt.x);
-	    maxX = std::max(maxX, pt.x);
-	    minY = std::min(minY, pt.y);
-	    maxY = std::max(maxY, pt.y);
-	    minZ = std::min(minZ, pt.z);
-	    maxZ = std::max(maxZ, pt.z);
-	}
-
-	float padding = 10.0f;
-	lightProjection = glm::ortho(
-	    minX - padding, maxX + padding,
-	    minY - padding, maxY + padding,
-	    -maxZ - padding, -minZ + padding
-	);
 }
 
 std::string wrap_user_input(const std::string& function_body, const std::string& function_name){

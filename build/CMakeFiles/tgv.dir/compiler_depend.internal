@@ -1463,7 +1463,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o
  /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h
  /home/escazure/cpp_projects/tgv/include/chunk.h
  /home/escazure/cpp_projects/tgv/include/core.h
- /home/escazure/cpp_projects/tgv/include/function_loader.h
  /home/escazure/cpp_projects/tgv/include/helper.h
  /home/escazure/cpp_projects/tgv/include/render.h
  /home/escazure/cpp_projects/tgv/include/shader_program.h
@@ -1489,8 +1488,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o
  /usr/include/bits/atomic_wide_counter.h
  /usr/include/bits/byteswap.h
  /usr/include/bits/cpu-set.h
- /usr/include/bits/dl_find_object.h
- /usr/include/bits/dlfcn.h
  /usr/include/bits/endian.h
  /usr/include/bits/endianness.h
  /usr/include/bits/errno.h
@@ -1704,7 +1701,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h
  /usr/include/ctype.h
- /usr/include/dlfcn.h
  /usr/include/endian.h
  /usr/include/errno.h
  /usr/include/features-time64.h
@@ -1953,7 +1949,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o
  /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h
  /home/escazure/cpp_projects/tgv/include/chunk.h
  /home/escazure/cpp_projects/tgv/include/core.h
- /home/escazure/cpp_projects/tgv/include/function_loader.h
  /home/escazure/cpp_projects/tgv/include/helper.h
  /home/escazure/cpp_projects/tgv/include/shader_program.h
  /home/escazure/cpp_projects/tgv/include/simple_camera.h
@@ -1978,8 +1973,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o
  /usr/include/bits/atomic_wide_counter.h
  /usr/include/bits/byteswap.h
  /usr/include/bits/cpu-set.h
- /usr/include/bits/dl_find_object.h
- /usr/include/bits/dlfcn.h
  /usr/include/bits/endian.h
  /usr/include/bits/endianness.h
  /usr/include/bits/errno.h
@@ -2193,7 +2186,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h
  /usr/include/ctype.h
- /usr/include/dlfcn.h
  /usr/include/endian.h
  /usr/include/errno.h
  /usr/include/features-time64.h
@@ -2442,7 +2434,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o
  /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h
  /home/escazure/cpp_projects/tgv/include/chunk.h
  /home/escazure/cpp_projects/tgv/include/core.h
- /home/escazure/cpp_projects/tgv/include/function_loader.h
  /home/escazure/cpp_projects/tgv/include/shader_program.h
  /home/escazure/cpp_projects/tgv/include/simple_camera.h
  /home/escazure/cpp_projects/tgv/include/state.h
@@ -2466,8 +2457,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o
  /usr/include/bits/atomic_wide_counter.h
  /usr/include/bits/byteswap.h
  /usr/include/bits/cpu-set.h
- /usr/include/bits/dl_find_object.h
- /usr/include/bits/dlfcn.h
  /usr/include/bits/endian.h
  /usr/include/bits/endianness.h
  /usr/include/bits/errno.h
@@ -2681,7 +2670,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h
  /usr/include/ctype.h
- /usr/include/dlfcn.h
  /usr/include/endian.h
  /usr/include/errno.h
  /usr/include/features-time64.h
@@ -2930,7 +2918,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o
  /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h
  /home/escazure/cpp_projects/tgv/include/chunk.h
  /home/escazure/cpp_projects/tgv/include/core.h
- /home/escazure/cpp_projects/tgv/include/function_loader.h
  /home/escazure/cpp_projects/tgv/include/helper.h
  /home/escazure/cpp_projects/tgv/include/render.h
  /home/escazure/cpp_projects/tgv/include/shader_program.h
@@ -2957,8 +2944,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o
  /usr/include/bits/atomic_wide_counter.h
  /usr/include/bits/byteswap.h
  /usr/include/bits/cpu-set.h
- /usr/include/bits/dl_find_object.h
- /usr/include/bits/dlfcn.h
  /usr/include/bits/endian.h
  /usr/include/bits/endianness.h
  /usr/include/bits/errno.h
@@ -3172,7 +3157,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h
  /usr/include/ctype.h
- /usr/include/dlfcn.h
  /usr/include/endian.h
  /usr/include/errno.h
  /usr/include/features-time64.h

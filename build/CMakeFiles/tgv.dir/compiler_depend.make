@@ -1454,7 +1454,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
-  /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
@@ -1480,8 +1479,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/cpu-set.h \
-  /usr/include/bits/dl_find_object.h \
-  /usr/include/bits/dlfcn.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/errno.h \
@@ -1695,7 +1692,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h \
   /usr/include/ctype.h \
-  /usr/include/dlfcn.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
@@ -1943,7 +1939,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
-  /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
@@ -1968,8 +1963,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/cpu-set.h \
-  /usr/include/bits/dl_find_object.h \
-  /usr/include/bits/dlfcn.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/errno.h \
@@ -2183,7 +2176,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h \
   /usr/include/ctype.h \
-  /usr/include/dlfcn.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
@@ -2431,7 +2423,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
-  /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \
@@ -2455,8 +2446,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/cpu-set.h \
-  /usr/include/bits/dl_find_object.h \
-  /usr/include/bits/dlfcn.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/errno.h \
@@ -2670,7 +2659,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h \
   /usr/include/ctype.h \
-  /usr/include/dlfcn.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
@@ -2918,7 +2906,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
-  /home/escazure/cpp_projects/tgv/include/function_loader.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
@@ -2945,8 +2932,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/cpu-set.h \
-  /usr/include/bits/dl_find_object.h \
-  /usr/include/bits/dlfcn.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/errno.h \
@@ -3160,7 +3145,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/gthr.h \
   /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h \
   /usr/include/ctype.h \
-  /usr/include/dlfcn.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
   /usr/include/features-time64.h \
@@ -3409,8 +3393,6 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 /usr/include/sched.h:
 
 /usr/include/pthread.h:
-
-/usr/include/locale.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/lwpintrin.h:
 
@@ -4060,6 +4042,8 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/avx512bitalgvlintrin.h:
 
+/usr/include/locale.h:
+
 /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h:
 
 /usr/include/bits/libm-simd-decl-stubs.h:
@@ -4427,8 +4411,6 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /usr/include/c++/14.2/bits/invoke.h:
 
 /usr/include/bits/cpu-set.h:
-
-/home/escazure/cpp_projects/tgv/include/function_loader.h:
 
 /usr/include/c++/14.2/bits/istream.tcc:
 
