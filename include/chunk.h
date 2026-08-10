@@ -6,7 +6,6 @@ class Chunk{
 	public:
 		std::size_t vertex_count;
 		std::size_t triangle_count;
-		float max_height, min_height;
 
 		Chunk(std::size_t _x_pos, std::size_t _z_pos, float _step_size, std::size_t _size, std::size_t _terrain_size){
 			chunk_size = _size;
@@ -16,8 +15,6 @@ class Chunk{
 			z_pos = _z_pos;
 			vertex_count = 0;
 			triangle_count = 0;
-			max_height = 0.0f;
-			min_height = 0.0f;
 		}
 
 		void generate(){
@@ -65,7 +62,6 @@ class Chunk{
 			vertex_count = vertex_count_axis * vertex_count_axis;
 
 			int temp = 0;
-			float max_y = std::numeric_limits<float>::lowest(), min_y = std::numeric_limits<float>::max();
 
 			for(int i = 0; i < vertex_count_axis; i++){
 				for(int j = 0; j < vertex_count_axis; j++){
@@ -78,8 +74,6 @@ class Chunk{
 					temp+=2;
 				}
 			}
-			max_height = max_y;
-			min_height = min_y;
 		}
 
 		void generate_indices(){

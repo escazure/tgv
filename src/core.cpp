@@ -10,6 +10,7 @@ Terrain* terrain;
 
 unsigned int heightMapFBO, heightMap;
 unsigned int normalMapFBO, normalMap;
+unsigned int shadowMapFBO, shadowMap;
 
 GLFWwindow* init(){
 	glfwInit();
@@ -45,6 +46,7 @@ GLFWwindow* init(){
 	init_skybox();
 	init_fbo(heightMapFBO, heightMap, 2048, 2048, 1, 1, true);
 	init_fbo(normalMapFBO, normalMap, 2048, 2048, 4, 1, true);
+	init_fbo(shadowMapFBO, shadowMap, 2048, 2048, 1, 1, true);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -61,16 +63,12 @@ void run(GLFWwindow* window){
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-3.0f, -1.0f, 0.0f));
-	glm::vec3 lightPos = -lightDir * 512.0f;
-
-	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjection = glm::ortho(-512.0f, 512.0f, -512.0f, 512.0f, 1.0f, 512.0f);
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
 
 	Shader shader("shaders/final/vertex.glsl", "shaders/final/fragment.glsl");
 	Shader skybox_shader("shaders/skybox/skybox_vertex.glsl", "shaders/skybox/skybox_fragment.glsl");
 	Shader normal_map_shader("shaders/normalMapping/normal_map_vertex.glsl", "shaders/normalMapping/normal_map_fragment.glsl");
+	Shader shadow_map_shader("shaders/shadowMapping/shadow_map_vertex.glsl", "shaders/shadowMapping/shadow_map_fragment.glsl");
 	Shader min_max_compute_shader("shaders/minMaxComp/min_max.comp");
 
 	while(!glfwWindowShouldClose(window)){
@@ -148,6 +146,31 @@ void run(GLFWwindow* window){
 			state.gen_time += duration.count();
 			std::cout << "Finished computing normals - " << duration.count() << "ms\n";
 
+			// ----- Shadow map generation ----- //
+			resize_fbo_attachment(shadowMapFBO, shadowMap, state.size, state.size, 1, 1, true);
+			glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+			glViewport(0, 0, state.size, state.size);
+    		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    		glClear(GL_COLOR_BUFFER_BIT);
+
+			start_time = std::chrono::high_resolution_clock::now();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, heightMap);
+
+			shadow_map_shader.use();
+			shadow_map_shader.set_int("uHeightMap", 0);
+			shadow_map_shader.set_float("uTerrainSize", state.size);
+			shadow_map_shader.set_float("uMaxHeight", state.max_height);
+			shadow_map_shader.set_vec3("uLightDir", lightDir);
+
+			render_quad();	
+
+			end_time = std::chrono::high_resolution_clock::now();
+			duration = end_time - start_time;
+			state.gen_time += duration.count();
+			std::cout << "Finished computing normals - " << duration.count() << "ms\n";
+
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			state.generate_terrain = false;
@@ -166,13 +189,18 @@ void run(GLFWwindow* window){
 			glBindTexture(GL_TEXTURE_2D, heightMap);
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, normalMap);
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, shadowMap);
 
 			shader.use();
-			shader.set_int("heightMap", 0);
-			shader.set_int("normalMap", 1);
-			shader.set_float("halfTerrainLength", float(state.terrain->terrain_length) * 0.5f);
+			shader.set_int("uHeightMap", 0);
+			shader.set_int("uNormalMap", 1);
+			shader.set_int("uShadowMap", 2);
+			shader.set_float("uTerrainSize", state.size);
 			shader.set_bool("renderTerrainSkirt", state.render_terrain_skirt);
 			shader.set_bool("show_normals", state.show_normals);
+			shader.set_bool("calculate_lighting", state.calculate_lighting);
+			shader.set_vec3("lightDir", lightDir);
 
 			glm::mat4 model(1.0f);
 			shader.set_mat4("model", model);
@@ -182,8 +210,6 @@ void run(GLFWwindow* window){
 
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
 			shader.set_mat4("projection", projection);
-
-			shader.set_vec3("lightDir", lightDir);
 
 			state.terrain->draw();
 		}

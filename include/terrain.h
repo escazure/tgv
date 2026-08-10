@@ -7,7 +7,7 @@
 class Terrain {
 	public:
 		int terrain_length, terrain_width;		
-		float max_height, min_height, gen_time;
+		float gen_time;
 		std::size_t vertex_count;
 		std::size_t triangle_count;
 
@@ -16,8 +16,6 @@ class Terrain {
 			terrain_length = _size;
 			terrain_width = _size;
 			step_size = _step_size;
-			max_height = std::numeric_limits<float>::lowest();
-			min_height = std::numeric_limits<float>::max();
 			gen_time = 0.0f;
 			vertex_count = 0;
 			triangle_count = 0;
@@ -37,8 +35,6 @@ class Terrain {
 				chunks[i].generate();
 				vertex_count += chunks[i].vertex_count;
 				triangle_count += chunks[i].triangle_count;
-				//if(max_height < chunks[i].max_height) max_height = chunks[i].max_height;
-				//if(min_height > chunks[i].min_height) min_height = chunks[i].min_height;
 			}	
 		}
 		

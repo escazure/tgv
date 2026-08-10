@@ -144,15 +144,14 @@ namespace UI {
 
     }
 
-	void drawGenerationPanel(AppState& state) {
+	void drawGenerationPanel(AppState& state){
         ImGui::SetNextWindowPos(ImVec2(10.0f, 32.0f), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2(420.0f, 540.0f), ImGuiCond_FirstUseEver);
         
         ImGui::Begin("Generation", nullptr, ImGuiWindowFlags_None);
 
-        if (ImGui::BeginTabBar("GenerationTabBar", ImGuiTabBarFlags_None)) {
-            
-            if (ImGui::BeginTabItem("Editor")) {
+        if(ImGui::BeginTabBar("GenerationTabBar", ImGuiTabBarFlags_None)){
+            if(ImGui::BeginTabItem("Editor")){
                 ImGui::Spacing();
                 
                 ImGui::Text("User Defined Function (UDF):");
@@ -178,82 +177,67 @@ namespace UI {
 				
 				ImGui::SameLine();
 
-				if (ImGui::Button("Random", ImVec2(button_width, 0.0f))) {
+				if(ImGui::Button("Random", ImVec2(button_width, 0.0f))){
 				    state.seed = rand() % 999999; 
 				}
 
                 ImGui::Spacing();
                 
-                if (ImGui::Button("Compile & Generate Terrain", ImVec2(-FLT_MIN, 36.0f))) {
-					std::string udf = wrap_user_input(state.fun_buf, state.fun_name);
-					unsigned int status = build_shader(udf, state.fun_name, "height_map_fragment");
-					std::string result;
-					switch(status){
-						case 0: result = "SUCCESS"; break;
-						case 1: result = "FAILED_TO_OPEN_FILE"; break;
-						case 2: result = "FAILED_TO_WRITE_FILE"; break;
-					}
+				static int pending_size_idx = 2;   
+				static int pending_chunk_idx = 3;  
+				static int pending_density_idx = 3; 
 
-					std::cout << "Shader build finished with status: [" << result << "]\n";
-                    state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
-                    state.terrain->generate();
-					state.generate_terrain = true;
-                }
+				static const int size_values[] = { 256, 512, 1024, 2048, 4096, 8192 };
+				static const char* size_names[] = { "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048", "4096 x 4096", "8192 x 8192" };
 
-                ImGui::Spacing();
-                ImGui::Separator();
-                ImGui::Spacing();
+				static const int chunk_values[] = { 16, 32, 64, 128, 256 };
+				static const char* chunk_names[] = { "16 x 16", "32 x 32", "64 x 64", "128 x 128", "256 x 256" };
 
-                ImGui::TextDisabled("Grid & Performance Settings");
-                ImGui::Spacing();
+				static const int step_values[] = { 1, 2, 4, 8, 16 };
+				static const char* density_names[] = {
+				    "Ultra High (Step: 1 unit)",
+				    "High (Step: 2 units)",
+				    "Medium (Step: 4 units)",
+				    "Low (Step: 8 units)",
+				    "Very Low (Step: 16 units)"
+				};
 
-                static const int size_values[] = { 256, 512, 1024, 2048, 4096, 8192 };
-                static const char* size_names[] = { "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048", "4096 x 4096", "8192 x 8192" };
-                
-                int current_size_idx = 2;
-                for (int i = 0; i < IM_ARRAYSIZE(size_values); i++) {
-                    if (size_values[i] == state.size) { current_size_idx = i; break; }
-                }
+				if(ImGui::Button("Compile & Generate Terrain", ImVec2(-FLT_MIN, 36.0f))){
+				    state.size = size_values[pending_size_idx];
+				    state.chunk_size = chunk_values[pending_chunk_idx];
+				    state.step_size = step_values[pending_density_idx];
+	
+				    std::string udf = wrap_user_input(state.fun_buf, state.fun_name);
+				    unsigned int status = build_shader(udf, state.fun_name, "height_map_fragment");
+				    std::string result;
+				    switch(status){
+				        case 0: result = "SUCCESS"; break;
+				        case 1: result = "FAILED_TO_OPEN_FILE"; break;
+				        case 2: result = "FAILED_TO_WRITE_FILE"; break;
+				    }
 
-                if (ImGui::Combo("Terrain Size", &current_size_idx, size_names, IM_ARRAYSIZE(size_names))) {
-                    state.size = size_values[current_size_idx];
-                }
+			    	std::cout << "Shader build finished with status: [" << result << "]\n";
+				    state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
+				    state.terrain->generate();
+				    state.generate_terrain = true;
+				    state.terrain_generated = false;
+				}
 
-                static const int chunk_values[] = { 16, 32, 64, 128, 256 };
-                static const char* chunk_names[] = { "16 x 16", "32 x 32", "64 x 64", "128 x 128", "256 x 256" };
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
 
-                int current_chunk_idx = 3;
-                for (int i = 0; i < IM_ARRAYSIZE(chunk_values); i++) {
-                    if (chunk_values[i] == state.chunk_size) { current_chunk_idx = i; break; }
-                }
+				ImGui::TextDisabled("Grid & Performance Settings");
+				ImGui::Spacing();
 
-                if (ImGui::Combo("Chunk Size", &current_chunk_idx, chunk_names, IM_ARRAYSIZE(chunk_names))) {
-                    state.chunk_size = chunk_values[current_chunk_idx];
-                }
-
-                static const int step_values[] = { 1, 2, 4, 8, 16 };
-                static const char* density_names[] = {
-                    "Ultra High (Step: 1 unit)",
-                    "High (Step: 2 units)",
-                    "Medium (Step: 4 units)",
-                    "Low (Step: 8 units)",
-                    "Very Low (Step: 16 units)"
-                };
-
-                int current_density_idx = 3; 
-                for (int i = 0; i < IM_ARRAYSIZE(step_values); i++) {
-                    if (step_values[i] == state.step_size) { current_density_idx = i; break; }
-                }
-
-                if (ImGui::Combo("Vertex Density", &current_density_idx, density_names, IM_ARRAYSIZE(density_names))) {
-                    state.step_size = step_values[current_density_idx];
-                }
-
+				ImGui::Combo("Terrain Size", &pending_size_idx, size_names, IM_ARRAYSIZE(size_names));
+				ImGui::Combo("Chunk Size", &pending_chunk_idx, chunk_names, IM_ARRAYSIZE(chunk_names));
+				ImGui::Combo("Vertex Density", &pending_density_idx, density_names, IM_ARRAYSIZE(density_names));
 
                 ImGui::EndTabItem();
             }
 
-            if (ImGui::BeginTabItem("Presets")) {
+            if(ImGui::BeginTabItem("Presets")){
                 ImGui::TextWrapped("Preset UDF templates will be listed here.");
                 ImGui::EndTabItem();
             }

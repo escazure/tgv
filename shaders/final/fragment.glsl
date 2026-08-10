@@ -12,7 +12,8 @@ uniform float max_bias;
 
 uniform vec3 lightDir;
 
-uniform sampler2D normalMap;
+uniform sampler2D uNormalMap;
+uniform sampler2D uShadowMap;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
@@ -99,23 +100,20 @@ vec3 colorTerrain(float slope){
     return ground;
 }
 
-/*
-vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 lightDirection, vec3 lightColor, float shadow){
-	vec3 L = -lightDirection;
+vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 fragToLight, vec3 lightColor, float shadow){
 	float skyFactor = normal.y * 0.5 + 0.5;
 	vec3 skyColor = vec3(0.25, 0.3, 0.4);
 	vec3 groundColor = vec3(0.1, 0.08, 0.05);
 	vec3 ambient = fragmentColor * mix(groundColor, skyColor, skyFactor);
 
-	float diff = max(dot(normal, L), 0.0);
+	float diff = max(dot(normal, fragToLight), 0.0);
 	vec3 diffuse = fragmentColor * lightColor * diff * 0.8;
 
 	return ambient + shadow * diffuse;
 }
-*/
 
 void main(){
-	vec3 normal = texture(normalMap, uv).rgb * 2.0 - 1.0;
+	vec3 normal = texture(uNormalMap, uv).rgb * 2.0 - 1.0;
 	float slope = 1.0 - normal.y;
 	vec3 color = colorTerrain(slope);
 
@@ -124,19 +122,15 @@ void main(){
 		return;
 	}
 
-	/*
 	if(calculate_lighting){
-		vec3 L = normalize(-lightDir);
-		float shadow = 0.0;
+		vec3 fragToLight = normalize(-lightDir);
+		float shadow = texture(uShadowMap, uv).r;
 
-		if(dot(normal, L) > 0.0){
-			shadow = calculateShadow(FragPosLightSpace, slope);
-		}
-
-		color = calculateLight(color, normal, lightDir, lightCol, shadow);
+		color = calculateLight(color, normal, fragToLight, lightCol, shadow);
 	}
-	*/
+	float shadow = texture(uShadowMap, uv).r;
 
+	//FragColor = vec4(vec3(shadow), 1.0);
 	FragColor = vec4(color, 1.0);
 }
 

@@ -8,13 +8,13 @@ out vec2 uv;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform float halfTerrainLength;
+uniform float uTerrainSize;
 
-uniform sampler2D heightMap;
+uniform sampler2D uHeightMap;
 
 void main(){
-	uv = (aPos + vec2(halfTerrainLength)) / (2.0 * halfTerrainLength);
-	float height = texture(heightMap, uv).r;
+	uv = (aPos + vec2(uTerrainSize * 0.5)) / uTerrainSize;
+	float height = texture(uHeightMap, uv).r;
 
 	if(renderTerrainSkirt){
 		bool isBorder = (uv.x <= 0.001 || uv.x >= 0.999 ||
