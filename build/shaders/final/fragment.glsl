@@ -130,7 +130,6 @@ void main(){
 	}
 	float shadow = texture(uShadowMap, uv).r;
 
-	//FragColor = vec4(vec3(shadow), 1.0);
 	FragColor = vec4(color, 1.0);
 }
 

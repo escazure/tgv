@@ -63,7 +63,7 @@ void run(GLFWwindow* window){
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-2.0f, -1.0f, 0.0f));
 
 	Shader shader("shaders/final/vertex.glsl", "shaders/final/fragment.glsl");
 	Shader skybox_shader("shaders/skybox/skybox_vertex.glsl", "shaders/skybox/skybox_fragment.glsl");

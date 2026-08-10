@@ -8,36 +8,50 @@ uniform vec3 uLightDir;
 uniform float uTerrainSize;
 uniform float uMaxHeight;
 
-const int MAX_STEPS = 5000; // Higher = longer ray, less performance
-const float STEP_SIZE = 0.1; // Less = more precise, shorter ray
+const int MAX_STEPS = 1024;
+const float TEXELS_PER_STEP = 2.0;
 
 void main(){
-	float currentHeight = texture(uHeightMap, uv).r;
-	vec3 worldPos = vec3(uv.x * uTerrainSize, currentHeight, uv.y * uTerrainSize);
-
+	float texelSize = 1.0 / uTerrainSize;
     vec3 fragToLight = normalize(-uLightDir);
-	worldPos += fragToLight * (STEP_SIZE * 2.0);
+
+	float horizontalLen = length(fragToLight.xz);
+	if(horizontalLen < 0.0001){
+		FragColor = 1.0;	
+		return;
+	}
+
+	vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * TEXELS_PER_STEP;
+	float heightStep = (fragToLight.y / horizontalLen) * (texelSize * uTerrainSize) * TEXELS_PER_STEP;
+
+	vec2 currentUV = uv + (uvStep * 2.0);
+	float currentHeight = texture(uHeightMap, uv).r + (heightStep * 2.0);
+
+	float shadow = 1.0;
+	float softness = 4.0;
+	float stepDistWorld = length(uvStep) * uTerrainSize;
 
     for(int i = 0; i < MAX_STEPS; i++){
-		vec2 sampleUV = worldPos.xz / uTerrainSize;
-
-        if(sampleUV.x < 0.0 || sampleUV.x > 1.0 || sampleUV.y < 0.0 || sampleUV.y > 1.0){
-            break;
-        }
-
-		if(worldPos.y > uMaxHeight){
+        if(currentUV.x < 0.0 || currentUV.x > 1.0 || currentUV.y < 0.0 || currentUV.y > 1.0)
 			break;
+
+		if(currentHeight > uMaxHeight)
+			break;
+
+        float terrainHeight = texture(uHeightMap, currentUV).r;
+		float diff = currentHeight - terrainHeight;
+
+		if(diff < 0.0){
+			FragColor = 0.0;
+			return;
 		}
 
-        float terrainHeight = texture(uHeightMap, sampleUV).r;
+		float distanceTraveled = float(i + 1) * stepDistWorld;
+		shadow = min(shadow, softness * diff / distanceTraveled);
 
-        if(terrainHeight > worldPos.y){
-            FragColor = 0.0;
-            return;
-        }
-
-		worldPos += fragToLight * STEP_SIZE;
+		currentUV += uvStep;
+		currentHeight += heightStep;
     }
 
-    FragColor = 1.0;
+    FragColor = clamp(shadow, 0.0, 1.0);
 }
