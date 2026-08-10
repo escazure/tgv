@@ -10,7 +10,15 @@ uniform float uTerrainSize;
 uniform float uMaxHeight;
 
 const int MAX_STEPS = 1024;
-const float TEXELS_PER_STEP = 8.0;
+const float BASE_TEXELS_PER_STEP = 2.0;
+const float MAX_JUMP_FACTOR = 8.0;
+const float SHADOW_SOFTNESS = 8.0;
+
+float smin(float a, float b, float k){
+    k *= 4.0;
+    float h = max( k-abs(a-b), 0.0 )/k;
+    return min(a,b) - h*h*k*(1.0/4.0);
+}
 
 void main(){
 	float texelSize = 1.0 / uTerrainSize;
@@ -33,15 +41,16 @@ void main(){
 		return;
 	}
 
-	vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * TEXELS_PER_STEP;
-	float heightStep = (fragToLight.y / horizontalLen) * (texelSize * uTerrainSize) * TEXELS_PER_STEP;
+	vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * BASE_TEXELS_PER_STEP;
+	float heightStep = (fragToLight.y / horizontalLen) * (texelSize * uTerrainSize) * BASE_TEXELS_PER_STEP;
 
-	vec2 currentUV = uv + (uvStep * 2.0);
+	vec2 currentUV = uv + (normal.xz * 0.0001) + (uvStep * 1.0);
 	float currentHeight = texture(uHeightMap, uv).r + (heightStep * 2.0);
 
 	float shadow = 1.0;
-	float softness = 4.0;
 	float stepDistWorld = length(uvStep) * uTerrainSize;
+
+	float totalDistWorld = 0.0f;
 
     for(int i = 0; i < MAX_STEPS; i++){
         if(currentUV.x < 0.0 || currentUV.x > 1.0 || currentUV.y < 0.0 || currentUV.y > 1.0)
@@ -58,11 +67,15 @@ void main(){
 			return;
 		}
 
-		float distanceTraveled = float(i + 1) * stepDistWorld;
-		shadow = min(shadow, softness * diff / distanceTraveled);
+		float stepMultiplier = clamp(1.0 + diff / (BASE_TEXELS_PER_STEP * 2.0), 1.0, MAX_JUMP_FACTOR);
+		shadow = smin(shadow, SHADOW_SOFTNESS * diff / totalDistWorld, 0.1);
 
-		currentUV += uvStep;
-		currentHeight += heightStep;
+		if(shadow < 0.01)
+			break;
+
+		currentUV += uvStep * stepMultiplier;
+		currentHeight += heightStep * stepMultiplier;
+		totalDistWorld += stepDistWorld * stepMultiplier;
     }
 
     FragColor = clamp(shadow, 0.0, 1.0);
