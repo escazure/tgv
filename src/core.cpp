@@ -159,9 +159,12 @@ void run(GLFWwindow* window){
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, heightMap);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, normalMap);
 
 			shadow_map_shader.use();
 			shadow_map_shader.set_int("uHeightMap", 0);
+			shadow_map_shader.set_int("uNormalMap", 1);
 			shadow_map_shader.set_float("uTerrainSize", state.size);
 			shadow_map_shader.set_float("uMaxHeight", state.max_height);
 			shadow_map_shader.set_vec3("uLightDir", lightDir);

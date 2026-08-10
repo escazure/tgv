@@ -4,6 +4,7 @@ in vec2 uv;
 out float FragColor;
 
 uniform sampler2D uHeightMap;
+uniform sampler2D uNormalMap;
 uniform vec3 uLightDir;
 uniform float uTerrainSize;
 uniform float uMaxHeight;
@@ -14,6 +15,17 @@ const float TEXELS_PER_STEP = 8.0;
 void main(){
 	float texelSize = 1.0 / uTerrainSize;
     vec3 fragToLight = normalize(-uLightDir);
+
+	if(fragToLight.y <= 0.0){
+		FragColor = 0.0;
+		return;
+	}
+
+	vec3 normal = texture(uNormalMap, uv).rgb;
+	if(dot(normal, fragToLight) <= 0.0){
+		FragColor = 0.0;
+		return;
+	}
 
 	float horizontalLen = length(fragToLight.xz);
 	if(horizontalLen < 0.0001){
@@ -48,6 +60,10 @@ void main(){
 
 		float distanceTraveled = float(i + 1) * stepDistWorld;
 		shadow = min(shadow, softness * diff / distanceTraveled);
+
+		if(shadow < 0.01)
+			break;
+
 
 		currentUV += uvStep;
 		currentHeight += heightStep;
