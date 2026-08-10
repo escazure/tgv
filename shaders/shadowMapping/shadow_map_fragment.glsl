@@ -8,7 +8,7 @@ uniform vec3 uLightDir;
 uniform float uTerrainSize;
 uniform float uMaxHeight;
 
-const int MAX_STEPS = 5000; // Higher = longer ray, less performance
+const int MAX_STEPS = 1024; // Higher = longer ray, less performance
 const float STEP_SIZE = 1.0; // Less = more precise, shorter ray
 
 void main(){
@@ -17,6 +17,12 @@ void main(){
 
     vec3 fragToLight = normalize(-uLightDir);
 	worldPos += fragToLight * (STEP_SIZE * 2.0);
+
+	float horizontalMax = max(abs(fragToLight.x), abs(fragToLight.z));
+	if(horizontalMax < 0.0001){
+		FragColor = 1.0;	
+		return;
+	}
 
     for(int i = 0; i < MAX_STEPS; i++){
 		vec2 sampleUV = worldPos.xz / uTerrainSize;
