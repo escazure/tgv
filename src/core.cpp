@@ -106,7 +106,7 @@ void run(GLFWwindow* window){
 			height_map_shader.set_int("uSeed", state.seed);
 
 			render_quad();	
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glFinish();
 
 			auto end_time = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<float, std::milli> duration = end_time - start_time;
@@ -117,6 +117,7 @@ void run(GLFWwindow* window){
 			start_time = std::chrono::high_resolution_clock::now();
 
 			getMinMaxHeight(min_max_compute_shader, state, heightMap, state.size, state.size);
+			glFinish();
 
 			end_time = std::chrono::high_resolution_clock::now();
 			duration = end_time - start_time;
@@ -140,6 +141,7 @@ void run(GLFWwindow* window){
 			normal_map_shader.set_float("uTerrainSize", state.size);
 
 			render_quad();	
+			glFinish();
 
 			end_time = std::chrono::high_resolution_clock::now();
 			duration = end_time - start_time;
@@ -165,11 +167,12 @@ void run(GLFWwindow* window){
 			shadow_map_shader.set_vec3("uLightDir", lightDir);
 
 			render_quad();	
+			glFinish();
 
 			end_time = std::chrono::high_resolution_clock::now();
 			duration = end_time - start_time;
 			state.gen_time += duration.count();
-			std::cout << "Finished computing normals - " << duration.count() << "ms\n";
+			std::cout << "Finished computing shadows - " << duration.count() << "ms\n";
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

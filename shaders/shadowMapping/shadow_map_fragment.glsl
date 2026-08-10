@@ -9,7 +9,7 @@ uniform float uTerrainSize;
 uniform float uMaxHeight;
 
 const int MAX_STEPS = 5000; // Higher = longer ray, less performance
-const float STEP_SIZE = 0.1; // Less = more precise, shorter ray
+const float STEP_SIZE = 1.0; // Less = more precise, shorter ray
 
 void main(){
 	float currentHeight = texture(uHeightMap, uv).r;
