@@ -12,6 +12,7 @@
 
 struct Shader {
 	unsigned int id;
+	std::string shaders_dir = PROJECT_SHADERS_DIR + std::string("/");
 
 	Shader(const char* compute_path){
 		std::string compute_code;
@@ -20,7 +21,7 @@ struct Shader {
 		shader_file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
 		try{
-			shader_file.open(compute_path);
+			shader_file.open((shaders_dir + compute_path).c_str());
 			std::stringstream shader_stream;
 			
 			shader_stream << shader_file.rdbuf();
@@ -71,8 +72,8 @@ struct Shader {
 		f_shader_file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
 		try{
-			v_shader_file.open(vertex_path);
-			f_shader_file.open(fragment_path);
+			v_shader_file.open((shaders_dir + vertex_path).c_str());
+			f_shader_file.open((shaders_dir + fragment_path).c_str());
 			std::stringstream v_shader_stream, f_shader_stream;
 
 			v_shader_stream << v_shader_file.rdbuf();

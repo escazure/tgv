@@ -55,7 +55,7 @@ target_link_libraries(tgv PRIVATE
 target_compile_options(tgv PRIVATE -Wno-pragmas)
 target_compile_definitions(tgv PRIVATE 
 	PROJECT_INCLUDE_DIR="${CMAKE_SOURCE_DIR}/include"
-	PROJECT_FUNCTIONS_DIR="${CMAKE_SOURCE_DIR}/build/functions"
+	PROJECT_SHADERS_DIR="${CMAKE_SOURCE_DIR}/build/shaders"
 	PROJECT_ASSET_DIR="${CMAKE_SOURCE_DIR}/assets"
 	PROJECT_EXTERNAL_DIR="${CMAKE_SOURCE_DIR}/external"
 )

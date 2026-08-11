@@ -31,6 +31,7 @@ void mouse_callback(double xpos, double ypos, Camera& _camera){
 void key_callback(GLFWwindow* window, int key, int action){
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 		if(ImGui::GetIO().WantCaptureKeyboard) return;
+		state.show_ui = !state.show_ui;
 		g_is_capturing = !g_is_capturing;
 
 		glfwSetInputMode(window, GLFW_CURSOR, g_is_capturing ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
@@ -93,15 +94,13 @@ std::string wrap_user_input(const std::string& function_body, const std::string&
 }
 
 unsigned int build_shader(const std::string& udf, const std::string& udf_name, const std::string& shader_name){
-	std::string functions_dir = PROJECT_FUNCTIONS_DIR;
-
-	std::ifstream is(functions_dir + "/generation_lib.glsl");
+	std::ifstream is(std::string(PROJECT_SHADERS_DIR) + std::string("/custom/generation_lib.glsl"));
 	if(!is.is_open()) return FAILED_TO_OPEN_FILE;
 	std::stringstream buffer;
 	buffer << is.rdbuf();
 	std::string lib = buffer.str();
 
-	std::ofstream os(functions_dir + "/" + shader_name + ".glsl");	
+	std::ofstream os(std::string(PROJECT_SHADERS_DIR) + std::string("/custom/") + shader_name + std::string(".glsl"));	
 	if(!os.is_open()) return FAILED_TO_OPEN_FILE;
 	os << "#version 330 core\n"
 	      "in vec2 uv;\n"

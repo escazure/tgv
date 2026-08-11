@@ -128,7 +128,7 @@ void init_texture(unsigned int& textureMap, unsigned int width, unsigned int hei
 }
 
 void resize_fbo_attachment(unsigned int fbo, unsigned int& textureMap, unsigned int newWidth, unsigned int newHeight, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate) {
-    if (textureMap != 0) {
+    if(textureMap != 0){
         glDeleteTextures(1, &textureMap);
         textureMap = 0;
     }

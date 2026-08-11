@@ -5,6 +5,7 @@ out float FragColor;
 
 uniform sampler2D uHeightMap;
 uniform sampler2D uNormalMap;
+uniform sampler2D uMinMaxMap;
 uniform vec3 uLightDir;
 uniform float uTerrainSize;
 uniform float uMaxHeight;
@@ -42,13 +43,14 @@ void main(){
 	}
 
 	vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * BASE_TEXELS_PER_STEP;
-	float heightStep = (fragToLight.y / horizontalLen) * (texelSize * uTerrainSize) * BASE_TEXELS_PER_STEP;
+
+	float worldStepDist = length(uvStep) * uTerrainSize;
+	float heightStep = (fragToLight.y / horizontalLen) * worldStepDist;
 
 	vec2 currentUV = uv + (normal.xz * 0.0001) + (uvStep * 1.0);
 	float currentHeight = texture(uHeightMap, uv).r + (heightStep * 2.0);
 
 	float shadow = 1.0;
-	float stepDistWorld = length(uvStep) * uTerrainSize;
 
 	float totalDistWorld = 0.0f;
 
@@ -75,7 +77,7 @@ void main(){
 
 		currentUV += uvStep * stepMultiplier;
 		currentHeight += heightStep * stepMultiplier;
-		totalDistWorld += stepDistWorld * stepMultiplier;
+		totalDistWorld += worldStepDist * stepMultiplier;
     }
 
     FragColor = clamp(shadow, 0.0, 1.0);

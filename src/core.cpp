@@ -65,11 +65,11 @@ void run(GLFWwindow* window){
 
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-2.0f, -1.0f, 0.0f));
 
-	Shader shader("shaders/final/vertex.glsl", "shaders/final/fragment.glsl");
-	Shader skybox_shader("shaders/skybox/skybox_vertex.glsl", "shaders/skybox/skybox_fragment.glsl");
-	Shader normal_map_shader("shaders/normalMapping/normal_map_vertex.glsl", "shaders/normalMapping/normal_map_fragment.glsl");
-	Shader shadow_map_shader("shaders/shadowMapping/shadow_map_vertex.glsl", "shaders/shadowMapping/shadow_map_fragment.glsl");
-	Shader min_max_compute_shader("shaders/minMaxComp/min_max.comp");
+	Shader shader("final/vertex.glsl", "final/fragment.glsl");
+	Shader skybox_shader("skybox/skybox_vertex.glsl", "skybox/skybox_fragment.glsl");
+	Shader normal_map_shader("normalMapping/normal_map_vertex.glsl", "normalMapping/normal_map_fragment.glsl");
+	Shader shadow_map_shader("shadowMapping/shadow_map_vertex.glsl", "shadowMapping/shadow_map_fragment.glsl");
+	Shader min_max_compute_shader("minMaxComp/min_max.comp");
 
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
@@ -88,8 +88,7 @@ void run(GLFWwindow* window){
 		process_input(window, delta_time);
 
 		if(state.generate_terrain){
-			std::string path = std::string(PROJECT_FUNCTIONS_DIR) + "/";
-			Shader height_map_shader((path + "height_map_vertex.glsl").c_str(), (path + "height_map_fragment.glsl").c_str());
+			Shader height_map_shader("custom/height_map_vertex.glsl", "custom/height_map_fragment.glsl");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			// ----- Height map generation ----- //
@@ -230,7 +229,9 @@ void run(GLFWwindow* window){
 			glDepthFunc(GL_LESS);
 		}
 		
-		render_gui(state);
+		if(state.show_ui){
+			render_gui(state);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

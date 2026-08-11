@@ -45,4 +45,5 @@ struct AppState{
     bool show_light_frustum = false;
     bool show_light_marker = false;
 	bool render_terrain_skirt = false;
+	bool show_ui = true;
 };
