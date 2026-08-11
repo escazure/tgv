@@ -203,19 +203,19 @@ void run(GLFWwindow* window){
 			shader.set_int("uNormalMap", 1);
 			shader.set_int("uShadowMap", 2);
 			shader.set_float("uTerrainSize", state.size);
-			shader.set_bool("renderTerrainSkirt", state.render_terrain_skirt);
-			shader.set_bool("show_normals", state.show_normals);
-			shader.set_bool("calculate_lighting", state.calculate_lighting);
-			shader.set_vec3("lightDir", lightDir);
+			shader.set_bool("uRenderTerrainSkirt", state.render_terrain_skirt);
+			shader.set_bool("uShowNormals", state.show_normals);
+			shader.set_bool("uCalculateLighting", state.calculate_lighting);
+			shader.set_vec3("uLightDir", lightDir);
 
 			glm::mat4 model(1.0f);
-			shader.set_mat4("model", model);
+			shader.set_mat4("uModel", model);
 			
 			glm::mat4 view = state.camera->get_view_mat();
-			shader.set_mat4("view", view);
+			shader.set_mat4("uView", view);
 
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
-			shader.set_mat4("projection", projection);
+			shader.set_mat4("uProjection", projection);
 
 			state.terrain->draw();
 		}

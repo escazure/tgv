@@ -143,11 +143,11 @@ void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, un
 
         if(srcMip == -1){
             glBindTextureUnit(0, heightMap);
-            shader.set_int("u_SrcMipLevel", -1);
+            shader.set_int("uSrcMipLevel", -1);
         }
 		else{
             glBindTextureUnit(0, minMaxTexture);
-            shader.set_int("u_SrcMipLevel", srcMip);
+            shader.set_int("uSrcMipLevel", srcMip);
         }
 
         glBindImageTexture(1, minMaxTexture, dstMip, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG32F);

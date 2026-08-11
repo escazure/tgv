@@ -144,12 +144,12 @@ void draw_skybox(Shader shader){
 	shader.use();
 
 	glm::mat4 view = glm::mat4(glm::mat3(state.camera->get_view_mat()));
-	shader.set_mat4("view", view);
+	shader.set_mat4("uView", view);
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
-	shader.set_mat4("projection", projection);
+	shader.set_mat4("uProjection", projection);
 
-	shader.set_int("skybox", 0);
+	shader.set_int("uSkybox", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap);
 

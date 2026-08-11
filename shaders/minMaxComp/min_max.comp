@@ -1,20 +1,20 @@
 #version 460 core
 layout(local_size_x = 8, local_size_y = 8) in;
 
-layout(binding = 0) uniform sampler2D u_InputLevel;
-layout(binding = 1, rg32f) writeonly uniform image2D u_OutputLevel;
+layout(binding = 0) uniform sampler2D uInputLevel;
+layout(binding = 1, rg32f) writeonly uniform image2D uOutputLevel;
 
-uniform int u_SrcMipLevel;
+uniform int uSrcMipLevel;
 
 void main(){
     ivec2 dstCoord = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 dstSize = imageSize(u_OutputLevel);
+    ivec2 dstSize = imageSize(uOutputLevel);
 
     if(dstCoord.x >= dstSize.x || dstCoord.y >= dstSize.y) return;
 
-    int readMip = (u_SrcMipLevel == -1) ? 0 : u_SrcMipLevel;
+    int readMip = (uSrcMipLevel == -1) ? 0 : uSrcMipLevel;
 
-    ivec2 srcSize = textureSize(u_InputLevel, readMip);
+    ivec2 srcSize = textureSize(uInputLevel, readMip);
     ivec2 srcCoord = dstCoord * 2; 
 
     ivec2 c0 = min(srcCoord + ivec2(0, 0), srcSize - 1);
@@ -22,14 +22,14 @@ void main(){
     ivec2 c2 = min(srcCoord + ivec2(0, 1), srcSize - 1);
     ivec2 c3 = min(srcCoord + ivec2(1, 1), srcSize - 1);
 
-    vec2 p0 = texelFetch(u_InputLevel, c0, readMip).rg;
-    vec2 p1 = texelFetch(u_InputLevel, c1, readMip).rg;
-    vec2 p2 = texelFetch(u_InputLevel, c2, readMip).rg;
-    vec2 p3 = texelFetch(u_InputLevel, c3, readMip).rg;
+    vec2 p0 = texelFetch(uInputLevel, c0, readMip).rg;
+    vec2 p1 = texelFetch(uInputLevel, c1, readMip).rg;
+    vec2 p2 = texelFetch(uInputLevel, c2, readMip).rg;
+    vec2 p3 = texelFetch(uInputLevel, c3, readMip).rg;
 
     float minH, maxH;
 
-    if(u_SrcMipLevel == -1){
+    if(uSrcMipLevel == -1){
         minH = min(min(p0.r, p1.r), min(p2.r, p3.r));
         maxH = max(max(p0.r, p1.r), max(p2.r, p3.r));
     }
@@ -38,5 +38,5 @@ void main(){
         maxH = max(max(p0.g, p1.g), max(p2.g, p3.g));
     }
     
-    imageStore(u_OutputLevel, dstCoord, vec4(minH, maxH, 0.0, 0.0));
+    imageStore(uOutputLevel, dstCoord, vec4(minH, maxH, 0.0, 0.0));
 }

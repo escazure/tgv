@@ -44,10 +44,8 @@ void main(){
 	vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * BASE_TEXELS_PER_STEP;
 	float heightStep = (fragToLight.y / horizontalLen) * (texelSize * uTerrainSize) * BASE_TEXELS_PER_STEP;
 
-	float slopeFactor = 1.0 - max(0.0, dot(normal, fragToLight));
-	float bias = texelSize * slopeFactor * 2.0;
 	vec2 currentUV = uv + (normal.xz * 0.0001) + (uvStep * 1.0);
-	float currentHeight = texture(uHeightMap, uv).r + (heightStep * 2.0) + bias;
+	float currentHeight = texture(uHeightMap, uv).r + (heightStep * 2.0);
 
 	float shadow = 1.0;
 	float stepDistWorld = length(uvStep) * uTerrainSize;
