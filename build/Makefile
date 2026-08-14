@@ -117,6 +117,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named make_height_map_dir
+
+# Build rule for target.
+make_height_map_dir: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 make_height_map_dir
+.PHONY : make_height_map_dir
+
+# fast build rule for target.
+make_height_map_dir/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/make_height_map_dir.dir/build.make CMakeFiles/make_height_map_dir.dir/build
+.PHONY : make_height_map_dir/fast
+
+#=============================================================================
 # Target rules for targets named copy_assets
 
 # Build rule for target.
@@ -439,6 +452,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... copy_assets"
+	@echo "... make_height_map_dir"
 	@echo "... tgv"
 	@echo "... external/gl3w/gl3w.o"
 	@echo "... external/gl3w/gl3w.i"

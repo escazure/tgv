@@ -3,6 +3,7 @@
 
 Wraps UDF into a glsl file, which gets used for height map generation.
 
+*Works only on linux.*<br/>
 #### Examples
 ---
 *4Kx4K plane*
@@ -35,6 +36,5 @@ Wraps UDF into a glsl file, which gets used for height map generation.
 
 #### Build
 ---
-*Currently works only on Linux.*<br/>
 ```cmake --build build```<br/>
 ```./build/tgv```

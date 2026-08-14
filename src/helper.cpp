@@ -89,22 +89,21 @@ unsigned int load_cube_map(std::vector<std::string>& faces){
 
 std::string wrap_user_input(const std::string& function_body, const std::string& function_name){
 	std::string result;		
-	result = "float " + function_name + "(){\n" + function_body + "\n}";
+	result = "float " + function_name + "(vec2 uv){\n" + function_body + "\n}";
 	return result;
 }
 
-unsigned int build_shader(const std::string& udf, const std::string& udf_name, const std::string& shader_name){
-	std::ifstream is(std::string(PROJECT_SHADERS_DIR) + std::string("/custom/generation_lib.glsl"));
-	if(!is.is_open()) return FAILED_TO_OPEN_FILE;
+void build_shader(const std::string& udf, const std::string& udf_name, const std::string& shader_name){
+	std::ifstream is(std::string(PROJECT_SHADERS_DIR) + std::string("/heightMapLib/generation_lib.glsl"));
 	std::stringstream buffer;
 	buffer << is.rdbuf();
 	std::string lib = buffer.str();
 
-	std::ofstream os(std::string(PROJECT_SHADERS_DIR) + std::string("/custom/") + shader_name + std::string(".glsl"));	
-	if(!os.is_open()) return FAILED_TO_OPEN_FILE;
-	os << "#version 330 core\n"
-	      "in vec2 uv;\n"
-		  "out float FragColor;\n\n"
+	std::ofstream os(std::string(PROJECT_SHADERS_DIR) + std::string("/heightMap/") + shader_name + std::string(".comp"));	
+	os << "#version 460 core\n"
+	      "layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;\n"
+		  "layout (binding = 0, r32f) writeonly uniform image2D uHeightMap;\n\n"
+		  "uniform float uWorldSize;\n\n"
 		  "uniform int uSeed;\n\n";
 
 	os << lib << "\n\n";
@@ -114,21 +113,23 @@ unsigned int build_shader(const std::string& udf, const std::string& udf_name, c
 	os << "/*** USER DEFINED FUNCTION END ***/\n\n";
 
 	os << "void main(){\n"
-		  " FragColor = " << udf_name << "();\n"
+		  " ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);\n"
+		  " vec2 uv = vec2(dstCoords) - uWorldSize * 0.5;\n"
+		  " imageStore(uHeightMap, dstCoords, vec4(" << udf_name << "(uv), 0.0, 0.0, 0.0));\n"
 		  "}";
-
-	if(os.fail()){
-		return FAILED_TO_WRITE_FILE;
-	}	
-
-	return SUCCESS;
 }
 
-void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, unsigned int width, unsigned int height) {
+void getMinMaxHeight(Shader& shader, AppState& state, Texture &heightMap, unsigned int width, unsigned int height) {
     int maxMipLevels = 1 + std::floor(std::log2(std::max(width, height)));
 
-    unsigned int minMaxTexture = 0;
-    init_texture(minMaxTexture, width, height, 2, maxMipLevels, false);
+    Texture minMaxTexture;
+	minMaxTexture.create(GL_TEXTURE_2D, maxMipLevels, GL_RG32F, width, height);
+
+	Sampler nearestClamp;
+	nearestClamp.create(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+
+	Sampler linearClamp;
+	linearClamp.create(GL_LINEAR, GL_LINEAR);
 
     shader.use();
 
@@ -141,15 +142,17 @@ void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, un
         int dstHeight = std::max(1, currentHeight / 2);
 
         if(srcMip == -1){
-            glBindTextureUnit(0, heightMap);
+			heightMap.bind(0);
+			linearClamp.bind(0);
             shader.set_int("uSrcMipLevel", -1);
         }
 		else{
-            glBindTextureUnit(0, minMaxTexture);
+			minMaxTexture.bind(0);
+			nearestClamp.bind(0);
             shader.set_int("uSrcMipLevel", srcMip);
         }
 
-        glBindImageTexture(1, minMaxTexture, dstMip, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG32F);
+        glBindImageTexture(1, minMaxTexture._id, dstMip, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG32F);
 
         int groupsX = (dstWidth + 7) / 8;
         int groupsY = (dstHeight + 7) / 8;
@@ -166,7 +169,7 @@ void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, un
     float result[2] = { 0.0f, 0.0f };
 
     glGetTextureSubImage(
-        minMaxTexture,
+        minMaxTexture._id,
         maxMipLevels - 1,
         0, 0, 0,         
         1, 1, 1,         
@@ -177,6 +180,93 @@ void getMinMaxHeight(Shader& shader, AppState& state, unsigned int heightMap, un
 
     state.min_height = result[0];
     state.max_height = result[1];
+}
 
-    glDeleteTextures(1, &minMaxTexture);
+void debugMessageCallback(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char *msg, const void *data){
+	std::string _source;
+	std::string _type;
+	std::string _severity;
+
+	if(severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+        return;
+
+    switch(source){
+        case GL_DEBUG_SOURCE_API:
+        	_source = "API";
+        	break;
+
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+        	_source = "WINDOW SYSTEM";
+        	break;
+
+        case GL_DEBUG_SOURCE_SHADER_COMPILER:
+        	_source = "SHADER COMPILER";
+        	break;
+
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+        	_source = "THIRD PARTY";
+        	break;
+
+        case GL_DEBUG_SOURCE_APPLICATION:
+        	_source = "APPLICATION";
+        	break;
+
+        default:
+        	_source = "UNKNOWN";
+        	break;
+    }
+
+    switch(type){
+        case GL_DEBUG_TYPE_ERROR:
+        	_type = "ERROR";
+        	break;
+
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+        	_type = "DEPRECATED BEHAVIOR";
+        	break;
+
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+        	_type = "UNDEFINED BEHAVIOR";
+        	break;
+
+        case GL_DEBUG_TYPE_PORTABILITY:
+        	_type = "PORTABILITY";
+        	break;
+
+        case GL_DEBUG_TYPE_PERFORMANCE:
+        	_type = "PERFORMANCE";
+        	break;
+
+        case GL_DEBUG_TYPE_OTHER:
+        	_type = "OTHER";
+        	break;
+
+        case GL_DEBUG_TYPE_MARKER:
+        	_type = "MARKER";
+        	break;
+
+        default:
+        	_type = "UNKNOWN";
+        	break;
+    }
+
+    switch(severity){
+        case GL_DEBUG_SEVERITY_HIGH:
+        	_severity = "HIGH";
+        	break;
+
+        case GL_DEBUG_SEVERITY_MEDIUM:
+        	_severity = "MEDIUM";
+        	break;
+
+        case GL_DEBUG_SEVERITY_LOW:
+        	_severity = "LOW";
+        	break;
+
+        default:
+        	_severity = "UNKNOWN";
+        	break;
+    }
+	
+	std::cout << id << ": " << _type << " of " << _severity << ", raised from " << _source << ": " << msg << "\n";
 }

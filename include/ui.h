@@ -2,29 +2,28 @@
 #include "state.h"
 #include "helper.h"
 
-namespace UI {
-	void drawMenuBar(AppState& state) {
+namespace UI{
+	void drawMenuBar(AppState& state){
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 6.0f));
-        if (ImGui::BeginMainMenuBar()) {
-            
-            if (ImGui::BeginMenu("File")) {
-                if (ImGui::MenuItem("Save UDF Preset")) { /* Save logic */ }
-                if (ImGui::MenuItem("Export Mesh (.obj)")) { /* Export logic */ }
+        if(ImGui::BeginMainMenuBar()){
+            if(ImGui::BeginMenu("File")){
+                if(ImGui::MenuItem("Save UDF Preset")){ /* Save logic */ }
+                if(ImGui::MenuItem("Export Mesh (.obj)")){ /* Export logic */ }
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Settings")) {
-                if (ImGui::MenuItem("Camera Configuration", nullptr, state.show_camera_settings_window)) {
+            if(ImGui::BeginMenu("Settings")){
+                if(ImGui::MenuItem("Camera Configuration", nullptr, state.show_camera_settings_window)){
                     state.show_camera_settings_window = !state.show_camera_settings_window;
                 }
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Help & Docs")) {
-                if (ImGui::MenuItem("Noise & Utility API", nullptr, state.show_noise_window)) {
+            if(ImGui::BeginMenu("Help & Docs")){
+                if(ImGui::MenuItem("Noise & Utility API", nullptr, state.show_noise_window)){
                     state.show_noise_window = !state.show_noise_window;
                 }
-                if (ImGui::MenuItem("Keyboard Controls", nullptr, state.show_keybinds_window)) {
+                if(ImGui::MenuItem("Keyboard Controls", nullptr, state.show_keybinds_window)){
                     state.show_keybinds_window = !state.show_keybinds_window;
                 }
                 ImGui::EndMenu();
@@ -43,20 +42,20 @@ namespace UI {
         ImGui::PopStyleVar();
 
 
-        if (state.show_noise_window) {
+        if(state.show_noise_window){
             ImGui::SetNextWindowSize(ImVec2(680.0f, 380.0f), ImGuiCond_FirstUseEver);
             ImGui::SetNextWindowPos(ImVec2(state.window_width / 2.0f - 340.0f, state.window_height / 2.0f - 190.0f), ImGuiCond_FirstUseEver);
             
-            if (ImGui::Begin("Noise & Utility Functions API", &state.show_noise_window)) {
+            if(ImGui::Begin("Noise & Utility Functions API", &state.show_noise_window)){
                 ImGui::TextDisabled("Hand-written Utility Library Functions Available in UDF");
                 ImGui::Spacing();
 
-                if (ImGui::BeginTable("ApiDocsTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
+                if(ImGui::BeginTable("ApiDocsTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)){
                     ImGui::TableSetupColumn("Function Signature", ImGuiTableColumnFlags_WidthFixed, 350.0f);
                     ImGui::TableSetupColumn("Description", ImGuiTableColumnFlags_WidthStretch);
                     ImGui::TableHeadersRow();
 
-                    auto AddRow = [](const char* sig, const char* desc) {
+                    auto AddRow = [](const char* sig, const char* desc){
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
                         ImGui::TextUnformatted(sig);
@@ -66,10 +65,12 @@ namespace UI {
 
                     AddRow("vec2 hash22(vec2 p)", "Returns semi-random gradient vector.");
                     AddRow("uint hashSeed(uint seed)", "Returns semi-random seed value.");
-                    AddRow("vec2 shiftUV(vec2 uv, float shiftSize, int seed)", "Helper function to shift uv coordinates based on seed");
+                    AddRow("vec2 shiftUV(vec2 uv, float shiftSize, int seed)", "Helper function to shift uv coordinates based on seed.");
                     AddRow("float perlinNoise(vec2 uv)", "2D perlin noise interpolation map.");
+                    AddRow("vec3 perlinNoiseDerivatives(vec2 uv)", "2D perlin noise interpolation map, with x/y analytical derivatives.");
                     AddRow("float fbm(vec2 uv, int octaves)", "Fractional Brownian Motion noise over multiple layered octaves.");
-                    AddRow("float example(vec2 uv)", "Pre-built terrain function based on fBm.");
+                    AddRow("float fbmErosion(vec2 uv, int octaves, float erosionStrength)", "Fractional Brownian Motion noise over multiple layered octaves, that uses gradients to smooth out details on high slopes.");
+                    AddRow("float example(vec2 uv, float baseFrequency = 0.0004, float baseAmplitude = 2200.0, float erosionStrength = 2.5, int octaves = 8)", "Pre-built terrain function based on fBm and gradient based erosion.");
 
                     ImGui::EndTable();
                 }
@@ -77,15 +78,15 @@ namespace UI {
             ImGui::End();
         }
 
-        if (state.show_camera_settings_window && state.camera) {
+        if(state.show_camera_settings_window && state.camera){
             ImGui::SetNextWindowSize(ImVec2(440.0f, 180.0f), ImGuiCond_FirstUseEver);
             ImGui::SetNextWindowPos(ImVec2(state.window_width / 2.0f - 220.0f, state.window_height / 2.0f - 90.0f), ImGuiCond_FirstUseEver);
             
-            if (ImGui::Begin("Camera Configuration", &state.show_camera_settings_window)) {
+            if(ImGui::Begin("Camera Configuration", &state.show_camera_settings_window)){
                 ImGui::TextDisabled("3D Viewport Controls");
                 ImGui::Spacing();
 
-                if (ImGui::BeginTable("CameraTable", 2, ImGuiTableFlags_SizingStretchSame)) {
+                if(ImGui::BeginTable("CameraTable", 2, ImGuiTableFlags_SizingStretchSame)){
                     ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed, 130.0f);
                     ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
 
@@ -109,20 +110,20 @@ namespace UI {
             ImGui::End();
         }
 
-        if (state.show_keybinds_window) {
+        if(state.show_keybinds_window){
             ImGui::SetNextWindowSize(ImVec2(380.0f, 300.0f), ImGuiCond_FirstUseEver);
             ImGui::SetNextWindowPos(ImVec2(state.window_width / 2.0f - 190.0f, state.window_height / 2.0f - 150.0f), ImGuiCond_FirstUseEver);
             
-            if (ImGui::Begin("Keyboard Controls", &state.show_keybinds_window)) {
+            if(ImGui::Begin("Keyboard Controls", &state.show_keybinds_window)){
                 ImGui::TextDisabled("Navigation & Controls");
                 ImGui::Spacing();
 
-                if (ImGui::BeginTable("KeybindsTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
+                if(ImGui::BeginTable("KeybindsTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)){
                     ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthStretch);
                     ImGui::TableSetupColumn("Key / Input", ImGuiTableColumnFlags_WidthFixed, 100.0f);
                     ImGui::TableHeadersRow();
 
-                    auto AddKeyRow = [](const char* action, const char* key) {
+                    auto AddKeyRow = [](const char* action, const char* key){
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
                         ImGui::TextUnformatted(action);
@@ -208,15 +209,8 @@ namespace UI {
 				    state.step_size = step_values[pending_density_idx];
 	
 				    std::string udf = wrap_user_input(state.fun_buf, state.fun_name);
-				    unsigned int status = build_shader(udf, state.fun_name, "height_map_fragment");
-				    std::string result;
-				    switch(status){
-				        case 0: result = "SUCCESS"; break;
-				        case 1: result = "FAILED_TO_OPEN_FILE"; break;
-				        case 2: result = "FAILED_TO_WRITE_FILE"; break;
-				    }
+				    build_shader(udf, state.fun_name, "height_map");
 
-			    	std::cout << "Shader build finished with status: [" << result << "]\n";
 				    state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
 				    state.terrain->generate();
 				    state.generate_terrain = true;

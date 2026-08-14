@@ -1,8 +1,9 @@
 #version 460 core
+layout (binding = 0) uniform sampler2D uHeightMap;
+
 in vec2 uv;
 out vec4 FragColor;
 
-uniform sampler2D uHeightMap;
 uniform float uTerrainSize;
 
 void main(){

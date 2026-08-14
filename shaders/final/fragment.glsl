@@ -1,4 +1,6 @@
 #version 460 core
+layout (binding = 1) uniform sampler2D uNormalMap;
+layout (binding = 2) uniform sampler2D uShadowMap;
 
 in vec3 WorldPos;
 in vec2 uv;
@@ -7,8 +9,6 @@ out vec4 FragColor;
 uniform bool uShowNormals;
 uniform bool uCalculateLighting;
 uniform vec3 uLightDir;
-uniform sampler2D uNormalMap;
-uniform sampler2D uShadowMap;
 
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
@@ -96,10 +96,7 @@ vec3 colorTerrain(float slope){
 }
 
 vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 fragToLight, vec3 lightColor, float shadow){
-	float skyFactor = normal.y * 0.5 + 0.5;
-	vec3 skyColor = vec3(0.25, 0.3, 0.4);
-	vec3 groundColor = vec3(0.1, 0.08, 0.05);
-	vec3 ambient = fragmentColor * mix(groundColor, skyColor, skyFactor);
+	vec3 ambient = fragmentColor * 0.2;
 
 	float diff = max(dot(normal, fragToLight), 0.0);
 	vec3 diffuse = fragmentColor * lightColor * diff * 0.8;

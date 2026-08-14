@@ -1,0 +1,31 @@
+#version 460 core
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+layout (binding = 0) uniform sampler2D uHeightMap;
+layout (binding = 1, r32f) uniform image2D uErosionMap;
+
+uniform float uTerrainSize;
+
+const float EROSION_STRENGTH = 10.0;
+const float THERMAL_STRENGTH = 40.0;
+
+void main(){
+	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+	float texelSize = 1.0 / uTerrainSize;
+
+	float hC = texelFetch(uHeightMap, coords, 0).r;
+	float hL = texelFetch(uHeightMap, coords - ivec2(1, 0), 0).r;
+	float hR = texelFetch(uHeightMap, coords + ivec2(1, 0), 0).r;
+	float hU = texelFetch(uHeightMap, coords + ivec2(0, 1), 0).r;
+	float hD = texelFetch(uHeightMap, coords - ivec2(0, 1), 0).r;
+
+	vec2 gradient = vec2(hR - hL, hU - hD) * 0.5;
+	float slope = length(gradient);
+
+	float laplacian = (hL + hR + hU + hD) - (4.0 * hC);
+	float gully = max(0.0, -laplacian) * smoothstep(0.0, 0.05, slope) * EROSION_STRENGTH;
+
+	float thermal = smoothstep(0.01, 0.02, slope) * THERMAL_STRENGTH;
+
+	float height = hC - gully - thermal;
+	imageStore(uErosionMap, coords, vec4(height, 0.0, 0.0, 0.0));
+}

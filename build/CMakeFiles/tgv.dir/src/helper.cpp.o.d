@@ -17,40 +17,57 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/bits/stdint-least.h \
  /home/escazure/cpp_projects/tgv/external/glfw3.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/stddef.h \
- /home/escazure/cpp_projects/tgv/external/glm/glm.hpp \
- /home/escazure/cpp_projects/tgv/external/glm/detail/_fixes.hpp \
- /usr/include/c++/14.2/cmath /usr/include/c++/14.2/bits/requires_hosted.h \
+ /home/escazure/cpp_projects/tgv/external/imgui/imgui.h \
+ /home/escazure/cpp_projects/tgv/external/imgui/imconfig.h \
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/float.h \
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/stdarg.h \
+ /usr/include/string.h /usr/include/bits/types/locale_t.h \
+ /usr/include/bits/types/__locale_t.h /usr/include/strings.h \
+ /usr/include/assert.h \
+ /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.h \
+ /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.h \
+ /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
+ /usr/include/stdio.h /usr/include/bits/types/__fpos_t.h \
+ /usr/include/bits/types/__mbstate_t.h \
+ /usr/include/bits/types/__fpos64_t.h /usr/include/bits/types/__FILE.h \
+ /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
+ /usr/include/bits/types/cookie_io_functions_t.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/floatn.h \
+ /usr/include/bits/floatn-common.h /usr/include/c++/14.2/stdlib.h \
+ /usr/include/c++/14.2/cstdlib \
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/c++config.h \
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/os_defines.h \
  /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/cpu_defines.h \
- /usr/include/c++/14.2/pstl/pstl_config.h \
- /usr/include/c++/14.2/bits/cpp_type_traits.h \
- /usr/include/c++/14.2/bits/version.h \
- /usr/include/c++/14.2/ext/type_traits.h /usr/include/math.h \
- /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
- /usr/include/bits/floatn.h /usr/include/bits/floatn-common.h \
- /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
- /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
- /usr/include/bits/mathcalls-helper-functions.h \
- /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
- /usr/include/bits/iscanonical.h /usr/include/c++/14.2/bits/std_abs.h \
- /usr/include/stdlib.h /usr/include/bits/waitflags.h \
- /usr/include/bits/waitstatus.h /usr/include/bits/types/locale_t.h \
- /usr/include/bits/types/__locale_t.h /usr/include/sys/types.h \
- /usr/include/bits/types/clock_t.h /usr/include/bits/types/clockid_t.h \
- /usr/include/bits/types/time_t.h /usr/include/bits/types/timer_t.h \
- /usr/include/endian.h /usr/include/bits/endian.h \
- /usr/include/bits/endianness.h /usr/include/bits/byteswap.h \
- /usr/include/bits/uintn-identity.h /usr/include/sys/select.h \
- /usr/include/bits/select.h /usr/include/bits/types/sigset_t.h \
- /usr/include/bits/types/__sigset_t.h \
+ /usr/include/c++/14.2/pstl/pstl_config.h /usr/include/stdlib.h \
+ /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
+ /usr/include/sys/types.h /usr/include/bits/types/clock_t.h \
+ /usr/include/bits/types/clockid_t.h /usr/include/bits/types/time_t.h \
+ /usr/include/bits/types/timer_t.h /usr/include/endian.h \
+ /usr/include/bits/endian.h /usr/include/bits/endianness.h \
+ /usr/include/bits/byteswap.h /usr/include/bits/uintn-identity.h \
+ /usr/include/sys/select.h /usr/include/bits/select.h \
+ /usr/include/bits/types/sigset_t.h /usr/include/bits/types/__sigset_t.h \
  /usr/include/bits/types/struct_timeval.h \
  /usr/include/bits/types/struct_timespec.h \
  /usr/include/bits/pthreadtypes.h /usr/include/bits/thread-shared-types.h \
  /usr/include/bits/pthreadtypes-arch.h \
  /usr/include/bits/atomic_wide_counter.h /usr/include/bits/struct_mutex.h \
  /usr/include/bits/struct_rwlock.h /usr/include/alloca.h \
- /usr/include/bits/stdlib-float.h /usr/include/c++/14.2/bits/specfun.h \
+ /usr/include/bits/stdlib-float.h /usr/include/c++/14.2/bits/std_abs.h \
+ /home/escazure/cpp_projects/tgv/include/shader_program.h \
+ /usr/include/GLFW/glfw3.h \
+ /home/escazure/cpp_projects/tgv/external/glm/glm.hpp \
+ /home/escazure/cpp_projects/tgv/external/glm/detail/_fixes.hpp \
+ /usr/include/c++/14.2/cmath /usr/include/c++/14.2/bits/requires_hosted.h \
+ /usr/include/c++/14.2/bits/cpp_type_traits.h \
+ /usr/include/c++/14.2/bits/version.h \
+ /usr/include/c++/14.2/ext/type_traits.h /usr/include/math.h \
+ /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
+ /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
+ /usr/include/bits/mathcalls-helper-functions.h \
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
+ /usr/include/bits/iscanonical.h /usr/include/c++/14.2/bits/specfun.h \
  /usr/include/c++/14.2/bits/stl_algobase.h \
  /usr/include/c++/14.2/bits/functexcept.h \
  /usr/include/c++/14.2/bits/exception_defines.h \
@@ -85,8 +102,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/bits/pthread_stack_min-dynamic.h \
  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
  /usr/include/bits/uio_lim.h /usr/include/c++/14.2/cfloat \
- /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/float.h \
- /usr/include/c++/14.2/cassert /usr/include/assert.h \
+ /usr/include/c++/14.2/cassert \
  /home/escazure/cpp_projects/tgv/external/glm/fwd.hpp \
  /home/escazure/cpp_projects/tgv/external/glm/detail/type_int.hpp \
  /home/escazure/cpp_projects/tgv/external/glm/detail/setup.hpp \
@@ -96,7 +112,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mmintrin.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mm_malloc.h \
- /usr/include/c++/14.2/stdlib.h /usr/include/c++/14.2/cstdlib \
  /usr/include/c++/14.2/cstdint \
  /home/escazure/cpp_projects/tgv/external/glm/detail/type_float.hpp \
  /home/escazure/cpp_projects/tgv/external/glm/detail/type_vec.hpp \
@@ -287,25 +302,11 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /home/escazure/cpp_projects/tgv/external/glm/gtc/../gtc/quaternion.hpp \
  /home/escazure/cpp_projects/tgv/external/glm/gtc/../gtc/quaternion.inl \
  /home/escazure/cpp_projects/tgv/external/glm/gtc/../gtc/quaternion_simd.inl \
- /usr/include/c++/14.2/cstring /usr/include/string.h \
- /usr/include/strings.h \
+ /usr/include/c++/14.2/cstring \
  /home/escazure/cpp_projects/tgv/external/glm/gtc/type_ptr.inl \
- /home/escazure/cpp_projects/tgv/external/imgui/imgui.h \
- /home/escazure/cpp_projects/tgv/external/imgui/imconfig.h \
- /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/stdarg.h \
- /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_glfw.h \
- /home/escazure/cpp_projects/tgv/external/imgui/backends/imgui_impl_opengl3.h \
- /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
- /usr/include/stdio.h /usr/include/bits/types/__fpos_t.h \
- /usr/include/bits/types/__mbstate_t.h \
- /usr/include/bits/types/__fpos64_t.h /usr/include/bits/types/__FILE.h \
- /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
- /usr/include/bits/types/cookie_io_functions_t.h \
- /usr/include/bits/stdio_lim.h \
- /home/escazure/cpp_projects/tgv/include/shader_program.h \
- /usr/include/GLFW/glfw3.h /usr/include/c++/14.2/iostream \
- /usr/include/c++/14.2/ostream /usr/include/c++/14.2/ios \
- /usr/include/c++/14.2/iosfwd /usr/include/c++/14.2/bits/stringfwd.h \
+ /usr/include/c++/14.2/iostream /usr/include/c++/14.2/ostream \
+ /usr/include/c++/14.2/ios /usr/include/c++/14.2/iosfwd \
+ /usr/include/c++/14.2/bits/stringfwd.h \
  /usr/include/c++/14.2/bits/memoryfwd.h \
  /usr/include/c++/14.2/bits/postypes.h /usr/include/c++/14.2/cwchar \
  /usr/include/wchar.h /usr/include/bits/types/wint_t.h \
@@ -388,6 +389,8 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/c++/14.2/bits/fstream.tcc /usr/include/c++/14.2/sstream \
  /usr/include/c++/14.2/bits/sstream.tcc \
  /home/escazure/cpp_projects/tgv/include/simple_camera.h \
+ /home/escazure/cpp_projects/tgv/include/render.h \
+ /home/escazure/cpp_projects/tgv/include/state.h \
  /home/escazure/cpp_projects/tgv/include/terrain.h \
  /usr/include/c++/14.2/chrono /usr/include/c++/14.2/bits/chrono.h \
  /usr/include/c++/14.2/ratio /usr/include/c++/14.2/ctime \
@@ -397,5 +400,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: \
  /usr/include/c++/14.2/bits/stl_bvector.h \
  /usr/include/c++/14.2/bits/vector.tcc \
  /home/escazure/cpp_projects/tgv/include/chunk.h \
- /home/escazure/cpp_projects/tgv/include/state.h \
- /home/escazure/cpp_projects/tgv/include/render.h
+ /home/escazure/cpp_projects/tgv/include/texture.h \
+ /home/escazure/cpp_projects/tgv/include/sampler.h \
+ /home/escazure/cpp_projects/tgv/include/gpu_timer.h \
+ /usr/include/c++/14.2/array /usr/include/c++/14.2/compare

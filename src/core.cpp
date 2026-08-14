@@ -1,21 +1,25 @@
 #include "core.h"
-#include "helper.h"
-#include "render.h"
-#include "state.h"
 
 AppState state;
 
 Camera camera(glm::vec3(0.0, 500.0, 0.0), 150.0, 0.07);
 Terrain* terrain;
 
-unsigned int heightMapFBO, heightMap;
-unsigned int normalMapFBO, normalMap;
-unsigned int shadowMapFBO, shadowMap;
+Texture heightMap;
+Texture normalMap;
+Texture shadowMap;
+
+Sampler linearClamp;
+
+unsigned int shadowMapFBO;
 
 GLFWwindow* init(){
+	if(state.logging) std::cout << "Logging enabled\n";
+	if(state.debug_mode) std::cout << "OpenGL debug callback enabled\n";
+	
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -44,16 +48,35 @@ GLFWwindow* init(){
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	init_skybox();
-	init_fbo(heightMapFBO, heightMap, 2048, 2048, 1, 1, true);
-	init_fbo(normalMapFBO, normalMap, 2048, 2048, 4, 1, true);
-	init_fbo(shadowMapFBO, shadowMap, 2048, 2048, 1, 1, true);
 
-	glEnable(GL_DEPTH_TEST);
+	linearClamp.create(GL_LINEAR, GL_LINEAR);
+
+	heightMap.create(GL_TEXTURE_2D, 1, GL_R32F, 1024, 1024);
+	normalMap.create(GL_TEXTURE_2D, 1, GL_RGBA32F, 1024, 1024);
+	shadowMap.create(GL_TEXTURE_2D, 1, GL_R32F, 1024, 1024);
+
+	glCreateFramebuffers(1, &shadowMapFBO);
+	shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
 
 	state.camera = &camera;
 	state.terrain = terrain;
 	state.window_width = mode->width;
 	state.window_height = mode->height;
+
+	if(state.logging){
+		std::cout << "Launched with:\n";
+		std::cout << " Vendor - " << glGetString(GL_VENDOR) << "\n";
+		std::cout << " Renderer - " << glGetString(GL_RENDERER) << "\n";
+		std::cout << " Version - " << glGetString(GL_VERSION) << "\n";
+		std::cout << " GLSL - " << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n\n";
+	}
+
+	if(state.debug_mode){
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(debugMessageCallback, NULL);
+	}
+
+	glEnable(GL_DEPTH_TEST);
 
 	return window;
 }
@@ -67,9 +90,27 @@ void run(GLFWwindow* window){
 
 	Shader shader("final/vertex.glsl", "final/fragment.glsl");
 	Shader skybox_shader("skybox/skybox_vertex.glsl", "skybox/skybox_fragment.glsl");
-	Shader normal_map_shader("normalMapping/normal_map_vertex.glsl", "normalMapping/normal_map_fragment.glsl");
+	Shader normal_map_shader("normalMapping/normal_map.comp");
 	Shader shadow_map_shader("shadowMapping/shadow_map_vertex.glsl", "shadowMapping/shadow_map_fragment.glsl");
 	Shader min_max_compute_shader("minMaxComp/min_max.comp");
+
+	if(state.logging){
+		std::cout << "Shaders id:\n";
+		std::cout << " Final - " << shader.id << "\n";
+		std::cout << " Skybox - " << skybox_shader.id << "\n";
+		std::cout << " Normal Map - " << normal_map_shader.id << "\n";
+		std::cout << " Shadow Map - " << shadow_map_shader.id << "\n";
+		std::cout << " Min Max Compute - " << min_max_compute_shader.id << "\n";
+	}
+
+	std::array<Timer, TIMER_COUNT> timers = {
+		Timer("Height Map"),
+		Timer("Min Max"),
+		Timer("Normal Map"),
+		Timer("Shadow Map")
+	};
+
+	unsigned int barrier = GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT;
 
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
@@ -88,93 +129,68 @@ void run(GLFWwindow* window){
 		process_input(window, delta_time);
 
 		if(state.generate_terrain){
-			Shader height_map_shader("custom/height_map_vertex.glsl", "custom/height_map_fragment.glsl");
+			state.gen_time = 0.0f;
+			Shader height_map_shader("heightMap/height_map.comp");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			// ----- Height map generation ----- //
-			resize_fbo_attachment(heightMapFBO, heightMap, state.size, state.size, 1, 1, true);
-			glBindFramebuffer(GL_FRAMEBUFFER, heightMapFBO);
-			glViewport(0, 0, state.size, state.size);
-    		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    		glClear(GL_COLOR_BUFFER_BIT);
-
-			auto start_time = std::chrono::high_resolution_clock::now();
+			heightMap.resize(1, state.size, state.size);
+			heightMap.bindAsImage(0);
+			linearClamp.bind(0);
 
 			height_map_shader.use();
 			height_map_shader.set_float("uWorldSize", state.size);
 			height_map_shader.set_int("uSeed", state.seed);
 
-			render_quad();	
-			glFinish();
+			timers[HEIGHT_MAP_ID].begin();
+			glDispatchCompute(state.size / 16, state.size / 16, 1);		
+			timers[HEIGHT_MAP_ID].end();
 
-			auto end_time = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<float, std::milli> duration = end_time - start_time;
-			state.gen_time = duration.count();
-			std::cout << "Finished generating terrain - " << duration.count() << "ms\n";
-
+			glMemoryBarrier(barrier);
 			// ----- Compute min/max height ----- //
-			start_time = std::chrono::high_resolution_clock::now();
-
+			timers[MIN_MAX_ID].begin();
 			getMinMaxHeight(min_max_compute_shader, state, heightMap, state.size, state.size);
-			glFinish();
-
-			end_time = std::chrono::high_resolution_clock::now();
-			duration = end_time - start_time;
-			state.gen_time += duration.count();
-			std::cout << "Finished computing min/max height - " << duration.count() << "ms\n";
+			timers[MIN_MAX_ID].end();
 
 			// ----- Normal map generation ----- //
-			resize_fbo_attachment(normalMapFBO, normalMap, state.size, state.size, 4, 1, true);
-			glBindFramebuffer(GL_FRAMEBUFFER, normalMapFBO);
-			glViewport(0, 0, state.size, state.size);
-    		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    		glClear(GL_COLOR_BUFFER_BIT);
+			normalMap.resize(1, state.size, state.size);
+			normalMap.bindAsImage(1);
+			linearClamp.bind(1);
 
-			start_time = std::chrono::high_resolution_clock::now();
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, heightMap);
+			heightMap.bind(0);
+			linearClamp.bind(0);
 
 			normal_map_shader.use();
-			normal_map_shader.set_int("uHeightMap", 0);
 			normal_map_shader.set_float("uTerrainSize", state.size);
 
-			render_quad();	
-			glFinish();
+			timers[NORMAL_MAP_ID].begin();
+			glDispatchCompute(state.size / 16, state.size / 16, 1);		
+			timers[NORMAL_MAP_ID].end();
 
-			end_time = std::chrono::high_resolution_clock::now();
-			duration = end_time - start_time;
-			state.gen_time += duration.count();
-			std::cout << "Finished computing normals - " << duration.count() << "ms\n";
-
+			glMemoryBarrier(barrier);
 			// ----- Shadow map generation ----- //
-			resize_fbo_attachment(shadowMapFBO, shadowMap, state.size, state.size, 1, 1, true);
+			shadowMap.resize(1, state.size, state.size);
+			shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
+
 			glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 			glViewport(0, 0, state.size, state.size);
     		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     		glClear(GL_COLOR_BUFFER_BIT);
 
-			start_time = std::chrono::high_resolution_clock::now();
+			heightMap.bind(0);
+			normalMap.bind(1);
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, heightMap);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, normalMap);
+			linearClamp.bind(0);
+			linearClamp.bind(1);
 
 			shadow_map_shader.use();
-			shadow_map_shader.set_int("uHeightMap", 0);
-			shadow_map_shader.set_int("uNormalMap", 1);
 			shadow_map_shader.set_float("uTerrainSize", state.size);
 			shadow_map_shader.set_float("uMaxHeight", state.max_height);
 			shadow_map_shader.set_vec3("uLightDir", lightDir);
 
+			timers[SHADOW_MAP_ID].begin();
 			render_quad();	
-			glFinish();
-
-			end_time = std::chrono::high_resolution_clock::now();
-			duration = end_time - start_time;
-			state.gen_time += duration.count();
-			std::cout << "Finished computing shadows - " << duration.count() << "ms\n";
+			timers[SHADOW_MAP_ID].end();
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -185,22 +201,20 @@ void run(GLFWwindow* window){
 		}
 
 		if(state.terrain_generated){
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			if(state.cull_backface) glEnable(GL_CULL_FACE);
 
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glViewport(0, 0, int(state.window_width), int(state.window_height));
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, heightMap);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, normalMap);
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, shadowMap);
+			heightMap.bind(0);
+			normalMap.bind(1);
+			shadowMap.bind(2);
+
+			linearClamp.bind(0);
+			linearClamp.bind(1);
+			linearClamp.bind(2);
 
 			shader.use();
-			shader.set_int("uHeightMap", 0);
-			shader.set_int("uNormalMap", 1);
-			shader.set_int("uShadowMap", 2);
 			shader.set_float("uTerrainSize", state.size);
 			shader.set_bool("uRenderTerrainSkirt", state.render_terrain_skirt);
 			shader.set_bool("uShowNormals", state.show_normals);
@@ -224,13 +238,22 @@ void run(GLFWwindow* window){
 			glDepthMask(GL_FALSE); 
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
-			draw_skybox(skybox_shader);
+			render_skybox(skybox_shader);
 			glDepthMask(GL_TRUE); 
 			glDepthFunc(GL_LESS);
 		}
 		
 		if(state.show_ui){
 			render_gui(state);
+		}
+
+		for(std::size_t i = 0; i < timers.size(); i++){
+			if(timers[i].isAvailable()){
+				double time = timers[i].getMilli();
+				if(state.logging)
+					std::cout << "Timer [" << timers[i]._name << "] recorded time - " << time << "ms\n";
+				state.gen_time += time;
+			}
 		}
 
 		glfwSwapBuffers(window);

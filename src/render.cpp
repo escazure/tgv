@@ -83,64 +83,7 @@ void init_skybox(){
 	skybox_cubemap = load_cube_map(faces);
 }
 
-void init_fbo(unsigned int& fbo, unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate){
-	glGenFramebuffers(1, &fbo);
-	init_texture(textureMap, width, height, numberOfChannels, mipMapLevels, interpolate);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void init_texture(unsigned int& textureMap, unsigned int width, unsigned int height, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate) {
-    unsigned int data = GL_RGBA32F;
-
-    switch (numberOfChannels) {
-        case 1: 
-            data = GL_R32F; 
-            break;
-        case 2: 
-            data = GL_RG32F; 
-            break;
-        case 3: 
-            data = GL_RGB32F; 
-            break;
-        default: 
-            data = GL_RGBA32F; 
-            break;
-    }
-
-    if(textureMap == 0){
-        glGenTextures(1, &textureMap);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, textureMap);
-    glTexStorage2D(GL_TEXTURE_2D, mipMapLevels, data, width, height);
-
-    if (mipMapLevels > 1)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolate ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST);
-	else
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolate ? GL_LINEAR : GL_NEAREST);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolate ? GL_LINEAR : GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-}
-
-void resize_fbo_attachment(unsigned int fbo, unsigned int& textureMap, unsigned int newWidth, unsigned int newHeight, unsigned int numberOfChannels, unsigned int mipMapLevels, bool interpolate) {
-    if(textureMap != 0){
-        glDeleteTextures(1, &textureMap);
-        textureMap = 0;
-    }
-
-    init_texture(textureMap, newWidth, newHeight, numberOfChannels, mipMapLevels, interpolate);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureMap, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void draw_skybox(Shader shader){
+void render_skybox(Shader shader){
 	shader.use();
 
 	glm::mat4 view = glm::mat4(glm::mat3(state.camera->get_view_mat()));

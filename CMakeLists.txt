@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(tgv LANGUAGES C CXX)
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/functions)
-
 set(CPP_SRCS
 	src/core.cpp
 	src/helper.cpp
@@ -25,8 +23,16 @@ set(GL3W_INCLUDE external/gl3w)
 set(STBI_SRC external/stbi/stb_image.cpp)
 set(STBI_INCLUDE external/stbi)
 
+
+add_custom_target(make_height_map_dir ALL
+	COMMAND ${CMAKE_COMMAND} -E make_directory
+			${CMAKE_BINARY_DIR}/shaders/heightMap
+)
+
 add_custom_target(copy_assets ALL
-	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/shaders ${CMAKE_BINARY_DIR}/shaders
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/shaders
+            ${CMAKE_BINARY_DIR}/shaders
 )
 
 add_executable(tgv
@@ -55,7 +61,7 @@ target_link_libraries(tgv PRIVATE
 target_compile_options(tgv PRIVATE -Wno-pragmas)
 target_compile_definitions(tgv PRIVATE 
 	PROJECT_INCLUDE_DIR="${CMAKE_SOURCE_DIR}/include"
-	PROJECT_SHADERS_DIR="${CMAKE_SOURCE_DIR}/build/shaders"
+	PROJECT_SHADERS_DIR="${CMAKE_BINARY_DIR}/shaders"
 	PROJECT_ASSET_DIR="${CMAKE_SOURCE_DIR}/assets"
 	PROJECT_EXTERNAL_DIR="${CMAKE_SOURCE_DIR}/external"
 )

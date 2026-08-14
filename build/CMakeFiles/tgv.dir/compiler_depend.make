@@ -1454,12 +1454,15 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
+  /home/escazure/cpp_projects/tgv/include/gpu_timer.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
+  /home/escazure/cpp_projects/tgv/include/sampler.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
+  /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
@@ -1552,6 +1555,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2/array \
   /usr/include/c++/14.2/backward/binders.h \
   /usr/include/c++/14.2/bit \
   /usr/include/c++/14.2/bits/alloc_traits.h \
@@ -1627,6 +1631,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /usr/include/c++/14.2/climits \
   /usr/include/c++/14.2/clocale \
   /usr/include/c++/14.2/cmath \
+  /usr/include/c++/14.2/compare \
   /usr/include/c++/14.2/concepts \
   /usr/include/c++/14.2/cstddef \
   /usr/include/c++/14.2/cstdint \
@@ -1939,12 +1944,15 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
+  /home/escazure/cpp_projects/tgv/include/gpu_timer.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
+  /home/escazure/cpp_projects/tgv/include/sampler.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
+  /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
@@ -2037,6 +2045,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2/array \
   /usr/include/c++/14.2/backward/binders.h \
   /usr/include/c++/14.2/bit \
   /usr/include/c++/14.2/bits/alloc_traits.h \
@@ -2112,6 +2121,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /usr/include/c++/14.2/climits \
   /usr/include/c++/14.2/clocale \
   /usr/include/c++/14.2/cmath \
+  /usr/include/c++/14.2/compare \
   /usr/include/c++/14.2/concepts \
   /usr/include/c++/14.2/cstddef \
   /usr/include/c++/14.2/cstdint \
@@ -2424,10 +2434,15 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
+  /home/escazure/cpp_projects/tgv/include/gpu_timer.h \
+  /home/escazure/cpp_projects/tgv/include/helper.h \
+  /home/escazure/cpp_projects/tgv/include/render.h \
+  /home/escazure/cpp_projects/tgv/include/sampler.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
+  /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
@@ -2520,6 +2535,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2/array \
   /usr/include/c++/14.2/backward/binders.h \
   /usr/include/c++/14.2/bit \
   /usr/include/c++/14.2/bits/alloc_traits.h \
@@ -2595,6 +2611,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /usr/include/c++/14.2/climits \
   /usr/include/c++/14.2/clocale \
   /usr/include/c++/14.2/cmath \
+  /usr/include/c++/14.2/compare \
   /usr/include/c++/14.2/concepts \
   /usr/include/c++/14.2/cstddef \
   /usr/include/c++/14.2/cstdint \
@@ -2907,12 +2924,15 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
   /home/escazure/cpp_projects/tgv/include/chunk.h \
   /home/escazure/cpp_projects/tgv/include/core.h \
+  /home/escazure/cpp_projects/tgv/include/gpu_timer.h \
   /home/escazure/cpp_projects/tgv/include/helper.h \
   /home/escazure/cpp_projects/tgv/include/render.h \
+  /home/escazure/cpp_projects/tgv/include/sampler.h \
   /home/escazure/cpp_projects/tgv/include/shader_program.h \
   /home/escazure/cpp_projects/tgv/include/simple_camera.h \
   /home/escazure/cpp_projects/tgv/include/state.h \
   /home/escazure/cpp_projects/tgv/include/terrain.h \
+  /home/escazure/cpp_projects/tgv/include/texture.h \
   /home/escazure/cpp_projects/tgv/include/ui.h \
   /usr/include/GL/glcorearb.h \
   /usr/include/GLFW/glfw3.h \
@@ -3006,6 +3026,7 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/14.2/array \
   /usr/include/c++/14.2/backward/binders.h \
   /usr/include/c++/14.2/bit \
   /usr/include/c++/14.2/bits/alloc_traits.h \
@@ -3081,6 +3102,7 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /usr/include/c++/14.2/climits \
   /usr/include/c++/14.2/clocale \
   /usr/include/c++/14.2/cmath \
+  /usr/include/c++/14.2/compare \
   /usr/include/c++/14.2/concepts \
   /usr/include/c++/14.2/cstddef \
   /usr/include/c++/14.2/cstdint \
@@ -3394,6 +3416,14 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 /usr/include/sched.h:
 
 /usr/include/pthread.h:
+
+/usr/include/locale.h:
+
+/usr/include/linux/types.h:
+
+/usr/include/linux/sched/types.h:
+
+/usr/include/linux/posix_types.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/lwpintrin.h:
 
@@ -3815,8 +3845,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/include/bits/waitflags.h:
 
-/home/escazure/cpp_projects/tgv/external/glm/detail/_fixes.hpp:
-
 /usr/include/bits/getopt_core.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/hresetintrin.h:
@@ -4029,8 +4057,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/include/bits/types/FILE.h:
 
-/usr/include/linux/posix_types.h:
-
 /usr/include/X11/extensions/Xrandr.h:
 
 /usr/include/bits/posix1_lim.h:
@@ -4039,11 +4065,13 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/func_trigonometric.inl:
 
+/usr/include/linux/stddef.h:
+
+/usr/include/bits/fp-logb.h:
+
 /usr/include/c++/14.2/cmath:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/avx512bitalgvlintrin.h:
-
-/usr/include/locale.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h:
 
@@ -4072,6 +4100,8 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 /usr/include/bits/pthread_stack_min-dynamic.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mmintrin.h:
+
+/usr/include/c++/14.2/compare:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/movdirintrin.h:
 
@@ -4116,8 +4146,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/sha512intrin.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/sm4intrin.h:
-
-/usr/include/linux/types.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/smmintrin.h:
 
@@ -4311,6 +4339,8 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_vec2.inl:
 
+/home/escazure/cpp_projects/tgv/include/texture.h:
+
 /home/escazure/cpp_projects/tgv/external/imgui/imgui_internal.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/type_vec3.hpp:
@@ -4336,6 +4366,16 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /home/escazure/cpp_projects/tgv/external/glm/matrix.hpp:
 
 /home/escazure/cpp_projects/tgv/external/glm/packing.hpp:
+
+/home/escazure/cpp_projects/tgv/include/gpu_timer.h:
+
+/usr/include/bits/types/clockid_t.h:
+
+/usr/include/c++/14.2/ext/atomicity.h:
+
+/home/escazure/cpp_projects/tgv/external/glm/detail/_fixes.hpp:
+
+/home/escazure/cpp_projects/tgv/include/sampler.h:
 
 /home/escazure/cpp_projects/tgv/include/shader_program.h:
 
@@ -4382,6 +4422,8 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/f16cintrin.h:
 
 /usr/include/bits/wctype-wchar.h:
+
+/usr/include/c++/14.2/array:
 
 /home/escazure/cpp_projects/tgv/external/imgui/imgui.h:
 
@@ -4465,10 +4507,6 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 
 /usr/include/c++/14.2/ext/alloc_traits.h:
 
-/usr/include/bits/types/clockid_t.h:
-
-/usr/include/c++/14.2/ext/atomicity.h:
-
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/shaintrin.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/amxcomplexintrin.h:
@@ -4506,9 +4544,3 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /usr/include/c++/14.2/x86_64-unknown-linux-gnu/bits/error_constants.h:
 
 /usr/include/ctype.h:
-
-/usr/include/linux/sched/types.h:
-
-/usr/include/bits/fp-logb.h:
-
-/usr/include/linux/stddef.h:

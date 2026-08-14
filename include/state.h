@@ -1,10 +1,9 @@
 #pragma once
-#include <string>
 
 #define MIN_CAMERA_SPEED 50.0f
-#define MAX_CAMERA_SPEED 200.0f
+#define MAX_CAMERA_SPEED 500.0f
 #define MIN_CAMERA_VIEW_DISTANCE 1000.0f
-#define MAX_CAMERA_VIEW_DISTANCE 10000.0f
+#define MAX_CAMERA_VIEW_DISTANCE 20000.0f
 
 #define SHADOW_WIDTH 4096 
 #define SHADOW_HEIGHT 4096 
@@ -34,6 +33,9 @@ struct AppState{
 
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
+
+	bool debug_mode = false;
+	bool logging = false;
 
     bool terrain_generated = false;
 	bool generate_terrain = false;
