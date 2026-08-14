@@ -185,14 +185,14 @@ namespace UI{
                 ImGui::Spacing();
                 
 				static int pending_size_idx = 2;   
-				static int pending_chunk_idx = 3;  
+				static int pending_chunk_idx = 2;  
 				static int pending_density_idx = 3; 
 
-				static const int size_values[] = { 256, 512, 1024, 2048, 4096, 8192 };
-				static const char* size_names[] = { "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048", "4096 x 4096", "8192 x 8192" };
+				static const int size_values[] = { 1024, 2048, 4096, 8192 };
+				static const char* size_names[] = { "1024 x 1024", "2048 x 2048", "4096 x 4096", "8192 x 8192" };
 
-				static const int chunk_values[] = { 16, 32, 64, 128, 256 };
-				static const char* chunk_names[] = { "16 x 16", "32 x 32", "64 x 64", "128 x 128", "256 x 256" };
+				static const int chunk_values[] = { 128, 256, 512 };
+				static const char* chunk_names[] = { "128 x 128", "256 x 256", "512 x 512" };
 
 				static const int step_values[] = { 1, 2, 4, 8, 16 };
 				static const char* density_names[] = {
@@ -291,7 +291,7 @@ namespace UI{
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("Triangle Count:");
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%d", (state.terrain_generated && state.terrain) ? state.terrain->triangle_count : 0);
+                    ImGui::Text("%d", (state.terrain_generated && state.terrain) ? state.terrain->_triangleCount : 0);
 
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);

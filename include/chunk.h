@@ -1,99 +1,78 @@
 #pragma once
 #include <vector>
-#include <iostream>
 
 class Chunk{
 	public:
-		std::size_t vertex_count;
-		std::size_t triangle_count;
+		std::size_t _vertexCount = 0;
 
-		Chunk(std::size_t _x_pos, std::size_t _z_pos, float _step_size, std::size_t _size, std::size_t _terrain_size){
-			chunk_size = _size;
-			step_size = _step_size;
-			terrain_size = _terrain_size;
-			x_pos = _x_pos;
-			z_pos = _z_pos;
-			vertex_count = 0;
-			triangle_count = 0;
+		Chunk(std::size_t xPos, std::size_t zPos, float stepSize, std::size_t chunkSize, std::size_t terrainSize){
+			_chunkSize = chunkSize;
+			_stepSize = stepSize;
+			_terrainSize = terrainSize;
+			_xPos = xPos;
+			_zPos = zPos;
 		}
 
-		void generate(){
-			generate_vertices();
-			generate_indices();
+		~Chunk(){
+			if(_VAO)
+				glDeleteVertexArrays(1, &_VAO);
 
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
-
-			glGenBuffers(1, &VBO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-			glGenBuffers(1, &EBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(0);
-			glBindVertexArray(0);
+			if(_VBO)
+				glDeleteBuffers(1, &_VBO);
 		}
 
-		void draw(){
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		void generate(unsigned int shaderEBO, std::size_t indexCount){
+			_indexCount = indexCount;
+			pGenerateVertices();
+
+			glCreateVertexArrays(1, &_VAO);
+			glCreateBuffers(1, &_VBO);
+
+			glNamedBufferData(_VBO, _vertices.size() * sizeof(float), _vertices.data(), GL_STATIC_DRAW);
+
+			glVertexArrayElementBuffer(_VAO, shaderEBO);
+
+			glEnableVertexArrayAttrib(_VAO, 0);
+			glVertexArrayAttribFormat(_VAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+			glVertexArrayAttribBinding(_VAO, 0, 0);
+			glVertexArrayVertexBuffer(_VAO, 0, _VBO, 0, 2 * sizeof(float));
+
+			_vertices.clear();
+			_vertices.shrink_to_fit();
+		}
+
+		void draw() const {
+			glBindVertexArray(_VAO);
+			glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
 		
 	private:
-		std::vector<float> vertices;	
-		std::vector<unsigned int> indices;
-		unsigned int VAO, VBO, EBO;
-		std::size_t chunk_size;		
-		std::size_t terrain_size;
-		std::size_t x_pos, z_pos;
-		float step_size;
+		unsigned int _VAO = 0, _VBO = 0;
+		std::size_t _indexCount = 0;
+		std::vector<float> _vertices;	
 
-		void generate_vertices(){
-			int x0 = x_pos * chunk_size - (terrain_size * 0.5f);
-			int z0 = z_pos * chunk_size - (terrain_size * 0.5f);
+		std::size_t _chunkSize, _terrainSize;		
+		std::size_t _xPos, _zPos;
+		float _stepSize;
 
-			std::size_t vertex_count_axis = std::floor(chunk_size/step_size)+1;
-			vertices.resize(vertex_count_axis * vertex_count_axis * 2);
-			vertex_count = vertex_count_axis * vertex_count_axis;
+		void pGenerateVertices(){
+			int x0 = _xPos * _chunkSize - (_terrainSize * 0.5f);
+			int z0 = _zPos * _chunkSize - (_terrainSize * 0.5f);
 
-			int temp = 0;
+			std::size_t axisVertexCount = std::size_t(_chunkSize / _stepSize) + 1;
+			_vertexCount = axisVertexCount * axisVertexCount;
+			_vertices.resize(_vertexCount * 2);
 
-			for(int i = 0; i < vertex_count_axis; i++){
-				for(int j = 0; j < vertex_count_axis; j++){
-					float world_x = x0 + i * step_size;
-					float world_z = z0 + j * step_size;
+			std::size_t index = 0;
+			for(std::size_t i = 0; i < axisVertexCount; i++){
+				float world_x = x0 + i * _stepSize;
+				for(std::size_t j = 0; j < axisVertexCount; j++){
+					float world_z = z0 + j * _stepSize;
 
-					vertices[temp] = world_x;	
-					vertices[temp+1] = world_z;	
-
-					temp+=2;
+					_vertices[index++] = world_x;	
+					_vertices[index++] = world_z;	
 				}
 			}
-		}
-
-		void generate_indices(){
-			unsigned int vertex_count_axis = std::floor(chunk_size/step_size)+1;
-			indices.resize((vertex_count_axis-1)*(vertex_count_axis-1)*6);
-
-			int temp = 0;
-			for(int i = 0; i < vertex_count_axis-1; i++){
-				for(int j = 0; j < vertex_count_axis-1; j++){
-					indices[temp] = i*vertex_count_axis+j;	
-					indices[temp+1] = i*vertex_count_axis+j+1;
-					indices[temp+2] = (i+1)*vertex_count_axis+ j;
-					
-					indices[temp+3] = (i+1)*vertex_count_axis+ j;
-					indices[temp+4] = i*vertex_count_axis+j+1;
-					indices[temp+5] = (i+1)*vertex_count_axis+j+1;	
-					temp+=6;
-
-					triangle_count += 2;
-				}
-			} 
 		}
 };
