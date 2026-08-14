@@ -86,10 +86,10 @@ void init_skybox(){
 void render_skybox(Shader shader){
 	shader.use();
 
-	glm::mat4 view = glm::mat4(glm::mat3(state.camera->get_view_mat()));
+	glm::mat4 view = glm::mat4(glm::mat3(state.camera->getViewMat()));
 	shader.set_mat4("uView", view);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->_viewDistance);
 	shader.set_mat4("uProjection", projection);
 
 	shader.set_int("uSkybox", 0);

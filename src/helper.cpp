@@ -12,7 +12,7 @@ void mouse_callback(double xpos, double ypos, Camera& _camera){
 		return;
 	}
 		
-	float yawt = _camera.yaw, pitcht = _camera.pitch;
+	float yawt = _camera._yaw, pitcht = _camera._pitch;
 
 	if(first_mouse){
 		lastx = (float)xpos;
@@ -25,7 +25,7 @@ void mouse_callback(double xpos, double ypos, Camera& _camera){
 	lastx = xpos;
 	lasty = ypos;
 
-	_camera.process_mouse_mov(xoffset, yoffset);
+	_camera.processMouseMove(xoffset, yoffset);
 }
 
 void key_callback(GLFWwindow* window, int key, int action){
@@ -48,18 +48,19 @@ void key_callback_wrapper(GLFWwindow* window, int key, int scancode, int action,
 
 void process_input(GLFWwindow* window, float delta_time){
 	if(!g_is_capturing) return;
-	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)	
-		state.camera->move_forward(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		state.camera->move_back(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		state.camera->move_left(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		state.camera->move_right(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		state.camera->move_up(delta_time);
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		state.camera->move_down(delta_time);
+
+	glm::vec3 moveInput(0.0f);
+
+	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) moveInput.z += 1.0f;
+	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveInput.z -= 1.0f;
+
+	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveInput.x += 1.0f;
+	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) moveInput.x -= 1.0f;
+
+	if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) moveInput.y += 1.0f;
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) moveInput.y -= 1.0f;
+
+	state.camera->move(moveInput, delta_time);
 }
 
 unsigned int load_cube_map(std::vector<std::string>& faces){

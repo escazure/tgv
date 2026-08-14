@@ -3,80 +3,69 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 struct Camera {
-	glm::vec3 pos, front, up, right, world_up;
-	float speed, yaw, pitch, fov, height, sensitivity, view_distance;
+public:
+	glm::vec3 _pos, _front, _up, _right, _worldUp;
+	float _speed, _yaw, _pitch, _fov, _height, _sensitivity, _viewDistance;
 
-	Camera(const glm::vec3 &_pos, float _speed, float _sens, float _view_distance = 3000){
-		pos = _pos; 
-		speed = _speed;
-		sensitivity = _sens;
+	Camera(const glm::vec3 &pos, float speed, float sens, float viewDistance = 3000){
+		_pos = pos; 
+		_speed = speed;
+		_sensitivity = sens;
 
-		front = glm::vec3(0.0, 0.0, -1.0);
-		world_up = glm::vec3(0.0, 1.0, 0.0);
+		_front = glm::vec3(0.0, 0.0, -1.0);
+		_worldUp = glm::vec3(0.0, 1.0, 0.0);
 
-		yaw = 0.0;
-		pitch = 0.0;
-		fov = 45.0;
+		_yaw = 0.0;
+		_pitch = 0.0;
+		_fov = 45.0;
 
-		height = pos.y;
+		_height = _pos.y;
 
-		view_distance = _view_distance; 
+		_viewDistance = viewDistance; 
 
-		update_dir();
+		pUpdateDir();
 	}
 
-	void update_dir(){
+	void move(const glm::vec3 &inputDir, float delta){
+		if(inputDir == glm::vec3(0.0f)) return;
+
+		glm::vec3 moveFront = glm::normalize(glm::vec3(_front.x, 0.0f, _front.z));
+		glm::vec3 moveDir = (moveFront * inputDir.z) + (_right * inputDir.x) + (_worldUp * inputDir.y); 
+		moveDir = glm::normalize(moveDir);
+		_pos += moveDir * _speed * delta;
+
+		if(inputDir.y == 0.0f) _pos.y = _height;
+		else _height = _pos.y;
+	}
+
+	void processMouseMove(float xoffset, float yoffset){
+		xoffset *= _sensitivity;
+		yoffset *= _sensitivity;
+
+		_yaw += xoffset;
+		_pitch += yoffset;
+
+		if(_pitch > 75.0)
+			_pitch = 75.0;
+		if(_pitch < -75.0)
+			_pitch = -75.0;
+
+		pUpdateDir();
+	}
+
+	glm::mat4 getViewMat(){
+		return glm::lookAt(_pos, _pos + _front, _up);
+	}
+
+private:
+	void pUpdateDir(){
 		glm::vec3 direction;
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		front = glm::normalize(direction);
-
-		right = glm::normalize(glm::cross(front, world_up));
-		up = glm::normalize(glm::cross(right, front));
-	}
-
-	void move_forward(float delta){
-		pos += speed * front * delta;	
-		pos.y = height;
-	}
-	void move_back(float delta){
-		pos -= speed * front * delta;	
-		pos.y = height;
-	}
-	void move_right(float delta){
-		pos += speed * right * delta;	
-		pos.y = height;
-	}
-	void move_left(float delta){
-		pos -= speed * right * delta;	
-		pos.y = height;
-	}
-	void move_up(float delta){
-		pos += speed * world_up * delta;	
-		height = pos.y;
-	}
-	void move_down(float delta){
-		pos -= speed * world_up * delta;	
-		height = pos.y;
-	}
-
-	void process_mouse_mov(float xoffset, float yoffset){
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
-		yaw += xoffset;
-		pitch += yoffset;
-
-		if(pitch > 75.0)
-			pitch = 75.0;
-		if(pitch < -75.0)
-			pitch = -75.0;
-
-		update_dir();
-	}
-
-	glm::mat4 get_view_mat(){
-		return glm::lookAt(pos, pos + front, up);
+		direction.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
+		direction.y = sin(glm::radians(_pitch));
+		direction.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
+		
+		_front = glm::normalize(direction);
+		_right = glm::normalize(glm::cross(_front, _worldUp));
+		_up = glm::normalize(glm::cross(_right, _front));
 	}
 };

@@ -227,10 +227,10 @@ void run(GLFWwindow* window){
 			glm::mat4 model(1.0f);
 			shader.set_mat4("uModel", model);
 			
-			glm::mat4 view = state.camera->get_view_mat();
+			glm::mat4 view = state.camera->getViewMat();
 			shader.set_mat4("uView", view);
 
-			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->view_distance);
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->_viewDistance);
 			shader.set_mat4("uProjection", projection);
 
 			state.terrain->draw();
