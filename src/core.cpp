@@ -119,6 +119,9 @@ void run(GLFWwindow* window){
 		if(state.is_wireframe_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+		if(state.is_vsync) glfwSwapInterval(1);
+		else glfwSwapInterval(0);
+
 		glClearColor(0.2, 0.6, 0.8, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
