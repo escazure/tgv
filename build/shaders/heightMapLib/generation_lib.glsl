@@ -117,7 +117,7 @@ float fbmErosion(vec2 uv, int octaves, float erosionStrength){
 	return total;
 }
 
-float example(vec2 uv, float baseFrequency = 0.0004, float baseAmplitude = 2200.0, float erosionStrength = 2.5, int octaves = 8){
+float example(vec2 uv, float baseFrequency, float baseAmplitude, float erosionStrength, int octaves){
 	const float shiftSize = 500000.0;
 
 	vec2 offsetUV = shiftUV(uv, shiftSize, uSeed);
