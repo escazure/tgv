@@ -112,6 +112,10 @@ void run(GLFWwindow* window){
 
 	unsigned int barrier = GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT;
 
+	const float skyClearColor[4] = {0.2f, 0.6f, 0.8f, 1.0f};
+	const float shadowClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+	const float depthClearColor = 1.0f;
+
 	while(!glfwWindowShouldClose(window)){
 		if(state.cull_backface) glEnable(GL_CULL_FACE);
 		else glDisable(GL_CULL_FACE);
@@ -122,8 +126,8 @@ void run(GLFWwindow* window){
 		if(state.is_vsync) glfwSwapInterval(1);
 		else glfwSwapInterval(0);
 
-		glClearColor(0.2, 0.6, 0.8, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearNamedFramebufferfv(0, GL_COLOR, 0, skyClearColor);
+		glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depthClearColor);
 
 		current_frame = glfwGetTime();
 		delta_time = current_frame - last_frame;	
@@ -134,7 +138,6 @@ void run(GLFWwindow* window){
 		if(state.generate_terrain){
 			state.gen_time = 0.0f;
 			Shader height_map_shader("heightMap/height_map.comp");
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			// ----- Height map generation ----- //
 			heightMap.resize(1, state.size, state.size);
@@ -177,8 +180,8 @@ void run(GLFWwindow* window){
 
 			glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 			glViewport(0, 0, state.size, state.size);
-    		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    		glClear(GL_COLOR_BUFFER_BIT);
+
+			glClearNamedFramebufferfv(shadowMapFBO, GL_COLOR, 0, shadowClearColor);
 
 			heightMap.bind(0);
 			normalMap.bind(1);

@@ -129,8 +129,9 @@ float example(vec2 uv, float baseFrequency, float baseAmplitude, float erosionSt
 	const float shiftSize = 500000.0;
 
 	vec2 offsetUV = shiftUV(uv, shiftSize, uSeed);
+	float height = fbmErosion(offsetUV * baseFrequency, octaves, erosionStrength) * baseAmplitude;
 
-	return fbmErosion(offsetUV * baseFrequency, octaves, erosionStrength) * baseAmplitude;
+	return height;
 }
 
 
