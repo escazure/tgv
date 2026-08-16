@@ -71,19 +71,9 @@ void init_skybox(){
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	std::vector<std::string> faces = {
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/px.png"),
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/nx.png"),
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/py.png"),
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/ny.png"),
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/pz.png"),
-		PROJECT_ASSET_DIR + std::string("/textures/skybox/nz.png")
-	};
-	skybox_cubemap = load_cube_map(faces);
 }
 
-void render_skybox(Shader shader){
+void render_skybox(Shader shader, const glm::vec3& lightDir){
 	shader.use();
 
 	glm::mat4 view = glm::mat4(glm::mat3(state.camera->getViewMat()));
@@ -92,9 +82,7 @@ void render_skybox(Shader shader){
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), state.window_width/state.window_height, 0.1f, state.camera->_viewDistance);
 	shader.set_mat4("uProjection", projection);
 
-	shader.set_int("uSkybox", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap);
+	shader.set_vec3("uLightDir", lightDir);
 
 	glBindVertexArray(skyboxVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -189,7 +189,7 @@ namespace UI{
 				static int pending_density_idx = 3; 
 
 				static const int size_values[] = { 1024, 2048, 4096, 8192 };
-				static const char* size_names[] = { "1024 x 1024", "2048 x 2048", "4096 x 4096", "8192 x 8192" };
+				static const char* size_names[] = { "1K", "2K", "4K", "8K" };
 
 				static const int chunk_values[] = { 128, 256 };
 				static const char* chunk_names[] = { "128 x 128", "256 x 256"};

@@ -63,31 +63,6 @@ void process_input(GLFWwindow* window, float delta_time){
 	state.camera->move(moveInput, delta_time);
 }
 
-unsigned int load_cube_map(std::vector<std::string>& faces){
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-	int width, height, nrChannels;
-	unsigned char* data;
-	for(unsigned int i = 0; i < faces.size(); i++){
-		data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if(data)
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, nrChannels == 4 ? GL_RGBA : GL_RGB, width, height, 0, nrChannels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
-		else
-			std::cerr << "ERROR: Failed to load texture for cubemap [" << faces[i] << "]\n";
-		stbi_image_free(data);
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	return textureID;
-}
-
 std::string wrap_user_input(const std::string& function_body, const std::string& function_name){
 	std::string result;		
 	result = "float " + function_name + "(vec2 uv){\n" + function_body + "\n}";

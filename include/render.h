@@ -4,7 +4,7 @@
 
 void render_gui(AppState& state);
 void render_quad();
-void render_skybox(Shader shader);
+void render_skybox(Shader shader, const glm::vec3& lightDir);
 
 void init_skybox();
 

@@ -244,7 +244,7 @@ void run(GLFWwindow* window){
 			glDepthMask(GL_FALSE); 
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
-			render_skybox(skybox_shader);
+			render_skybox(skybox_shader, lightDir);
 			glDepthMask(GL_TRUE); 
 			glDepthFunc(GL_LESS);
 		}
