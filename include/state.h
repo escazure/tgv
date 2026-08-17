@@ -31,6 +31,8 @@ struct AppState{
 	float min_height = 0.0f;
 	float max_height = 0.0f;
 
+	int texture_method = 0;
+
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
 

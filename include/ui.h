@@ -350,12 +350,15 @@ namespace UI{
                 static int color_mode_idx = 0;
                 static const char* color_modes[] = { 
                     "Default Surface Shading", 
+					"Chunk Grid",
                     "Height Ramp (Viridis)", 
                     "Contour Lines (Isolines)"
                 };
                 
                 ImGui::SetNextItemWidth(-FLT_MIN);
-                ImGui::Combo("##colormode", &color_mode_idx, color_modes, IM_ARRAYSIZE(color_modes));
+                if(ImGui::Combo("##colormode", &color_mode_idx, color_modes, IM_ARRAYSIZE(color_modes))){
+					state.texture_method = color_mode_idx;
+				}
 
                 ImGui::EndTabItem();
             }

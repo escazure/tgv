@@ -8,8 +8,11 @@ out vec4 FragColor;
 
 uniform bool uShowNormals;
 uniform bool uCalculateLighting;
-uniform vec3 uLightDir;
 
+uniform int uTextureMethod;
+uniform float uChunkSize;
+
+uniform vec3 uLightDir;
 const vec3 up = vec3(0.0, 1.0, 0.0);
 const vec3 lightCol = vec3(1.0);
 
@@ -17,6 +20,9 @@ const float sandLevel = -20.0;
 const float grassLevel = 250.0;
 const float rockLevel = 350.0;
 const float snowLevel = 420.0;
+
+#define DEFAULT_TEXTURE 0
+#define GRID_TEXTURE 1
 
 // TERRAIN COLORS //
 const vec3 tree = vec3(0.16, 0.27, 0.23);
@@ -56,11 +62,11 @@ float perlinNoise(vec2 uv){
 	return mix(u1, u2, w.y) * 0.5 + 0.5;
 }
 
-vec3 colorTerrain(float slope){
-	vec2 uv = WorldPos.xz;
+vec3 textureTerrainDefault(float slope){
+	vec2 wp = WorldPos.xz;
 
-    float noiseLarge  = perlinNoise(uv * 0.005);
-    float noiseDetail = perlinNoise(uv * 0.02);
+    float noiseLarge  = perlinNoise(wp * 0.005);
+    float noiseDetail = perlinNoise(wp * 0.02);
     float combinedNoise = noiseLarge * 0.7 + noiseDetail * 0.3;
     float warpedY = WorldPos.y + noiseLarge * 100.0 + noiseDetail * 50.0;
 
@@ -84,7 +90,7 @@ vec3 colorTerrain(float slope){
     float maxSnowPotential = snowWeight * snowSlopeFactor;
 
     if(maxSnowPotential > 0.05){
-        float noiseMicro = perlinNoise(uv * 0.08);
+        float noiseMicro = perlinNoise(wp * 0.08);
         vec3 snowMask = mix(snow, vec3(1.0), noiseMicro * 0.3);
         float snowPatchiness = maxSnowPotential - noiseMicro * 0.4;
         float snowCoverage = smoothstep(0.15, 0.7, snowPatchiness) * 0.85;
@@ -93,6 +99,29 @@ vec3 colorTerrain(float slope){
     }
 
     return ground;
+}
+
+vec3 textureTerrainGrid(float chunkSize){
+	vec2 wp = WorldPos.xz;
+	vec3 baseColor = vec3(0.5);
+	vec3 lineColor = vec3(0.0);
+
+	float lineWidth = 0.5;
+	vec2 coord = wp / chunkSize;
+	
+	vec2 derivative = fwidth(coord);
+	vec2 grid = abs(fract(coord - 0.5) - 0.5);
+
+	vec2 lineCoverage = vec2(0.0);
+	if(derivative.x > 0.0){
+		float halfWidth = lineWidth / chunkSize;
+		vec2 lineMin = (grid - halfWidth) / derivative;
+		vec2 lineMax = (grid + halfWidth) / derivative;
+		lineCoverage = clamp(lineMax, 0.0, 1.0) - clamp(lineMin, 0.0, 1.0);
+	}
+
+	float lineFactor = max(lineCoverage.x, lineCoverage.y);
+	return mix(baseColor, lineColor, lineFactor);
 }
 
 vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 fragToLight, vec3 lightColor, float shadow){
@@ -107,7 +136,10 @@ vec3 calculateLight(vec3 fragmentColor, vec3 normal, vec3 fragToLight, vec3 ligh
 void main(){
 	vec3 normal = texture(uNormalMap, uv).rgb * 2.0 - 1.0;
 	float slope = 1.0 - normal.y;
-	vec3 color = colorTerrain(slope);
+	vec3 color;
+
+	if(uTextureMethod == DEFAULT_TEXTURE) color = textureTerrainDefault(slope);
+	else if(uTextureMethod == GRID_TEXTURE) color = textureTerrainGrid(uChunkSize);
 
 	if(uShowNormals){
 		FragColor = vec4(normal * 0.5 + 0.5, 1.0);
