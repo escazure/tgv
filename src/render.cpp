@@ -2,51 +2,7 @@
 #include "ui.h"
 #include "helper.h"
 
-unsigned int skyboxVAO, skyboxVBO, skybox_cubemap;	
-
-float skyboxVert[] = {
-	-0.5, -0.5,  0.5,
-     0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-
-    -0.5, -0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5, -0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5,  0.5, -0.5,
-     0.5,  0.5, -0.5,
-
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5, -0.5, -0.5,
-    -0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
-
-     0.5, -0.5, -0.5,
-     0.5,  0.5,  0.5,
-     0.5, -0.5,  0.5,
-     0.5, -0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5,  0.5,  0.5,
-
-    -0.5,  0.5, -0.5,
-    -0.5,  0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
-     0.5,  0.5,  0.5,
-     0.5,  0.5, -0.5,
-
-    -0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,
-    -0.5, -0.5,  0.5,
-    -0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,	
-};
+unsigned int skyboxVAO, skyboxVBO;	
 
 void render_gui(AppState& state){
 	ImGui_ImplOpenGL3_NewFrame();
@@ -62,15 +18,59 @@ void render_gui(AppState& state){
 }
 
 void init_skybox(){
-	glGenVertexArrays(1, &skyboxVAO);
-	glBindVertexArray(skyboxVAO);
+	float skyboxVert[] = {
+		-0.5, -0.5,  0.5,
+    	 0.5, -0.5,  0.5,
+    	 0.5,  0.5,  0.5,
+    	-0.5, -0.5,  0.5,
+    	 0.5,  0.5,  0.5,
+    	-0.5,  0.5,  0.5,
 
-	glGenBuffers(1, &skyboxVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVert), skyboxVert, GL_STATIC_DRAW);
+    	-0.5, -0.5, -0.5,
+    	 0.5,  0.5, -0.5,
+    	 0.5, -0.5, -0.5,
+    	-0.5, -0.5, -0.5,
+    	-0.5,  0.5, -0.5,
+    	 0.5,  0.5, -0.5,
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+    	-0.5, -0.5, -0.5,
+    	-0.5, -0.5,  0.5,
+    	-0.5,  0.5,  0.5,
+    	-0.5, -0.5, -0.5,
+    	-0.5,  0.5,  0.5,
+    	-0.5,  0.5, -0.5,
+
+    	 0.5, -0.5, -0.5,
+    	 0.5,  0.5,  0.5,
+    	 0.5, -0.5,  0.5,
+    	 0.5, -0.5, -0.5,
+    	 0.5,  0.5, -0.5,
+    	 0.5,  0.5,  0.5,
+
+    	-0.5,  0.5, -0.5,
+		-0.5,  0.5,  0.5,
+    	 0.5,  0.5,  0.5,
+    	-0.5,  0.5, -0.5,
+    	 0.5,  0.5,  0.5,
+    	 0.5,  0.5, -0.5,
+	
+    	-0.5, -0.5, -0.5,
+    	 0.5, -0.5,  0.5,
+    	-0.5, -0.5,  0.5,
+    	-0.5, -0.5, -0.5,
+    	 0.5, -0.5, -0.5,
+    	 0.5, -0.5,  0.5,	
+	};
+
+	glCreateVertexArrays(1, &skyboxVAO);
+	glCreateBuffers(1, &skyboxVBO);
+
+	glNamedBufferData(skyboxVBO, sizeof(skyboxVert), skyboxVert, GL_STATIC_DRAW);
+	glVertexArrayVertexBuffer(skyboxVAO, 0, skyboxVBO, 0, 3 * sizeof(float));
+
+	glEnableVertexArrayAttrib(skyboxVAO, 0);
+	glVertexArrayAttribFormat(skyboxVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(skyboxVAO, 0, 0);
 }
 
 void render_skybox(Shader shader, const glm::vec3& lightDir){
@@ -104,21 +104,19 @@ void render_quad(){
              1.0f,  1.0f,  1.0f, 1.0f 
         };
 
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
+        glCreateVertexArrays(1, &quadVAO);
+        glCreateBuffers(1, &quadVBO);
 
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glNamedBufferData(quadVBO, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, 4 * sizeof(float));
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexArrayAttrib(quadVAO, 0);
+		glVertexArrayAttribFormat(quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+		glVertexArrayAttribBinding(quadVAO, 0, 0);
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        glEnableVertexArrayAttrib(quadVAO, 1);
+		glVertexArrayAttribFormat(quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+		glVertexArrayAttribBinding(quadVAO, 1, 0);
     }
 
     glBindVertexArray(quadVAO);
