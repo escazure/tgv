@@ -223,6 +223,8 @@ void run(GLFWwindow* window){
 			shader.use();
 			shader.set_float("uTerrainSize", state.size);
 			shader.set_float("uChunkSize", state.chunk_size);
+			shader.set_float("uMinHeight", state.min_height);
+			shader.set_float("uMaxHeight", state.max_height);
 			shader.set_int("uTextureMethod", state.texture_method);
 			shader.set_bool("uRenderTerrainSkirt", state.render_terrain_skirt);
 			shader.set_bool("uShowNormals", state.show_normals);

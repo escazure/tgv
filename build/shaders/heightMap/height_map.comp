@@ -21,6 +21,7 @@ uint hashSeed(uint seed) {
     return seed;
 }
 
+// Smooth min by Inigo Quilez
 float smin(float a, float b, float k){
     k *= 4.0;
     float h = max(k-abs(a-b), 0.0)/k;
