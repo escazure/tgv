@@ -147,20 +147,36 @@ namespace UI{
 
 	void drawGenerationPanel(AppState& state){
         ImGui::SetNextWindowPos(ImVec2(10.0f, 32.0f), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(420.0f, 540.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(420.0f, 720.0f), ImGuiCond_FirstUseEver);
         
         ImGui::Begin("Generation", nullptr, ImGuiWindowFlags_None);
 
         if(ImGui::BeginTabBar("GenerationTabBar", ImGuiTabBarFlags_None)){
             if(ImGui::BeginTabItem("Editor")){
                 ImGui::Spacing();
+
+				float styleSpacing = ImGui::GetStyle().ItemSpacing.y;
+            	float frameHeight = ImGui::GetFrameHeightWithSpacing();
+            
+            	float bottomControlsHeight = frameHeight * 2.0f + frameHeight * 2.0f + 36.0f + styleSpacing + 
+                	frameHeight + frameHeight * 3.0f + (styleSpacing * 8.0f);
+
+				float textAreaHeight = ImGui::GetContentRegionAvail().y - bottomControlsHeight;
+				float minHeight = 150.0f;
+				textAreaHeight = std::max(textAreaHeight, minHeight);
                 
                 ImGui::Text("User Defined Function (UDF):");
-                ImGui::InputTextMultiline("##udf_textarea", 
-                                          state.fun_buf, 
-                                          IM_ARRAYSIZE(state.fun_buf), 
-                                          ImVec2(-FLT_MIN, 160.0f), 
-                                          ImGuiInputTextFlags_AllowTabInput);
+				ImGui::BeginChild("UDF_Child", ImVec2(-FLT_MIN, textAreaHeight), false, ImGuiWindowFlags_HorizontalScrollbar);
+				
+				ImGui::InputTextMultiline(
+    				"##udf_textarea", 
+				    state.fun_buf, 
+				    IM_ARRAYSIZE(state.fun_buf), 
+				    ImVec2(2000.0f, ImGui::GetContentRegionAvail().y),
+				    ImGuiInputTextFlags_AllowTabInput
+				);
+
+				ImGui::EndChild();
 
                 ImGui::Spacing();
 

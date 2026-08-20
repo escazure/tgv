@@ -1209,6 +1209,7 @@ CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o: /home/escazure/cpp_projec
 
 CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: /home/escazure/cpp_projects/tgv/external/stbi/stb_image.cpp \
   /home/escazure/cpp_projects/tgv/external/stbi/stb_image.h \
+  /home/escazure/cpp_projects/tgv/external/stbi/stb_image_write.h \
   /usr/include/alloca.h \
   /usr/include/assert.h \
   /usr/include/bits/atomic_wide_counter.h \
@@ -1346,7 +1347,7 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: /home/escazure/cpp_projects/tg
 
 CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp \
   /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.h \
-  /home/escazure/cpp_projects/tgv/external/glfw3.h \
+  /home/escazure/cpp_projects/tgv/external/glfw/glfw3.h \
   /home/escazure/cpp_projects/tgv/external/glm/common.hpp \
   /home/escazure/cpp_projects/tgv/external/glm/simd/common.h \
   /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h \
@@ -1464,7 +1465,6 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
-  /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -1836,7 +1836,7 @@ CMakeFiles/tgv.dir/src/core.cpp.o: /home/escazure/cpp_projects/tgv/src/core.cpp 
 
 CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.cpp \
   /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.h \
-  /home/escazure/cpp_projects/tgv/external/glfw3.h \
+  /home/escazure/cpp_projects/tgv/external/glfw/glfw3.h \
   /home/escazure/cpp_projects/tgv/external/glm/common.hpp \
   /home/escazure/cpp_projects/tgv/external/glm/simd/common.h \
   /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h \
@@ -1954,7 +1954,6 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
-  /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -2326,7 +2325,7 @@ CMakeFiles/tgv.dir/src/helper.cpp.o: /home/escazure/cpp_projects/tgv/src/helper.
 
 CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp \
   /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.h \
-  /home/escazure/cpp_projects/tgv/external/glfw3.h \
+  /home/escazure/cpp_projects/tgv/external/glfw/glfw3.h \
   /home/escazure/cpp_projects/tgv/external/glm/common.hpp \
   /home/escazure/cpp_projects/tgv/external/glm/simd/common.h \
   /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h \
@@ -2444,7 +2443,6 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
   /home/escazure/cpp_projects/tgv/include/terrain.h \
   /home/escazure/cpp_projects/tgv/include/texture.h \
   /usr/include/GL/glcorearb.h \
-  /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -2816,7 +2814,7 @@ CMakeFiles/tgv.dir/src/main.cpp.o: /home/escazure/cpp_projects/tgv/src/main.cpp 
 
 CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.cpp \
   /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.h \
-  /home/escazure/cpp_projects/tgv/external/glfw3.h \
+  /home/escazure/cpp_projects/tgv/external/glfw/glfw3.h \
   /home/escazure/cpp_projects/tgv/external/glm/common.hpp \
   /home/escazure/cpp_projects/tgv/external/glm/simd/common.h \
   /home/escazure/cpp_projects/tgv/external/glm/simd/exponential.h \
@@ -2935,7 +2933,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o: /home/escazure/cpp_projects/tgv/src/render.
   /home/escazure/cpp_projects/tgv/include/texture.h \
   /home/escazure/cpp_projects/tgv/include/ui.h \
   /usr/include/GL/glcorearb.h \
-  /usr/include/GLFW/glfw3.h \
   /usr/include/KHR/khrplatform.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -3321,7 +3318,6 @@ tgv: /lib64/libGLdispatch.so.0 \
   /usr/lib64/crti.o \
   /usr/lib64/crtn.o \
   /usr/lib64/libc.so \
-  /usr/lib64/libdl.a \
   /usr/lib64/libgcc_s.so \
   /usr/lib64/libgcc_s.so.1 \
   /usr/lib64/libglfw.so \
@@ -3381,13 +3377,9 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 
 /usr/lib64/libgcc_s.so.1:
 
-/usr/lib64/libdl.a:
-
 /usr/lib64/crtn.o:
 
 /usr/lib32/libxcb.so.1:
-
-/usr/lib32/libXau.so.6:
 
 /usr/lib32/libGLdispatch.so.0:
 
@@ -3424,6 +3416,8 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o:
 /usr/include/linux/sched/types.h:
 
 /usr/include/linux/posix_types.h:
+
+/usr/include/linux/errno.h:
 
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/lwpintrin.h:
 
@@ -3823,8 +3817,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /usr/include/bits/endianness.h:
 
-/usr/include/linux/errno.h:
-
 /usr/include/bits/libc-header-start.h:
 
 /usr/include/X11/Xdefs.h:
@@ -4097,8 +4089,6 @@ CMakeFiles/tgv.dir/external/imgui/imgui_draw.cpp.o:
 
 /home/escazure/cpp_projects/tgv/external/glm/mat4x2.hpp:
 
-/usr/include/bits/pthread_stack_min-dynamic.h:
-
 /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mmintrin.h:
 
 /usr/include/c++/14.2/compare:
@@ -4214,6 +4204,14 @@ CMakeFiles/tgv.dir/src/core.cpp.o:
 /home/escazure/cpp_projects/tgv/external/imgui/imgui_widgets.cpp:
 
 /usr/include/c++/14.2/bits/allocator.h:
+
+/usr/lib32/libXau.so.6:
+
+/home/escazure/cpp_projects/tgv/external/stbi/stb_image_write.h:
+
+/usr/include/bits/pthread_stack_min-dynamic.h:
+
+/home/escazure/cpp_projects/tgv/external/glfw/glfw3.h:
 
 /home/escazure/cpp_projects/tgv/external/glm/detail/_vectorize.hpp:
 
@@ -4516,8 +4514,6 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
 /usr/include/c++/14.2/ostream:
 
 /usr/include/c++/14.2/sstream:
-
-/home/escazure/cpp_projects/tgv/external/glfw3.h:
 
 /usr/include/c++/14.2/stdexcept:
 

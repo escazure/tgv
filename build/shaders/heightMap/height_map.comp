@@ -6,6 +6,10 @@ uniform float uWorldSize;
 
 uniform int uSeed;
 
+
+vec2 uv;
+vec2 worldPos;
+
 float hash21(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453123);
 }
@@ -193,13 +197,28 @@ float example(vec2 uv, float baseFrequency, float baseAmplitude, float erosionSt
 
 
 /*** USER DEFINED FUNCTION BEGIN ***/
-float example_terrain(vec2 uv){
-return example(uv, 0.0003, 2200.0, 2.7, 8);
+float example_terrain(){
+float cellCount = 2.0;
+vec2 scaledUV = uv * cellCount;
+vec2 i = floor(scaledUV);
+vec2 f = fract(scaledUV);
+float chanceFactor = 0.5;
+float height;
+
+vec2 gPeak = hash22(i);
+float dist = length(gPeak - f);
+
+float chance = hash21(uv) * chanceFactor;
+if(chance > dist) height = 1.0;
+else height = 0.0;
+
+return height;
 }
 /*** USER DEFINED FUNCTION END ***/
 
 void main(){
  ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);
- vec2 uv = vec2(dstCoords) - uWorldSize * 0.5;
- imageStore(uHeightMap, dstCoords, vec4(example_terrain(uv), 0.0, 0.0, 0.0));
+ uv = vec2(dstCoords) / uWorldSize;
+ worldPos = vec2(dstCoords) - uWorldSize * 0.5;
+ imageStore(uHeightMap, dstCoords, vec4(example_terrain(), 0.0, 0.0, 0.0));
 }

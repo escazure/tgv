@@ -18,7 +18,7 @@ struct AppState{
 	int step_size = 1;
 	int seed = 0;
 
-    char fun_buf[512] = "return example(uv, 0.0003, 2200.0, 2.7, 8);";
+    char fun_buf[2048] = "return example(worldPos, 0.0003, 2200.0, 2.7, 8);";
     char fun_name[128] = "example_terrain";
 
     bool show_noise_window = false;

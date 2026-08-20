@@ -65,7 +65,7 @@ void process_input(GLFWwindow* window, float delta_time){
 
 std::string wrap_user_input(const std::string& function_body, const std::string& function_name){
 	std::string result;		
-	result = "float " + function_name + "(vec2 uv){\n" + function_body + "\n}";
+	result = "float " + function_name + "(){\n" + function_body + "\n}";
 	return result;
 }
 
@@ -80,7 +80,8 @@ void build_shader(const std::string& udf, const std::string& udf_name, const std
 	      "layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;\n"
 		  "layout (binding = 0, r32f) writeonly uniform image2D uHeightMap;\n\n"
 		  "uniform float uWorldSize;\n\n"
-		  "uniform int uSeed;\n\n";
+		  "uniform int uSeed;\n\n"
+		  "\nvec2 uv;\nvec2 worldPos;\n\n";
 
 	os << lib << "\n\n";
 
@@ -90,8 +91,9 @@ void build_shader(const std::string& udf, const std::string& udf_name, const std
 
 	os << "void main(){\n"
 		  " ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);\n"
-		  " vec2 uv = vec2(dstCoords) - uWorldSize * 0.5;\n"
-		  " imageStore(uHeightMap, dstCoords, vec4(" << udf_name << "(uv), 0.0, 0.0, 0.0));\n"
+		  " uv = vec2(dstCoords) / uWorldSize;\n"
+		  " worldPos = vec2(dstCoords) - uWorldSize * 0.5;\n"
+		  " imageStore(uHeightMap, dstCoords, vec4(" << udf_name << "(), 0.0, 0.0, 0.0));\n"
 		  "}";
 }
 
