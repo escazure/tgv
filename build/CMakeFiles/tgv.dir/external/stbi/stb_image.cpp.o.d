@@ -90,4 +90,5 @@ CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/emmintrin.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mmintrin.h \
- /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mm_malloc.h
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/mm_malloc.h \
+ /home/escazure/cpp_projects/tgv/external/stbi/stb_image_write.h

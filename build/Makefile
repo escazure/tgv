@@ -143,6 +143,19 @@ copy_assets/fast:
 .PHONY : copy_assets/fast
 
 #=============================================================================
+# Target rules for targets named copy_notices
+
+# Build rule for target.
+copy_notices: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 copy_notices
+.PHONY : copy_notices
+
+# fast build rule for target.
+copy_notices/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/copy_notices.dir/build.make CMakeFiles/copy_notices.dir/build
+.PHONY : copy_notices/fast
+
+#=============================================================================
 # Target rules for targets named tgv
 
 # Build rule for target.
@@ -452,6 +465,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... copy_assets"
+	@echo "... copy_notices"
 	@echo "... make_height_map_dir"
 	@echo "... tgv"
 	@echo "... external/gl3w/gl3w.o"

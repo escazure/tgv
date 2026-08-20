@@ -15,7 +15,7 @@ CMakeFiles/tgv.dir/src/render.cpp.o: \
  /usr/include/bits/time64.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-intn.h /usr/include/bits/stdint-uintn.h \
  /usr/include/bits/stdint-least.h \
- /home/escazure/cpp_projects/tgv/external/glfw3.h \
+ /home/escazure/cpp_projects/tgv/external/glfw/glfw3.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/14.2/include/stddef.h \
  /home/escazure/cpp_projects/tgv/external/imgui/imgui.h \
  /home/escazure/cpp_projects/tgv/external/imgui/imconfig.h \
@@ -55,7 +55,6 @@ CMakeFiles/tgv.dir/src/render.cpp.o: \
  /usr/include/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/bits/stdlib-float.h /usr/include/c++/14.2/bits/std_abs.h \
  /home/escazure/cpp_projects/tgv/include/shader_program.h \
- /usr/include/GLFW/glfw3.h \
  /home/escazure/cpp_projects/tgv/external/glm/glm.hpp \
  /home/escazure/cpp_projects/tgv/external/glm/detail/_fixes.hpp \
  /usr/include/c++/14.2/cmath /usr/include/c++/14.2/bits/requires_hosted.h \

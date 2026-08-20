@@ -24,15 +24,24 @@ set(STBI_SRC external/stbi/stb_image.cpp)
 set(STBI_INCLUDE external/stbi)
 
 
-add_custom_target(make_height_map_dir ALL
+add_custom_target(make_height_map_dir
 	COMMAND ${CMAKE_COMMAND} -E make_directory
-			${CMAKE_BINARY_DIR}/shaders/heightMap
+	${CMAKE_BINARY_DIR}/shaders/heightMap
+	COMMENT "Making directory for height map shaders..."
 )
 
-add_custom_target(copy_assets ALL
+add_custom_target(copy_assets
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${CMAKE_SOURCE_DIR}/shaders
-            ${CMAKE_BINARY_DIR}/shaders
+	${CMAKE_SOURCE_DIR}/shaders
+    ${CMAKE_BINARY_DIR}/shaders
+	COMMENT "Copying directory with shaders..."
+)
+
+add_custom_target(copy_notices
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+	${CMAKE_SOURCE_DIR}/NOTICES.txt	
+	${CMAKE_BINARY_DIR}/NOTICES.txt
+	COMMENT "Copying third-party license notices..."
 )
 
 add_executable(tgv
@@ -55,7 +64,6 @@ find_package(OpenGL REQUIRED)
 target_link_libraries(tgv PRIVATE
 	glfw
 	OpenGL::GL
-	dl
 )
 
 target_compile_options(tgv PRIVATE -Wno-pragmas)
@@ -72,4 +80,8 @@ if(UNIX AND NOT APPLE)
     )
 endif()
 
-add_dependencies(tgv copy_assets)
+add_dependencies(tgv 
+    make_height_map_dir 
+    copy_assets 
+    copy_notices
+)

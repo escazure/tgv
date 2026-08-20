@@ -67,6 +67,7 @@ include CMakeFiles/make_height_map_dir.dir/compiler_depend.make
 include CMakeFiles/make_height_map_dir.dir/progress.make
 
 CMakeFiles/make_height_map_dir:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Making directory for height map shaders..."
 	/usr/bin/cmake -E make_directory /home/escazure/cpp_projects/tgv/build/shaders/heightMap
 
 CMakeFiles/make_height_map_dir.dir/codegen:

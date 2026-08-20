@@ -1,7 +1,10 @@
-vec2 hash22(vec2 p){
-	p = fract(p * vec2(0.1031, 0.1030));
-    p += dot(p, p.yx + 33.33);
-    return fract((p.xx + p.yy) * p.yx) * 2.0 - 1.0;
+float hash21(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+vec2 hash22(vec2 p) {
+    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+    return fract(sin(p) * 43758.5453123);
 }
 
 uint hashSeed(uint seed) {
@@ -35,14 +38,29 @@ float bellCurve(vec2 uv, float radius, float amplitude){
 	return exp(-r2 / (2.0 * radius * radius)) * amplitude;
 }
 
+float valueNoise(vec2 uv){
+	vec2 i = floor(uv);
+	vec2 f = fract(uv);
+
+	float a = hash21(i) * 2.0 - 1.0;
+	float b = hash21(i + vec2(1.0, 0.0)) * 2.0 - 1.0;
+	float c = hash21(i + vec2(0.0, 1.0)) * 2.0 - 1.0;
+	float d = hash21(i + vec2(1.0, 1.0)) * 2.0 - 1.0;
+
+	float u1 = mix(a, b, f.x);
+	float u2 = mix(c, d, f.x);
+
+	return mix(u1, u2, f.y);
+}
+
 float perlinNoise(vec2 uv){
 	vec2 i = floor(uv);
 	vec2 f = fract(uv);
 
-	vec2 gradA = hash22(i);
-	vec2 gradB = hash22(i + vec2(1.0, 0.0));
-	vec2 gradC = hash22(i + vec2(0.0, 1.0));
-	vec2 gradD = hash22(i + vec2(1.0, 1.0));
+	vec2 gradA = hash22(i) * 2.0 - 1.0;
+	vec2 gradB = hash22(i + vec2(1.0, 0.0)) * 2.0 - 1.0;
+	vec2 gradC = hash22(i + vec2(0.0, 1.0)) * 2.0 - 1.0;
+	vec2 gradD = hash22(i + vec2(1.0, 1.0)) * 2.0 - 1.0;
 
 	float dotA = dot(gradA, f);
 	float dotB = dot(gradB, f - vec2(1.0, 0.0));
@@ -61,10 +79,10 @@ vec3 perlinNoiseDerivatives(vec2 uv){
 	vec2 i = floor(uv);
 	vec2 f = fract(uv);
 
-	vec2 gradA = hash22(i);
-	vec2 gradB = hash22(i + vec2(1.0, 0.0));
-	vec2 gradC = hash22(i + vec2(0.0, 1.0));
-	vec2 gradD = hash22(i + vec2(1.0, 1.0));
+	vec2 gradA = hash22(i) * 2.0 - 1.0;
+	vec2 gradB = hash22(i + vec2(1.0, 0.0)) * 2.0 - 1.0;
+	vec2 gradC = hash22(i + vec2(0.0, 1.0)) * 2.0 - 1.0;
+	vec2 gradD = hash22(i + vec2(1.0, 1.0)) * 2.0 - 1.0;
 
 	float dotA = dot(gradA, f);
 	float dotB = dot(gradB, f - vec2(1.0, 0.0));
@@ -87,6 +105,38 @@ vec3 perlinNoiseDerivatives(vec2 uv){
 	vec2 d = gradInterpolation + vec2(dx, dy);
 	
 	return vec3(val, d);
+}
+
+float voronoiNoise(vec2 uv, float cellSize){
+	vec2 scaledUV = uv / cellSize;
+	vec2 baseCell = floor(scaledUV);
+	vec2 fracUV = fract(scaledUV);
+
+    float minDist = 10.0;
+
+	for(int x = -1; x <= 1; x++){
+		for(int y = -1; y <= 1; y++){
+			vec2 neighbor = vec2(float(x), float(y));
+			vec2 point = hash22(baseCell + neighbor);
+			vec2 diff = neighbor + point - fracUV;
+			float dist = length(diff);
+
+			minDist = min(minDist, dist);
+		}
+	}
+
+	return minDist;
+}
+
+float fbmVoronoi(vec2 uv, int octaves, float cellSize){
+	float total = 0.0;
+	float amplitude = 1.0;
+	for(int i = 0; i < octaves; i++){
+		total += amplitude * voronoiNoise(uv, cellSize);
+		uv *= 2.0;
+		amplitude *= 0.5;
+	}
+	return total;
 }
 
 float fbm(vec2 uv, int octaves){
@@ -118,11 +168,17 @@ float fbmErosion(vec2 uv, int octaves, float erosionStrength){
 	return total;
 }
 
+vec2 warpUV(vec2 uv, int octaves){
+	float offset = fbm(uv, octaves);
+	return vec2(uv.x + offset, uv.y - offset);
+}
+
 float example(vec2 uv, float baseFrequency, float baseAmplitude, float erosionStrength, int octaves){
 	const float shiftSize = 500000.0;
 
 	vec2 offsetUV = shiftUV(uv, shiftSize, uSeed);
-	float height = fbmErosion(offsetUV * baseFrequency, octaves, erosionStrength) * baseAmplitude;
+	vec2 warp = warpUV(offsetUV, 8);
+	float height = fbmErosion(warp * baseFrequency, octaves, erosionStrength) * baseAmplitude;
 
 	return height;
 }

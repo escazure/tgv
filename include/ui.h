@@ -351,6 +351,7 @@ namespace UI{
                 static const char* color_modes[] = { 
                     "Default Surface Shading", 
                     "Altitude Map", 
+                    "Greyscale", 
 					"Chunk Grid"
                 };
                 

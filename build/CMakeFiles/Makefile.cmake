@@ -59,5 +59,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/make_height_map_dir.dir/DependInfo.cmake"
   "CMakeFiles/copy_assets.dir/DependInfo.cmake"
+  "CMakeFiles/copy_notices.dir/DependInfo.cmake"
   "CMakeFiles/tgv.dir/DependInfo.cmake"
   )

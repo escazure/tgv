@@ -25,7 +25,8 @@ const float snowLevel = 420.0;
 
 #define DEFAULT_TEXTURE 0
 #define ALTITUDE_TEXTURE 1
-#define GRID_TEXTURE 2
+#define GREYSCALE_TEXTURE 2
+#define GRID_TEXTURE 3
 
 // TERRAIN COLORS //
 const vec3 tree = vec3(0.16, 0.27, 0.23);
@@ -135,6 +136,11 @@ vec3 textureTerrainAltitude(float height, float minHeight, float maxHeight){
 	return mix(color, lineColor, mask);
 }
 
+vec3 textureTerrainGreyscale(float height, float minHeight, float maxHeight){
+	float t = (height - minHeight) / (maxHeight - minHeight);
+	return vec3(t);
+}
+
 vec3 textureTerrainGrid(float chunkSize){
 	vec2 wp = WorldPos.xz;
 	vec3 baseColor = vec3(0.5);
@@ -174,6 +180,7 @@ void main(){
 
 	if(uTextureMethod == DEFAULT_TEXTURE) color = textureTerrainDefault(slope);
 	else if(uTextureMethod == ALTITUDE_TEXTURE) color = textureTerrainAltitude(WorldPos.y, uMinHeight, uMaxHeight);
+	else if(uTextureMethod == GREYSCALE_TEXTURE) color = textureTerrainGreyscale(WorldPos.y, uMinHeight, uMaxHeight);
 	else if(uTextureMethod == GRID_TEXTURE) color = textureTerrainGrid(uChunkSize);
 
 	if(uShowNormals){
