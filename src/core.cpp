@@ -55,6 +55,8 @@ GLFWwindow* init(){
 	normalMap.create(GL_TEXTURE_2D, 1, GL_RGBA32F, 1024, 1024);
 	shadowMap.create(GL_TEXTURE_2D, 1, GL_R32F, 1024, 1024);
 
+	state.heightMap = &heightMap;
+
 	glCreateFramebuffers(1, &shadowMapFBO);
 	shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
 
@@ -140,25 +142,41 @@ void run(GLFWwindow* window){
 			Shader height_map_shader("heightMap/height_map.comp");
 
 			// ----- Height map generation ----- //
-			heightMap.resize(1, state.size, state.size);
-			heightMap.bindAsImage(0);
-			linearClamp.bind(0);
+			if(!state.height_map_imported){
+				if(state.logging) std::cout << "Generating heightmap...\n";
+				heightMap.resize(1, state.size, state.size);
+				heightMap.bindAsImage(0);
+				linearClamp.bind(0);
 
-			height_map_shader.use();
-			height_map_shader.set_float("uWorldSize", state.size);
-			height_map_shader.set_int("uSeed", state.seed);
+				height_map_shader.use();
+				height_map_shader.set_float("uWorldSize", state.size);
+				height_map_shader.set_int("uSeed", state.seed);
 
-			timers[HEIGHT_MAP_ID].begin();
-			glDispatchCompute(state.size / 16, state.size / 16, 1);		
-			timers[HEIGHT_MAP_ID].end();
+				timers[HEIGHT_MAP_ID].begin();
+				glDispatchCompute(state.size / 16, state.size / 16, 1);		
+				timers[HEIGHT_MAP_ID].end();
 
-			glMemoryBarrier(barrier);
+				glMemoryBarrier(barrier);
+				if(state.logging) std::cout << "Done\n";
+			}
+			else{
+				if(state.logging) std::cout << "Skipped heightmap generation, was imported\n";
+			}
+
 			// ----- Compute min/max height ----- //
-			timers[MIN_MAX_ID].begin();
-			getMinMaxHeight(min_max_compute_shader, state, heightMap, state.size, state.size);
-			timers[MIN_MAX_ID].end();
+			if(!state.height_map_min_max_imported){
+				if(state.logging) std::cout << "Calculating min/max heights...\n";
+				timers[MIN_MAX_ID].begin();
+				getMinMaxHeight(min_max_compute_shader, state, heightMap, state.size, state.size);
+				timers[MIN_MAX_ID].end();
+				if(state.logging) std::cout << "Done\n";
+			}
+			else{
+				if(state.logging) std::cout << "Skipped min/max calculations, was imported\n";
+			}
 
-			// ----- Normal map generation ----- //
+			// ----- Normalmap generation ----- //
+			if(state.logging) std::cout << "Generating normalmap...\n";
 			normalMap.resize(1, state.size, state.size);
 			normalMap.bindAsImage(1);
 			linearClamp.bind(1);
@@ -174,7 +192,10 @@ void run(GLFWwindow* window){
 			timers[NORMAL_MAP_ID].end();
 
 			glMemoryBarrier(barrier);
-			// ----- Shadow map generation ----- //
+			if(state.logging) std::cout << "Done\n";
+
+			// ----- Shadowmap generation ----- //
+			if(state.logging) std::cout << "Generating shadowmap...\n";
 			shadowMap.resize(1, state.size, state.size);
 			shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
 
@@ -197,6 +218,7 @@ void run(GLFWwindow* window){
 			timers[SHADOW_MAP_ID].begin();
 			render_quad();	
 			timers[SHADOW_MAP_ID].end();
+			if(state.logging) std::cout << "Done\n";
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

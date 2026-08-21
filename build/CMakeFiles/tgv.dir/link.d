@@ -13,7 +13,7 @@ tgv: \
   CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o \
   CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o \
   CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o \
-  CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o \
+  CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o \
   /usr/lib64/gcc/x86_64-unknown-linux-gnu/14.2.1/../../../../lib64/libglfw.so \
   /usr/lib/libGLX.so \
   /usr/lib/libOpenGL.so \
@@ -83,7 +83,7 @@ CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o:
 
 CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o:
 
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o:
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o:
 
 /usr/lib64/gcc/x86_64-unknown-linux-gnu/14.2.1/../../../../lib64/libglfw.so:
 

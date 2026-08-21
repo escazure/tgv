@@ -20,8 +20,8 @@ set(IMGUI_SRCS
 set(GL3W_SRC external/gl3w/gl3w.c)
 set(GL3W_INCLUDE external/gl3w)
 
-set(STBI_SRC external/stbi/stb_image.cpp)
-set(STBI_INCLUDE external/stbi)
+set(LODEPNG_SRC external/lodepng/lodepng.cpp)
+set(LODEPNG_INCLUDE external/lodepng)
 
 
 add_custom_target(make_height_map_dir
@@ -48,7 +48,7 @@ add_executable(tgv
 	${CPP_SRCS}
 	${IMGUI_SRCS}
 	${GL3W_SRC}
-	${STBI_SRC}
+	${LODEPNG_SRC}
 )
 
 target_include_directories(tgv PRIVATE
@@ -57,7 +57,7 @@ target_include_directories(tgv PRIVATE
 	external/imgui
 	external/imgui/backends
 	${GL3W_INCLUDE}
-	${STBI_INCLUDE}
+	${LODEPNG_INCLUDE}
 )
 
 find_package(OpenGL REQUIRED)

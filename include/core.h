@@ -5,7 +5,6 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "stb_image.h"
 
 #include "shader_program.h"
 #include "simple_camera.h"

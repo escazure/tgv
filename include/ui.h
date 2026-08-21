@@ -7,8 +7,12 @@ namespace UI{
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 6.0f));
         if(ImGui::BeginMainMenuBar()){
             if(ImGui::BeginMenu("File")){
-                if(ImGui::MenuItem("Save UDF Preset")){ /* Save logic */ }
-                if(ImGui::MenuItem("Export Mesh (.obj)")){ /* Export logic */ }
+                if(ImGui::MenuItem("Import Heightmap...")){
+					state.show_import_dialog = true;
+				}
+                if(ImGui::MenuItem("Export Heightmap...")){
+					state.show_export_dialog = true;
+				}
                 ImGui::EndMenu();
             }
 
@@ -40,6 +44,83 @@ namespace UI{
             ImGui::EndMainMenuBar();
         }
         ImGui::PopStyleVar();
+
+		if(state.show_import_dialog){
+		    ImGui::OpenPopup("Import Heightmap");
+		    state.show_import_dialog = false;
+		}
+
+		if(ImGui::BeginPopupModal("Import Heightmap", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+			ImGui::Text("Enter PNG file path to import:");
+		    ImGui::InputText("##ImportPath", state.import_path_buffer, IM_ARRAYSIZE(state.import_path_buffer));
+
+			ImGui::Checkbox("Scale heights to world bounds (min/max)", &state.height_map_min_max_imported);
+			if(state.height_map_min_max_imported){
+				ImGui::Spacing();
+
+				ImGui::Text("Min Height:");
+				ImGui::SameLine();
+				ImGui::InputFloat("##ImportMinHeight", &state.min_height, -10000.0, 10000.0);
+
+				ImGui::Text("Max Height:");
+				ImGui::SameLine();
+				ImGui::InputFloat("##ImportMaxHeight", &state.max_height, -10000.0, 10000.0);
+			}
+
+			ImGui::Separator();
+
+		    if(ImGui::Button("Import", ImVec2(120, 0))){
+        		importTexture(std::string(state.import_path_buffer), state.heightMap, state.height_map_min_max_imported);
+				state.height_map_imported = true;
+				state.size = state.heightMap->_width;
+
+				state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
+				state.terrain->generate();
+				state.generate_terrain = true;
+				state.terrain_generated = false;
+
+		        ImGui::CloseCurrentPopup();
+		    }
+
+		    ImGui::SetItemDefaultFocus();
+		    ImGui::SameLine();
+
+		    if(ImGui::Button("Cancel", ImVec2(120, 0))){
+  				ImGui::CloseCurrentPopup();
+    		}
+    		ImGui::EndPopup();
+		}
+
+		if(state.show_export_dialog){
+   			ImGui::OpenPopup("Export Heightmap");
+		    state.show_export_dialog = false;
+		}
+
+		if(ImGui::BeginPopupModal("Export Heightmap", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+    		ImGui::Text("Base File Name (without extension):");
+    		ImGui::InputText("##ExportPath", state.export_path_buffer, IM_ARRAYSIZE(state.export_path_buffer));
+
+		    ImGui::Spacing();
+		    ImGui::Text("Format Bit Depth:");
+		    ImGui::RadioButton("8-bit Grayscale (255 steps)", &state.export_bit_depth, 0);
+		    ImGui::RadioButton("16-bit Grayscale (65535 steps)", &state.export_bit_depth, 1);
+
+		    ImGui::Separator();
+
+		    if(ImGui::Button("Export", ImVec2(120, 0))){
+		        unsigned int bitFormat = (state.export_bit_depth == 1) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_BYTE;
+		        exportTexture(std::string(state.export_path_buffer), state.heightMap, bitFormat);
+		        ImGui::CloseCurrentPopup();
+		    }
+
+		    ImGui::SetItemDefaultFocus();
+		    ImGui::SameLine();
+
+		    if(ImGui::Button("Cancel", ImVec2(120, 0))){
+		        ImGui::CloseCurrentPopup();
+		    }
+		    ImGui::EndPopup();
+		}
 
 
         if(state.show_noise_window){
@@ -135,7 +216,7 @@ namespace UI{
                     AddKeyRow("Strafe Left / Right", "A / D");
                     AddKeyRow("Fly Upward", "Space");
                     AddKeyRow("Fly Downward", "Left Ctrl");
-                    AddKeyRow("Toggle Mouse Capture", "ESC");
+                    AddKeyRow("Toggle Free Camera Mode", "ESC");
 
                     ImGui::EndTable();
                 }
@@ -327,6 +408,12 @@ namespace UI{
                     ImGui::TableSetColumnIndex(1);
                     float height_range = (state.terrain_generated && state.terrain) ? (state.max_height - state.min_height) : 0.0f;
                     ImGui::Text("%.2f units", height_range);
+
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("Terrain Size:");
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%d units", (state.terrain_generated && state.terrain) ? state.size : 0);
 
                     ImGui::EndTable();
                 }

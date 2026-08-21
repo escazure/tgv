@@ -336,29 +336,29 @@ external/imgui/imgui_widgets.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.s
 .PHONY : external/imgui/imgui_widgets.cpp.s
 
-external/stbi/stb_image.o: external/stbi/stb_image.cpp.o
-.PHONY : external/stbi/stb_image.o
+external/lodepng/lodepng.o: external/lodepng/lodepng.cpp.o
+.PHONY : external/lodepng/lodepng.o
 
 # target to build an object file
-external/stbi/stb_image.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o
-.PHONY : external/stbi/stb_image.cpp.o
+external/lodepng/lodepng.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o
+.PHONY : external/lodepng/lodepng.cpp.o
 
-external/stbi/stb_image.i: external/stbi/stb_image.cpp.i
-.PHONY : external/stbi/stb_image.i
+external/lodepng/lodepng.i: external/lodepng/lodepng.cpp.i
+.PHONY : external/lodepng/lodepng.i
 
 # target to preprocess a source file
-external/stbi/stb_image.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.i
-.PHONY : external/stbi/stb_image.cpp.i
+external/lodepng/lodepng.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.i
+.PHONY : external/lodepng/lodepng.cpp.i
 
-external/stbi/stb_image.s: external/stbi/stb_image.cpp.s
-.PHONY : external/stbi/stb_image.s
+external/lodepng/lodepng.s: external/lodepng/lodepng.cpp.s
+.PHONY : external/lodepng/lodepng.s
 
 # target to generate assembly for a file
-external/stbi/stb_image.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.s
-.PHONY : external/stbi/stb_image.cpp.s
+external/lodepng/lodepng.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.s
+.PHONY : external/lodepng/lodepng.cpp.s
 
 src/core.o: src/core.cpp.o
 .PHONY : src/core.o
@@ -489,9 +489,9 @@ help:
 	@echo "... external/imgui/imgui_widgets.o"
 	@echo "... external/imgui/imgui_widgets.i"
 	@echo "... external/imgui/imgui_widgets.s"
-	@echo "... external/stbi/stb_image.o"
-	@echo "... external/stbi/stb_image.i"
-	@echo "... external/stbi/stb_image.s"
+	@echo "... external/lodepng/lodepng.o"
+	@echo "... external/lodepng/lodepng.i"
+	@echo "... external/lodepng/lodepng.s"
 	@echo "... src/core.o"
 	@echo "... src/core.i"
 	@echo "... src/core.s"

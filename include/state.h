@@ -11,6 +11,7 @@
 class FunctionLoader;
 class Terrain;
 struct Camera;
+struct Texture;
 
 struct AppState{
     int size = 1024;
@@ -35,6 +36,7 @@ struct AppState{
 
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
+	Texture* heightMap = nullptr;
 
 	bool debug_mode = false;
 	bool logging = false;
@@ -51,4 +53,14 @@ struct AppState{
 	bool render_terrain_skirt = false;
 	bool show_ui = true;
 	bool is_vsync = true;
+
+	bool show_import_dialog = false;
+	bool show_export_dialog = false;
+	bool height_map_imported = false;
+	bool height_map_min_max_imported = false;
+
+	char import_path_buffer[256] = "heightmap_input.png";
+	char export_path_buffer[256] = "heightmap_export";
+
+	int export_bit_depth = 1;
 };

@@ -198,21 +198,7 @@ float example(vec2 uv, float baseFrequency, float baseAmplitude, float erosionSt
 
 /*** USER DEFINED FUNCTION BEGIN ***/
 float example_terrain(){
-float cellCount = 2.0;
-vec2 scaledUV = uv * cellCount;
-vec2 i = floor(scaledUV);
-vec2 f = fract(scaledUV);
-float chanceFactor = 0.5;
-float height;
-
-vec2 gPeak = hash22(i);
-float dist = length(gPeak - f);
-
-float chance = hash21(uv) * chanceFactor;
-if(chance > dist) height = 1.0;
-else height = 0.0;
-
-return height;
+return example(worldPos, 0.0003, 2200.0, 2.7, 8);
 }
 /*** USER DEFINED FUNCTION END ***/
 

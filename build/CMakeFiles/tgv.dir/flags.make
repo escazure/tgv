@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/c++
 C_DEFINES = -DPROJECT_ASSET_DIR=\"/home/escazure/cpp_projects/tgv/assets\" -DPROJECT_EXTERNAL_DIR=\"/home/escazure/cpp_projects/tgv/external\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\" -DPROJECT_SHADERS_DIR=\"/home/escazure/cpp_projects/tgv/build/shaders\"
 
-C_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w -I/home/escazure/cpp_projects/tgv/external/stbi
+C_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w -I/home/escazure/cpp_projects/tgv/external/lodepng
 
 C_FLAGS = -Wno-pragmas
 
 CXX_DEFINES = -DPROJECT_ASSET_DIR=\"/home/escazure/cpp_projects/tgv/assets\" -DPROJECT_EXTERNAL_DIR=\"/home/escazure/cpp_projects/tgv/external\" -DPROJECT_INCLUDE_DIR=\"/home/escazure/cpp_projects/tgv/include\" -DPROJECT_SHADERS_DIR=\"/home/escazure/cpp_projects/tgv/build/shaders\"
 
-CXX_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w -I/home/escazure/cpp_projects/tgv/external/stbi
+CXX_INCLUDES = -I/home/escazure/cpp_projects/tgv/include -I/home/escazure/cpp_projects/tgv/external -I/home/escazure/cpp_projects/tgv/external/imgui -I/home/escazure/cpp_projects/tgv/external/imgui/backends -I/home/escazure/cpp_projects/tgv/external/gl3w -I/home/escazure/cpp_projects/tgv/external/lodepng
 
 CXX_FLAGS = -Wno-pragmas
 

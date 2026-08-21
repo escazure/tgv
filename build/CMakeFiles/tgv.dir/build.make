@@ -226,19 +226,19 @@ CMakeFiles/tgv.dir/external/gl3w/gl3w.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/tgv.dir/external/gl3w/gl3w.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/escazure/cpp_projects/tgv/external/gl3w/gl3w.c -o CMakeFiles/tgv.dir/external/gl3w/gl3w.c.s
 
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: CMakeFiles/tgv.dir/flags.make
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: /home/escazure/cpp_projects/tgv/external/stbi/stb_image.cpp
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o -MF CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o.d -o CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o -c /home/escazure/cpp_projects/tgv/external/stbi/stb_image.cpp
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o: CMakeFiles/tgv.dir/flags.make
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o: /home/escazure/cpp_projects/tgv/external/lodepng/lodepng.cpp
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o: CMakeFiles/tgv.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o -MF CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o.d -o CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o -c /home/escazure/cpp_projects/tgv/external/lodepng/lodepng.cpp
 
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/escazure/cpp_projects/tgv/external/stbi/stb_image.cpp > CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.i
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/escazure/cpp_projects/tgv/external/lodepng/lodepng.cpp > CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.i
 
-CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/escazure/cpp_projects/tgv/external/stbi/stb_image.cpp -o CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.s
+CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/escazure/cpp_projects/tgv/external/lodepng/lodepng.cpp -o CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.s
 
 # Object files for target tgv
 tgv_OBJECTS = \
@@ -253,7 +253,7 @@ tgv_OBJECTS = \
 "CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o" \
 "CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o" \
 "CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o" \
-"CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o"
+"CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o"
 
 # External object files for target tgv
 tgv_EXTERNAL_OBJECTS =
@@ -269,7 +269,7 @@ tgv: CMakeFiles/tgv.dir/external/imgui/imgui_widgets.cpp.o
 tgv: CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_glfw.cpp.o
 tgv: CMakeFiles/tgv.dir/external/imgui/backends/imgui_impl_opengl3.cpp.o
 tgv: CMakeFiles/tgv.dir/external/gl3w/gl3w.c.o
-tgv: CMakeFiles/tgv.dir/external/stbi/stb_image.cpp.o
+tgv: CMakeFiles/tgv.dir/external/lodepng/lodepng.cpp.o
 tgv: CMakeFiles/tgv.dir/build.make
 tgv: CMakeFiles/tgv.dir/compiler_depend.ts
 tgv: /usr/lib/libGLX.so

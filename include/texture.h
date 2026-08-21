@@ -1,15 +1,17 @@
 #pragma once
-#include <iostream>
+#include <vector>
 #include "gl3w.h"
 
 struct Texture {
 	unsigned int _id = 0;
 	unsigned int _target = 0;
 	unsigned int _internalFormat = 0;
+	unsigned int _pixelFormat = 0;
 	unsigned int _mipMapLevels = 1;
 	unsigned int _width = 0;
 	unsigned int _height = 0;
 	unsigned int _length = 0;
+	unsigned int _channels = 0;
 
 public: 
 	~Texture(){
@@ -24,8 +26,12 @@ public:
 		_height = height;
 		_length = length;
 
+
 		glCreateTextures(_target, 1, &_id);
+		pSpecifyTexturePixelFormat(_internalFormat);
 		pSpecifyTextureStorage();
+
+		_pPixelBuffer.resize(_width * _height * _channels);
 	}
 
 	void bind(unsigned int unit) const {
@@ -51,9 +57,25 @@ public:
 
 		glCreateTextures(_target, 1, &_id);
 		pSpecifyTextureStorage();
+
+		_pPixelBuffer.resize(_width * _height * _channels);
+	}
+
+	const float* pixels() const {
+		unsigned int elementCount = _width * _height * _channels; 
+		if(_pPixelBuffer.size() != elementCount)
+			_pPixelBuffer.resize(elementCount);
+
+		glGetTextureImage(_id, 0, _pixelFormat, GL_FLOAT, sizeof(float) * elementCount, _pPixelBuffer.data());
+		return _pPixelBuffer.data();
+	}
+
+	void loadPixels(unsigned int width, unsigned int height, const float* data){
+		glTextureSubImage2D(_id, 0, 0, 0, width, height, _pixelFormat, GL_FLOAT, data);	
 	}
 
 private:
+	mutable std::vector<float> _pPixelBuffer;
 	void pSpecifyTextureStorage(){
 		switch(_target){
 			case GL_TEXTURE_1D:
@@ -71,6 +93,27 @@ private:
 			case GL_TEXTURE_2D_ARRAY:
 			case GL_TEXTURE_CUBE_MAP_ARRAY:
 				glTextureStorage3D(_id, _mipMapLevels, _internalFormat, _width, _height, _length);
+				break;
+		}
+	}
+
+	void pSpecifyTexturePixelFormat(unsigned int internalFormat){
+		switch(internalFormat){
+			case GL_R32F:
+				_pixelFormat = GL_RED;
+				_channels = 1;
+				break;
+			case GL_RG32F:
+				_pixelFormat = GL_RG;
+				_channels = 2;
+				break;
+			case GL_RGB32F:
+				_pixelFormat = GL_RGB;
+				_channels = 3;
+				break;
+			case GL_RGBA32F:
+				_pixelFormat = GL_RGBA;
+				_channels = 4;
 				break;
 		}
 	}

@@ -181,9 +181,9 @@ CMakeFiles/copy_notices.dir/clean:
 # Target rules for target CMakeFiles/tgv.dir
 
 # All Build rule for target.
+CMakeFiles/tgv.dir/all: CMakeFiles/make_height_map_dir.dir/all
 CMakeFiles/tgv.dir/all: CMakeFiles/copy_assets.dir/all
 CMakeFiles/tgv.dir/all: CMakeFiles/copy_notices.dir/all
-CMakeFiles/tgv.dir/all: CMakeFiles/make_height_map_dir.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target tgv"
@@ -201,9 +201,9 @@ tgv: CMakeFiles/tgv.dir/rule
 .PHONY : tgv
 
 # codegen rule for target.
+CMakeFiles/tgv.dir/codegen: CMakeFiles/make_height_map_dir.dir/all
 CMakeFiles/tgv.dir/codegen: CMakeFiles/copy_assets.dir/all
 CMakeFiles/tgv.dir/codegen: CMakeFiles/copy_notices.dir/all
-CMakeFiles/tgv.dir/codegen: CMakeFiles/make_height_map_dir.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tgv.dir/build.make CMakeFiles/tgv.dir/codegen
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/escazure/cpp_projects/tgv/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16 "Finished codegen for target tgv"
 .PHONY : CMakeFiles/tgv.dir/codegen

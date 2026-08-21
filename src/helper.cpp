@@ -248,3 +248,118 @@ void debugMessageCallback(unsigned int source, unsigned int type, unsigned int i
 	
 	std::cout << id << ": " << _type << " of " << _severity << ", raised from " << _source << ": " << msg << "\n";
 }
+
+void exportTexture(const std::string& basePath, const Texture* texture, unsigned int bits){
+	if(texture == nullptr){
+		std::cout << "ERROR: Trying to write an empty texture\n";
+		return;
+	}
+
+	int channels = texture->_channels;
+	int width = texture->_width;
+	int height = texture->_height;
+	const float* data = texture->pixels();
+	float min = state.min_height;
+	float max = state.max_height;
+	float range = max - min;
+
+	std::string pngPath = basePath + ".png";
+
+	if(bits == GL_UNSIGNED_SHORT){
+		std::vector<uint16_t> buffer(width * height);
+		for(std::size_t i = 0; i < width * height; i++){
+			float height = data[i];
+			float normalized = (height - min) / range;
+			normalized = glm::clamp(normalized, 0.0f, 1.0f);
+			uint16_t val = uint16_t(normalized * 65535.0f);
+			buffer[i] = (val >> 8) | (val << 8);
+		}
+
+		std::vector<unsigned char> png;
+		unsigned int error = lodepng::encode(png, (const unsigned char*)buffer.data(), width, height, LCT_GREY, 16);
+		if(!error) 
+			lodepng::save_file(png, pngPath);
+		else 
+			std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+	}
+	else if(bits == GL_UNSIGNED_BYTE){
+		std::vector<uint8_t> buffer(width * height);
+		for(std::size_t i = 0; i < width * height; i++){
+			float height = data[i];
+			float normalized = (height - min) / range;
+			normalized = glm::clamp(normalized, 0.0f, 1.0f);
+			buffer[i] = uint8_t(normalized * 255.0f);
+		}
+
+		std::vector<unsigned char> png;
+		unsigned int error = lodepng::encode(png, (const unsigned char*)buffer.data(), width, height, LCT_GREY, 8);
+		if(!error) 
+			lodepng::save_file(png, pngPath);
+		else 
+			std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+	}
+}
+
+void importTexture(const std::string& path, Texture*& texture, bool scaleHeight){
+	lodepng::State pngState;
+    std::vector<unsigned char> pngFile;
+    unsigned error = lodepng::load_file(pngFile, path);
+    if(error){
+        std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+        return;
+    }
+	
+	unsigned int width, height, bitDepth;
+	error = lodepng_inspect(&width, &height, &pngState, pngFile.data(), pngFile.size());
+    if(error){
+        std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+        return;
+    }
+
+	bitDepth = pngState.info_png.color.bitdepth;
+
+	std::vector<float> floatData(width * height);
+
+	if(bitDepth == 16){
+		pngState.info_raw.colortype = LCT_GREY;
+        pngState.info_raw.bitdepth = 16;
+
+		std::vector<unsigned char> imageBuffer;
+		error = lodepng::decode(imageBuffer, width, height, pngState, pngFile);
+		if(error){
+            std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+            return;
+        }
+
+		const uint8_t* rawBytes = imageBuffer.data();
+        for(std::size_t i = 0; i < width * height; i++){
+            uint16_t rawVal = (uint16_t(rawBytes[i * 2]) << 8) | rawBytes[i * 2 + 1];
+            floatData[i] = float(rawVal) / 65535.0f;
+        }
+	}
+	else{
+		pngState.info_raw.colortype = LCT_GREY;
+        pngState.info_raw.bitdepth = 8;
+
+		std::vector<unsigned char> imageBuffer;
+		error = lodepng::decode(imageBuffer, width, height, pngState, pngFile);
+		if(error){
+            std::cout << "LodePNG Error: " << lodepng_error_text(error) << "\n";
+            return;
+        }
+
+        for(std::size_t i = 0; i < width * height; i++)
+            floatData[i] = float(imageBuffer[i]) / 255.0f;
+	}
+
+	if(scaleHeight){
+		float range = state.max_height - state.min_height;
+		for(std::size_t i = 0; i < width * height; i++)
+			floatData[i] = state.min_height + (floatData[i] * range);
+	}
+
+	if(texture->_width != width || texture->_height != height)
+		texture->resize(texture->_mipMapLevels, width, height, 0);
+
+	texture->loadPixels(width, height, floatData.data());
+}
