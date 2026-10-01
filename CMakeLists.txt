@@ -37,13 +37,6 @@ add_custom_target(copy_assets
 	COMMENT "Copying directory with shaders..."
 )
 
-add_custom_target(copy_notices
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different
-	${CMAKE_SOURCE_DIR}/NOTICES.txt	
-	${CMAKE_BINARY_DIR}/NOTICES.txt
-	COMMENT "Copying third-party license notices..."
-)
-
 add_executable(tgv
 	${CPP_SRCS}
 	${IMGUI_SRCS}
@@ -84,5 +77,4 @@ endif()
 add_dependencies(tgv 
     make_height_map_dir 
     copy_assets 
-    copy_notices
 )

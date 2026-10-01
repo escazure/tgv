@@ -343,11 +343,6 @@ namespace UI{
                 ImGui::EndTabItem();
             }
 
-            if(ImGui::BeginTabItem("Presets")){
-                ImGui::TextWrapped("Preset UDF templates will be listed here.");
-                ImGui::EndTabItem();
-            }
-
             ImGui::EndTabBar();
         }
 
