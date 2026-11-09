@@ -153,7 +153,6 @@ namespace UI{
                     AddRow("vec2 hash22(vec2 p)", "Returns semi-random gradient vector.");
 
 					AddRow("float smin(float a, float b, float k)", "Smooth minimum by Inigo Quilez.");
-                    AddRow("vec2 shiftUV(vec2 uv, float shiftSize, int seed)", "Helper function to semi-randomly shift uv coordinates based on seed.");
 					AddRow("float bellCurve(vec2 pos, float radius, float amplitude)", "Helper function for Gaussian Bell Curve.");
 					AddRow("vec2 warpUV(vec2 uv, int octaves)", "Helper function for domain warping, uses fBm for offset calculations.");
 
@@ -455,7 +454,7 @@ namespace UI{
                 ImGui::Spacing();
 
                 ImGui::Checkbox("Show Surface Normals", &state.show_normals);
-                ImGui::Checkbox("Wireframe Overlay Mode", &state.is_wireframe_mode);
+                ImGui::Checkbox("Wireframe Mode", &state.is_wireframe_mode);
                 ImGui::Checkbox("Toggle V-Sync", &state.is_vsync);
 
                 ImGui::Spacing();
@@ -467,15 +466,40 @@ namespace UI{
 
                 static int color_mode_idx = 0;
                 static const char* color_modes[] = { 
-                    "Default Surface Shading", 
+                    "Mountains", //"Default Surface Shading"//, 
+					"Plains",
+					"Desert",
+					"Polar",
+
                     "Altitude Map", 
                     "Greyscale", 
 					"Chunk Grid"
                 };
                 
                 ImGui::SetNextItemWidth(-FLT_MIN);
-                if(ImGui::Combo("##colormode", &color_mode_idx, color_modes, IM_ARRAYSIZE(color_modes))){
+				if(ImGui::BeginCombo("##colormode", color_modes[color_mode_idx])){
+					ImGui::TextDisabled("Biome");
+					if(ImGui::Selectable("Mountains", color_mode_idx == 0))
+						color_mode_idx = 0;
+					if(ImGui::Selectable("Plains", color_mode_idx == 1))
+						color_mode_idx = 1;
+					if(ImGui::Selectable("Desert", color_mode_idx == 2))
+						color_mode_idx = 2;
+					if(ImGui::Selectable("Polar", color_mode_idx == 3))
+						color_mode_idx = 3;
+
+					ImGui::Separator();	
+
+					ImGui::TextDisabled("Style");
+					if(ImGui::Selectable("Altitude Map", color_mode_idx == 4))
+						color_mode_idx = 4;
+					if(ImGui::Selectable("Greyscale", color_mode_idx == 5))
+						color_mode_idx = 5;
+					if(ImGui::Selectable("Chunk Grid", color_mode_idx == 6))
+						color_mode_idx = 6;
+
 					state.texture_method = color_mode_idx;
+					ImGui::EndCombo();
 				}
 
                 ImGui::EndTabItem();
