@@ -2,7 +2,7 @@ const float ONE_OVER_SQRT_TWO = 1.0 / sqrt(2.0);
 const float ONE_OVER_MAX_UINT = 1.0 / 0xFFFFFFFFu;
 
 uint uihash(uint v){
-	v += 1664525u;
+	v += 1664525u + uint(uSeed);
 	v ^= v >> 12u;
 	v *= 1664525u;
 	v ^= v >> 16u;
@@ -11,7 +11,7 @@ uint uihash(uint v){
 
 float hash21(vec2 p){
 	uvec2 v = floatBitsToUint(p);
-	v.x += 1664525u;
+	v.x += 1664525u + uint(uSeed);
 	v ^= v.yx * 1664525u;
 	v *= 1664525u;
 	v ^= v >> 16u;
@@ -22,11 +22,11 @@ float hash21(vec2 p){
 
 vec2 hash22(vec2 p){
 	uvec2 v = floatBitsToUint(p);
-	v.x += 1664525u;
+	v.x += 1664525u + uint(uSeed);
 	v ^= v.yx * 1664525u;
 	v *= 1664525u;
 	v ^= v >> 16u;
-	v ^ v.yx >> 5u;
+	v ^= v.yx >> 5u;
 
 	uvec2 floatBits = (v & 0x007FFFFFu) | 0x3F800000u;
 	vec2 res = uintBitsToFloat(floatBits) - 1.0;
@@ -38,16 +38,6 @@ float smin(float a, float b, float k){
     k *= 4.0;
     float h = max(k-abs(a-b), 0.0)/k;
     return min(a,b) - h*h*k*(1.0/4.0);
-}
-
-vec2 shiftUV(vec2 uv, float shiftSize, int seed){
-	uint hashX = uihash(uint(seed));
-	uint hashZ = uihash(hashX);
-
-	float normalizedX = (float(hashX) * ONE_OVER_MAX_UINT) * 2.0 - 1.0;
-	float normalizedZ = (float(hashZ) * ONE_OVER_MAX_UINT) * 2.0 - 1.0;
-
-	return vec2(normalizedX, normalizedZ) * shiftSize + uv;
 }
 
 float bellCurve(vec2 pos, float radius, float amplitude){
@@ -160,16 +150,18 @@ float fbm(vec2 uv, int octaves){
 float fbmErosion(vec2 uv, int octaves, float erosionStrength){
 	float total = 0.0;
 	float amplitude = 1.0;
+	float frequency = 1.0;
 	vec2 totalGradient = vec2(0.0);	
 	for(int i = 0; i < octaves; i++){
 		vec3 n = perlinNoiseDerivatives(uv);
 		float h = n.x;
-		totalGradient += n.yz;
+		totalGradient += n.yz * frequency;
 
 		float erosionFactor = 1.0 / (1.0 + dot(totalGradient, totalGradient) * erosionStrength);
 		total += h * erosionFactor * amplitude;
 
 		uv *= 2.0;
+		frequency *= 2.0;
 		amplitude *= 0.5;
 	}
 	return total;
@@ -191,12 +183,15 @@ vec2 warpUV(vec2 uv, int octaves){
 	return vec2(uv.x + offset, uv.y - offset);
 }
 
+/* TODO
+float mountains(vec2 uv, ...){}
+float plains(vec2 uv, ...){}
+float desert(vec2 uv, ...){}
+float platos(vec2 uv, ...){}
+*/
+
 float example(vec2 uv, float frequency, float amplitude, float erosion, int octaves){
-	const float shiftSize = 500000.0;
-
-	vec2 offsetUV = shiftUV(uv, shiftSize, uSeed);
-	vec2 warp = warpUV(offsetUV, 8);
+	vec2 warp = warpUV(uv, 8);
 	float height = fbmErosion(warp * frequency, octaves, erosion) * amplitude;
-
 	return height;
 }
