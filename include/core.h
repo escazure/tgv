@@ -13,7 +13,6 @@
 #include "terrain.h"
 #include "state.h"
 #include "texture.h"
-#include "sampler.h"
 #include "gpu_timer.h"
 
 #include <cmath>

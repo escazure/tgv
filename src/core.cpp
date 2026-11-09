@@ -11,9 +11,7 @@ Texture normalMap;
 Texture shadowMap;
 Texture reflectionMap, reflectionDepth;
 
-Sampler linearClamp;
-
-unsigned int shadowMapFBO, reflectionFBO;
+GLuint shadowMapFBO, reflectionFBO;
 
 GLFWwindow* init(){
 	if(state.logging) log(MESSAGE_INFO, "[CORE] Logging enabled");
@@ -50,13 +48,25 @@ GLFWwindow* init(){
 
 	init_skybox();
 
-	linearClamp.create(GL_LINEAR, GL_LINEAR);
-
 	heightMap.create(GL_TEXTURE_2D, 1, GL_R32F, 1024, 1024);
+	heightMap.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	heightMap.setFilter(GL_LINEAR, GL_LINEAR);
+
 	normalMap.create(GL_TEXTURE_2D, 1, GL_RGBA32F, 1024, 1024);
+	normalMap.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	normalMap.setFilter(GL_LINEAR, GL_LINEAR);
+
 	shadowMap.create(GL_TEXTURE_2D, 1, GL_R32F, 1024, 1024);
+	shadowMap.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	shadowMap.setFilter(GL_LINEAR, GL_LINEAR);
+
 	reflectionMap.create(GL_TEXTURE_2D, 1, GL_RGBA8, mode->width, mode->height);
+	reflectionMap.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	reflectionMap.setFilter(GL_LINEAR, GL_LINEAR);
+
 	reflectionDepth.create(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32F, mode->width, mode->height);
+	reflectionMap.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	reflectionMap.setFilter(GL_LINEAR, GL_LINEAR);
 
 	state.heightMap = &heightMap;
 
@@ -85,7 +95,6 @@ GLFWwindow* init(){
 	}
 
 	glEnable(GL_DEPTH_TEST);
-
 	return window;
 }
 
@@ -156,7 +165,6 @@ void run(GLFWwindow* window){
 				if(state.logging) log(MESSAGE_INFO, "[CORE RENDER LOOP] Generating heightmap...");
 				heightMap.resize(1, state.size, state.size);
 				heightMap.bindAsImage(0);
-				linearClamp.bind(0);
 
 				height_map_shader.use();
 				height_map_shader.set_float("uWorldSize", state.size);
@@ -189,10 +197,8 @@ void run(GLFWwindow* window){
 			if(state.logging) log(MESSAGE_INFO, "[CORE RENDER LOOP] Generating normalmap...");
 			normalMap.resize(1, state.size, state.size);
 			normalMap.bindAsImage(1);
-			linearClamp.bind(1);
 
 			heightMap.bind(0);
-			linearClamp.bind(0);
 
 			normal_map_shader.use();
 			normal_map_shader.set_float("uTerrainSize", state.size);
@@ -216,9 +222,6 @@ void run(GLFWwindow* window){
 
 			heightMap.bind(0);
 			normalMap.bind(1);
-
-			linearClamp.bind(0);
-			linearClamp.bind(1);
 
 			shadow_map_shader.use();
 			shadow_map_shader.set_float("uTerrainSize", state.size);
@@ -250,10 +253,6 @@ void run(GLFWwindow* window){
 			normalMap.bind(1);
 			shadowMap.bind(2);
 
-			linearClamp.bind(0);
-			linearClamp.bind(1);
-			linearClamp.bind(2);
-
 			if(state.cull_backface){
 				glEnable(GL_CULL_FACE);
 				glCullFace(GL_FRONT);
@@ -280,21 +279,17 @@ void run(GLFWwindow* window){
 			normalMap.bind(1);
 			shadowMap.bind(2);
 
-			linearClamp.bind(0);
-			linearClamp.bind(1);
-			linearClamp.bind(2);
-
 			glm::mat4 view = state.camera->getViewMat();
 
 			if(state.clip_terrain_below_water) 
 				glEnable(GL_CLIP_DISTANCE0);
+
 			render_terrain(shader, lightDir, view, state.clip_terrain_below_water ? clipPlaneBelow : glm::vec4(0.0f));
 			glDisable(GL_CLIP_DISTANCE0);
 		}
 
 		if(state.terrain_generated && state.render_water_plane){
 			reflectionMap.bind(0);
-			linearClamp.bind(0);
 
 			render_water_plane(state.size, state.water_plane_level, water_plane_shader, lightDir);
 		}

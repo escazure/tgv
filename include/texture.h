@@ -3,10 +3,10 @@
 #include "gl3w.h"
 
 struct Texture {
-	unsigned int _id = 0;
-	unsigned int _target = 0;
-	unsigned int _internalFormat = 0;
-	unsigned int _pixelFormat = 0;
+	GLuint _id = 0;
+	GLuint _target = 0;
+	GLuint _internalFormat = 0;
+	GLuint _pixelFormat = 0;
 	unsigned int _mipMapLevels = 1;
 	unsigned int _width = 0;
 	unsigned int _height = 0;
@@ -18,7 +18,7 @@ public:
 		glDeleteTextures(1, &_id);	
 	}
 
-	void create(unsigned int target, unsigned int mipMapLevels, unsigned int internalFormat, unsigned int width, unsigned int height = 1, unsigned int length = 1){
+	void create(GLuint target, unsigned int mipMapLevels, GLuint internalFormat, unsigned int width, unsigned int height = 1, unsigned int length = 1){
 		_target = target;
 		_internalFormat = internalFormat;
 		_mipMapLevels = mipMapLevels;
@@ -34,6 +34,18 @@ public:
 		_pPixelBuffer.resize(_width * _height * _channels);
 	}
 
+	void setWrap(GLuint wrapS, GLuint wrapT, GLuint wrapR = GL_REPEAT){
+		glTextureParameteri(_id, GL_TEXTURE_WRAP_S, wrapS);	
+		glTextureParameteri(_id, GL_TEXTURE_WRAP_T, wrapT);	
+		if(_target == GL_TEXTURE_3D || _target == GL_TEXTURE_CUBE_MAP || _target == GL_TEXTURE_2D_ARRAY)
+			glTextureParameteri(_id, GL_TEXTURE_WRAP_R, wrapR);
+	}
+
+	void setFilter(GLuint minFilter, GLuint magFilter){
+		glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, magFilter);
+	}
+
 	void bind(unsigned int unit) const {
 		glBindTextureUnit(unit, _id);
 	}
@@ -42,7 +54,7 @@ public:
 		glBindImageTexture(unit, _id, mipMapLevel, GL_FALSE, 0, GL_WRITE_ONLY, _internalFormat);
 	}
 
-	void attach(unsigned int fbo, unsigned int attachment, unsigned int mipMapLevel = 0) const {
+	void attach(GLuint fbo, GLuint attachment, unsigned int mipMapLevel = 0) const {
 		glNamedFramebufferTexture(fbo, attachment, _id, mipMapLevel);
 	}
 

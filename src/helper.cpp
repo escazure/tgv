@@ -103,12 +103,8 @@ void getMinMaxHeight(Shader& shader, AppState& state, Texture &heightMap, unsign
 
     Texture minMaxTexture;
 	minMaxTexture.create(GL_TEXTURE_2D, maxMipLevels, GL_RG32F, width, height);
-
-	Sampler nearestClamp;
-	nearestClamp.create(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-
-	Sampler linearClamp;
-	linearClamp.create(GL_LINEAR, GL_LINEAR);
+	minMaxTexture.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	minMaxTexture.setFilter(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 
     shader.use();
 
@@ -122,12 +118,10 @@ void getMinMaxHeight(Shader& shader, AppState& state, Texture &heightMap, unsign
 
         if(srcMip == -1){
 			heightMap.bind(0);
-			linearClamp.bind(0);
             shader.set_int("uSrcMipLevel", -1);
         }
 		else{
 			minMaxTexture.bind(0);
-			nearestClamp.bind(0);
             shader.set_int("uSrcMipLevel", srcMip);
         }
 
