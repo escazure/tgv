@@ -7,20 +7,30 @@ uniform float uTerrainSize;
 
 void main(){
 	ivec2 dstCoords =  ivec2(gl_GlobalInvocationID.xy);
-	vec2 uv = vec2(dstCoords) / uTerrainSize;
-	float texelSize = 1.0 / uTerrainSize;
+	ivec2 resolution = textureSize(uHeightMap, 0);
 
-	float worldStep = uTerrainSize * texelSize;
+    if (any(greaterThanEqual(dstCoords, resolution)))
+        return;
 
-	float hL = texture(uHeightMap, uv - vec2(texelSize, 0.0)).r;	
-	float hR = texture(uHeightMap, uv + vec2(texelSize, 0.0)).r;	
-	float hU = texture(uHeightMap, uv + vec2(0.0, texelSize)).r;	
-	float hD = texture(uHeightMap, uv - vec2(0.0, texelSize)).r;	
+	ivec2 left  = max(dstCoords - ivec2(1, 0), ivec2(0));
+    ivec2 right = min(dstCoords + ivec2(1, 0), resolution - 1);
 
-	vec3 dX = vec3(2.0 * worldStep, hR - hL, 0.0);
-    vec3 dY = vec3(0.0, hU - hD, 2.0 * worldStep);
+    ivec2 down  = max(dstCoords - ivec2(0, 1), ivec2(0));
+    ivec2 up    = min(dstCoords + ivec2(0, 1), resolution - 1);
 
-    vec3 normal = normalize(cross(dY, dX));
-	
+	float hL = texelFetch(uHeightMap, left, 0).r;	
+	float hR = texelFetch(uHeightMap, right, 0).r;	
+	float hU = texelFetch(uHeightMap, up, 0).r;	
+	float hD = texelFetch(uHeightMap, down, 0).r;	
+
+	float stepSize = uTerrainSize / float(resolution.x - 1);
+
+	float dx = float(right.x - left.x) * stepSize;
+	float dz = float(up.y - down.y) * stepSize;
+
+	vec3 dX = vec3(dx, hR - hL, 0.0);
+	vec3 dZ = vec3(0.0, hU - hD, dz);
+
+    vec3 normal = normalize(cross(dZ, dX));
 	imageStore(uNormalMap, dstCoords, vec4(normal * 0.5 + 0.5, 1.0));
 }

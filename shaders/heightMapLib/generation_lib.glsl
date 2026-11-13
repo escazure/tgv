@@ -183,15 +183,25 @@ vec2 warpUV(vec2 uv, int octaves){
 	return vec2(uv.x + offset, uv.y - offset);
 }
 
-/* TODO
-float mountains(vec2 uv, ...){}
-float plains(vec2 uv, ...){}
-float desert(vec2 uv, ...){}
-float platos(vec2 uv, ...){}
-*/
-
-float example(vec2 uv, float frequency, float amplitude, float erosion, int octaves){
-	vec2 warp = warpUV(uv, 8);
+float mountains(vec2 worldPos, float frequency, float amplitude, float erosion, int octaves){
+	vec2 warp = warpUV(worldPos, 8);
 	float height = fbmErosion(warp * frequency, octaves, erosion) * amplitude;
 	return height;
 }
+
+float plains(vec2 worldPos, float frequency, float amplitude){
+	vec2 warp;
+	warp.x = perlinNoise(worldPos * 0.001);
+	warp.y = perlinNoise(worldPos * 0.001 + 123.4);
+
+	vec2 p = worldPos + warp * 300.0;
+	float large = perlinNoise(p * frequency);
+	float detail = perlinNoise(p * frequency * 2.0);
+
+	return (large * 0.8 + detail * 0.2) * amplitude;
+}
+
+/*
+float desert(vec2 uv, ...){}
+float platos(vec2 uv, ...){}
+*/

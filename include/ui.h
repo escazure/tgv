@@ -165,7 +165,7 @@ namespace UI{
                     AddRow("float fbmErosion(vec2 uv, int octaves, float erosionStrength)", "Fractal Brownian Motion noise over multiple layered octaves, that uses gradients to smooth out details on high slopes.");
 					AddRow("float fbmVoronoi(vec2 uv, int octaves, float cellSize)", "Fractal Brownian Motion noise over multiple layered octaves, uses voronoi noise.");
 
-                    AddRow("float example(vec2 uv, float frequency, float amplitude, float erosion, int octaves)", "Pre-built terrain function based on fBm and gradient based erosion.");
+                    AddRow("float mountains(vec2 uv, float frequency, float amplitude, float erosion, int octaves)", "Pre-built terrain function based on fBm and erosion.");
 
                     ImGui::EndTable();
                 }

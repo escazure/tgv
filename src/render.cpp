@@ -147,12 +147,10 @@ void render_terrain(Shader shader, const glm::vec3& lightDir, const glm::mat4& v
 	shader.set_float("uChunkSize", state.chunk_size);
 	shader.set_float("uMinHeight", state.min_height);
 	shader.set_float("uMaxHeight", state.max_height);
-	shader.set_float("uWaterLevel", state.water_plane_level);
 	shader.set_int("uTextureMethod", state.texture_method);
 	shader.set_bool("uRenderTerrainSkirt", state.render_terrain_skirt);
 	shader.set_bool("uShowNormals", state.show_normals);
 	shader.set_bool("uCalculateLighting", state.calculate_lighting);
-	shader.set_bool("uRenderWaterPlane", state.render_water_plane);
 	shader.set_vec3("uLightDir", lightDir);
 	shader.set_vec4("uClipPlane", clipPlane);
 

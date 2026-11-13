@@ -1,0 +1,80 @@
+#version 460 core
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+layout (binding = 0) uniform sampler2D uHeightMap;
+layout (binding = 1) uniform sampler2D uNormalMap;
+
+layout (binding = 0, r32f) writeonly uniform image2D uShadowMap;
+
+uniform vec3 uLightDir;
+uniform float uTerrainSize;
+uniform float uMaxHeight;
+
+const int MAX_STEPS = 1024;
+const float TEXELS_PER_STEP = 1.0;
+const float SHADOW_SOFTNESS = 2.5;
+
+float smin(float a, float b, float k){
+    k *= 4.0;
+    float h = max(k-abs(a-b), 0.0)/k;
+    return min(a,b) - h*h*k*(1.0/4.0);
+}
+
+void main(){
+	ivec2 dstCoords =  ivec2(gl_GlobalInvocationID.xy);
+	ivec2 resolution = textureSize(uHeightMap, 0);
+
+    if (any(greaterThanEqual(dstCoords, resolution)))
+        return;
+
+	vec2 texelSize = 1.0 / vec2(resolution);
+
+	vec2 uv = (vec2(dstCoords) + 0.5) / vec2(resolution);
+	vec2 uvMin = 0.5 / resolution;
+	vec2 uvMax = 1.0 - uvMin;
+   
+	vec3 fragToLight = normalize(-uLightDir);
+    vec3 normal = textureLod(uNormalMap, uv, 0.0).rgb * 2.0 - 1.0;
+
+	float finalShadow = 1.0;
+
+	if(dot(normal, fragToLight) <= 0.0){
+		imageStore(uShadowMap, dstCoords, vec4(0.0));
+    	return;
+	}
+
+    float horizontalLen = length(fragToLight.xz);
+
+    vec2 uvStep = (fragToLight.xz / horizontalLen) * texelSize * TEXELS_PER_STEP;
+	float worldUnitsPerUV = uTerrainSize * resolution.x / (resolution.x - 1.0);
+	float worldStepDist = length(uvStep) * worldUnitsPerUV;
+
+    float heightStep = (fragToLight.y / horizontalLen) * worldStepDist;
+
+	float surfaceHeight = textureLod(uHeightMap, uv, 0.0).r;
+    vec4 currentRay = vec4(uv, surfaceHeight, 0.0);
+
+    vec4 stepRay = vec4(uvStep, heightStep, worldStepDist);
+	for(int i = 0; i < MAX_STEPS; i++){
+		currentRay += stepRay;
+
+		if(any(lessThan(currentRay.xy, uvMin)) || any(greaterThan(currentRay.xy, uvMax))) break;
+		if(currentRay.z > uMaxHeight) break;
+
+        float terrainHeight = textureLod(uHeightMap, currentRay.xy, 0.0).r;
+		float diff = currentRay.z - terrainHeight;
+
+        if(diff < 0.0){
+            finalShadow = 0.0;
+			break;
+		}
+
+        finalShadow = smin(finalShadow, SHADOW_SOFTNESS * diff / currentRay.w, 0.1);
+
+        if(finalShadow < 0.01){
+            finalShadow = 0.0;
+			break;
+        }
+    }
+
+	imageStore(uShadowMap, dstCoords, vec4(clamp(finalShadow, 0.0, 1.0), 0.0, 0.0, 1.0));
+}

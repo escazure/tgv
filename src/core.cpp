@@ -11,7 +11,7 @@ Texture normalMap;
 Texture shadowMap;
 Texture reflectionMap, reflectionDepth;
 
-GLuint shadowMapFBO, reflectionFBO;
+GLuint reflectionFBO;
 
 GLFWwindow* init(){
 	if(state.logging) log(MESSAGE_INFO, "[CORE] Logging enabled");
@@ -70,9 +70,6 @@ GLFWwindow* init(){
 
 	state.heightMap = &heightMap;
 
-	glCreateFramebuffers(1, &shadowMapFBO);
-	shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
-
 	glCreateFramebuffers(1, &reflectionFBO);
 	reflectionMap.attach(reflectionFBO, GL_COLOR_ATTACHMENT0);
 	reflectionDepth.attach(reflectionFBO, GL_DEPTH_ATTACHMENT);
@@ -103,12 +100,12 @@ void run(GLFWwindow* window){
 	float last_frame = 0.0;
 	float current_frame = 0.0;
 
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-2.0f, -1.0f, 0.0f));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.1f, -1.0f, 0.0f));
 
 	Shader shader("final/vertex.glsl", "final/fragment.glsl");
 	Shader skybox_shader("skybox/skybox_vertex.glsl", "skybox/skybox_fragment.glsl");
 	Shader normal_map_shader("normalMapping/normal_map.comp");
-	Shader shadow_map_shader("shadowMapping/shadow_map_vertex.glsl", "shadowMapping/shadow_map_fragment.glsl");
+	Shader shadow_map_shader("shadowMapping/shadow_map.comp");
 	Shader water_plane_shader("waterPlane/vertex.glsl", "waterPlane/fragment.glsl");
 	Shader min_max_compute_shader("minMaxComp/min_max.comp");
 
@@ -128,11 +125,10 @@ void run(GLFWwindow* window){
 		Timer("Shadow Map"),
 	};
 
-	unsigned int barrier = GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT;
+	GLuint barrier = GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT;
 
 	const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float skyClearColor[4] = {0.2f, 0.6f, 0.8f, 1.0f};
-	const float shadowClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	const float depthClearColor = 1.0f;
 
 	while(!glfwWindowShouldClose(window)){
@@ -213,12 +209,7 @@ void run(GLFWwindow* window){
 			// ----- Shadowmap generation ----- //
 			if(state.logging) log(MESSAGE_INFO, "[CORE RENDER LOOP] Generating shadowmap...");
 			shadowMap.resize(1, state.size, state.size);
-			shadowMap.attach(shadowMapFBO, GL_COLOR_ATTACHMENT0);
-
-			glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-			glViewport(0, 0, state.size, state.size);
-
-			glClearNamedFramebufferfv(shadowMapFBO, GL_COLOR, 0, shadowClearColor);
+			shadowMap.bindAsImage(0);
 
 			heightMap.bind(0);
 			normalMap.bind(1);
@@ -229,12 +220,11 @@ void run(GLFWwindow* window){
 			shadow_map_shader.set_vec3("uLightDir", lightDir);
 
 			timers[SHADOW_MAP_ID].begin();
-			render_quad();	
+			glDispatchCompute(state.size / 16, state.size / 16, 1);		
 			timers[SHADOW_MAP_ID].end();
 
+			glMemoryBarrier(barrier);
 			if(state.logging) log(MESSAGE_SUCCESS, "[CORE RENDER LOOP] Done");
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			state.generate_terrain = false;
 			state.terrain_generated = true;

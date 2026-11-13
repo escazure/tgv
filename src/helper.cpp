@@ -82,7 +82,7 @@ void build_shader(const std::string& udf, const std::string& udf_name, const std
 		  "layout (binding = 0, r32f) writeonly uniform image2D uHeightMap;\n\n"
 		  "uniform float uWorldSize;\n\n"
 		  "uniform int uSeed;\n\n"
-		  "\nvec2 uv;\nvec2 worldPos;\n\n";
+		  "\nvec2 uv;\nvec2 worldPos;\nint seed;\n";
 
 	os << lib << "\n\n";
 
@@ -94,6 +94,7 @@ void build_shader(const std::string& udf, const std::string& udf_name, const std
 		  " ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);\n"
 		  " uv = vec2(dstCoords) / uWorldSize;\n"
 		  " worldPos = vec2(dstCoords) - uWorldSize * 0.5;\n"
+		  " seed = uSeed;\n"
 		  " imageStore(uHeightMap, dstCoords, vec4(" << udf_name << "(), 0.0, 0.0, 0.0));\n"
 		  "}";
 }
