@@ -53,7 +53,7 @@ struct AppState{
     bool is_wireframe_mode = false;
     bool cull_backface = true;
     bool render_skybox = true;
-    bool render_water_plane = true;
+    bool render_water_plane = false;
     bool show_normals = false;
     bool show_light_frustum = false;
     bool show_light_marker = false;

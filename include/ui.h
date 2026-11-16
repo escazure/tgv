@@ -442,7 +442,7 @@ namespace UI{
                 ImGui::Checkbox("Render Terrain Skirt", &state.render_terrain_skirt);
                 ImGui::Checkbox("Render Water Plane", &state.render_water_plane);
 				if(state.render_water_plane){
-					ImGui::SliderFloat("##WaterPlaneLevel", &state.water_plane_level, MIN_WATER_PLANE_LEVEL, MAX_WATER_PLANE_LEVEL);
+					ImGui::SliderFloat("##WaterPlaneLevel", &state.water_plane_level, (state.terrain_generated && state.terrain) ? state.min_height : 0.0f, (state.terrain_generated && state.terrain) ? state.max_height : 0.0f);
                 	ImGui::Checkbox("Clip Terrain Below Water", &state.clip_terrain_below_water);
 				}
 
