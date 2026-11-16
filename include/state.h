@@ -19,7 +19,11 @@ struct AppState{
 	int step_size = 1;
 	int seed = 0;
 
-    char fun_buf[2048] = "return mountains(worldPos, 0.0003, 3000.0, 2.5, 6);";
+    char fun_buf[2048] = "vec3 biomeBias = vec3(2.0, 1.0, 0.5);\n"
+						  "float classSharpness = 2.5;\n"
+						  "float worldScale = 0.003;\n"
+						  "float worldAmplitude = 800.0;\n\n"
+						  "return example(worldPos * worldScale, biomeBias, classSharpness) * worldAmplitude;";
     char fun_name[128] = "example_terrain";
 
     bool show_noise_window = false;

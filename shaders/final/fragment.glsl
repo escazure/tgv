@@ -19,6 +19,9 @@ uniform float uMaxHeight;
 uniform vec3 uLightDir;
 const vec3 up = vec3(0.0, 1.0, 0.0);
 
+const float SQRT_TWO = sqrt(2.0);
+const float PI = 3.1415926535;
+
 #define MOUNTAINS_TEXTURE 0
 #define PLAINS_TEXTURE 1
 #define DESERT_TEXTURE 2
@@ -49,27 +52,29 @@ const vec3 BLUISH_WHITE = vec3(0.85, 0.85, 0.88);
 const vec3 TERRACOTA = vec3(0.62, 0.34, 0.24);
 const vec3 BEIGE = vec3(0.66, 0.58, 0.44);
 
-vec2 hash22(vec2 p){
+float hash21(vec2 p){
 	uvec2 v = floatBitsToUint(p);
 	v.x += 1664525u;
 	v ^= v.yx * 1664525u;
 	v *= 1664525u;
 	v ^= v >> 16u;
-	v ^= v.yx >> 5u;
 
-	uvec2 floatBits = (v & 0x007FFFFFu) | 0x3F800000u;
-	vec2 res = uintBitsToFloat(floatBits) - 1.0;
-	return res;
+	uint floatBits = (v.x * v.y & 0x007FFFFFu) | 0x3F800000u;
+	return uintBitsToFloat(floatBits) - 1.0;
 }
 
-float perlinNoise(vec2 uv){
-	vec2 i = floor(uv);
-	vec2 f = fract(uv);
+float perlinNoise(vec2 p){
+	vec2 i = floor(p);
+	vec2 f = fract(p);
 
-	vec2 gradA = normalize(hash22(i) * 2.0 - 1.0);
-	vec2 gradB = normalize(hash22(i + vec2(1.0, 0.0)) * 2.0 - 1.0);
-	vec2 gradC = normalize(hash22(i + vec2(0.0, 1.0)) * 2.0 - 1.0);
-	vec2 gradD = normalize(hash22(i + vec2(1.0, 1.0)) * 2.0 - 1.0);
+	float A = hash21(i) * 2.0 * PI;
+	float B = hash21(i + vec2(1.0, 0.0)) * 2.0 * PI;
+	float C = hash21(i + vec2(0.0, 1.0)) * 2.0 * PI;
+	float D = hash21(i + vec2(1.0, 1.0)) * 2.0 * PI;
+	vec2 gradA = vec2(cos(A), sin(A));
+	vec2 gradB = vec2(cos(B), sin(B));
+	vec2 gradC = vec2(cos(C), sin(C));
+	vec2 gradD = vec2(cos(D), sin(D));
 
 	float dotA = dot(gradA, f);
 	float dotB = dot(gradB, f - vec2(1.0, 0.0));
@@ -81,7 +86,7 @@ float perlinNoise(vec2 uv){
 	float u1 = mix(dotA, dotB, w.x);
 	float u2 = mix(dotC, dotD, w.x);
 
-	return mix(u1, u2, w.y) * 0.5 + 0.5;
+	return mix(u1, u2, w.y) * SQRT_TWO * 0.5 + 0.5;
 }
 
 vec3 textureTerrainMountains(float slope){
