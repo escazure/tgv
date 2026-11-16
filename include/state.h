@@ -12,6 +12,7 @@ class FunctionLoader;
 class Terrain;
 struct Camera;
 struct Texture;
+struct Shader;
 
 struct AppState{
     int size = 1024;
@@ -43,6 +44,7 @@ struct AppState{
     Terrain* terrain = nullptr;
     Camera* camera = nullptr;
 	Texture* heightMap = nullptr;
+	Shader* height_map_shader = nullptr;
 
 	bool debug_mode = false;
 	bool logging = false;

@@ -102,12 +102,12 @@ void run(GLFWwindow* window){
 
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.1f, -1.0f, 0.0f));
 
-	Shader shader("final/vertex.glsl", "final/fragment.glsl");
-	Shader skybox_shader("skybox/skybox_vertex.glsl", "skybox/skybox_fragment.glsl");
-	Shader normal_map_shader("normalMapping/normal_map.comp");
-	Shader shadow_map_shader("shadowMapping/shadow_map.comp");
-	Shader water_plane_shader("waterPlane/vertex.glsl", "waterPlane/fragment.glsl");
-	Shader min_max_compute_shader("minMaxComp/min_max.comp");
+	Shader shader("shaders/final/vertex.glsl", "shaders/final/fragment.glsl");
+	Shader skybox_shader("shaders/skybox/skybox_vertex.glsl", "shaders/skybox/skybox_fragment.glsl");
+	Shader normal_map_shader("shaders/normalMapping/normal_map.comp");
+	Shader shadow_map_shader("shaders/shadowMapping/shadow_map.comp");
+	Shader water_plane_shader("shaders/waterPlane/vertex.glsl", "shaders/waterPlane/fragment.glsl");
+	Shader min_max_compute_shader("shaders/minMaxComp/min_max.comp");
 
 	if(state.logging){
 		log(MESSAGE_INFO, std::format("[CORE] Final shader id - {}", shader.id));
@@ -154,7 +154,6 @@ void run(GLFWwindow* window){
 
 		if(state.generate_terrain){
 			state.gen_time = 0.0f;
-			Shader height_map_shader("heightMap/height_map.comp");
 
 			// ----- Height map generation ----- //
 			if(!state.height_map_imported){
@@ -162,9 +161,9 @@ void run(GLFWwindow* window){
 				heightMap.resize(1, state.size, state.size);
 				heightMap.bindAsImage(0);
 
-				height_map_shader.use();
-				height_map_shader.set_float("uWorldSize", state.size);
-				height_map_shader.set_int("uSeed", state.seed);
+				state.height_map_shader->use();
+				state.height_map_shader->set_float("uWorldSize", state.size);
+				state.height_map_shader->set_int("uSeed", state.seed);
 
 				timers[HEIGHT_MAP_ID].begin();
 				glDispatchCompute(state.size / 16, state.size / 16, 1);		

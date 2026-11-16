@@ -11,7 +11,36 @@
 
 struct Shader {
 	unsigned int id;
-	std::string shaders_dir = PROJECT_SHADERS_DIR + std::string("/");
+
+	Shader(const std::string& compute_code){
+		const char* code = compute_code.c_str();
+
+		unsigned int shader;
+		int success;
+		char info_log[512];
+
+		shader = glCreateShader(GL_COMPUTE_SHADER);
+		glShaderSource(shader, 1, &code, NULL);
+		glCompileShader(shader);
+		
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if(!success){
+			glGetShaderInfoLog(shader, 512, NULL, info_log);	
+			std::cerr << "SHADER: Compute shader compilation failed:\n" << info_log << std::endl;
+		}
+
+		id = glCreateProgram();
+		glAttachShader(id, shader);
+		glLinkProgram(id);
+
+		glGetProgramiv(id, GL_LINK_STATUS, &success);
+		if(!success){
+			glGetProgramInfoLog(id, 512, NULL, info_log);
+			std::cerr << "SHADER: Failed to link shaders:\n" << info_log << std::endl;
+		}
+
+		glDeleteShader(shader);
+	}
 
 	Shader(const char* compute_path){
 		std::string compute_code;
@@ -20,7 +49,7 @@ struct Shader {
 		shader_file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
 		try{
-			shader_file.open((shaders_dir + compute_path).c_str());
+			shader_file.open(compute_path);
 			std::stringstream shader_stream;
 			
 			shader_stream << shader_file.rdbuf();
@@ -71,8 +100,8 @@ struct Shader {
 		f_shader_file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
 		try{
-			v_shader_file.open((shaders_dir + vertex_path).c_str());
-			f_shader_file.open((shaders_dir + fragment_path).c_str());
+			v_shader_file.open(vertex_path);
+			f_shader_file.open(fragment_path);
 			std::stringstream v_shader_stream, f_shader_stream;
 
 			v_shader_stream << v_shader_file.rdbuf();

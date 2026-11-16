@@ -70,33 +70,34 @@ std::string wrap_user_input(const std::string& function_body, const std::string&
 	return result;
 }
 
-void build_shader(const std::string& udf, const std::string& udf_name, const std::string& shader_name){
+std::string build_shader(const std::string& udf, const std::string& udf_name){
 	std::ifstream is(std::string(PROJECT_SHADERS_DIR) + std::string("/heightMapLib/generation_lib.glsl"));
 	std::stringstream buffer;
 	buffer << is.rdbuf();
 	std::string lib = buffer.str();
 
-	std::ofstream os(std::string(PROJECT_SHADERS_DIR) + std::string("/heightMap/") + shader_name + std::string(".comp"));	
-	os << "#version 460 core\n"
-	      "layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;\n"
-		  "layout (binding = 0, r32f) writeonly uniform image2D uHeightMap;\n\n"
-		  "uniform float uWorldSize;\n\n"
-		  "uniform int uSeed;\n\n"
-		  "\nvec2 uv;\nvec2 worldPos;\nint seed;\n";
+	std::string shader_code = std::string(
+			"#version 460 core\n"
+	      	"layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;\n"
+		  	"layout (binding = 0, r32f) writeonly uniform image2D uHeightMap;\n\n"
+		  	"uniform float uWorldSize;\n\n"
+		 	"uniform int uSeed;\n\n"
+		  	"\nvec2 uv;\nvec2 worldPos;\nint seed;\n"
+	);
 
-	os << lib << "\n\n";
+	shader_code += lib;
+	shader_code += "/*** USER DEFINED FUNCTION BEGIN ***/\n" + udf + "\n" + "/*** USER DEFINED FUNCTION END ***/\n\n";
+	shader_code += std::string(
+			"void main(){\n"
+		  	" ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);\n"
+		  	" uv = vec2(dstCoords) / uWorldSize;\n"
+		  	" worldPos = vec2(dstCoords) - uWorldSize * 0.5;\n"
+		  	" seed = uSeed;\n"
+		  	" imageStore(uHeightMap, dstCoords, vec4(" + udf_name + "(), 0.0, 0.0, 0.0));\n"
+		  	"}"
+	);
 
-	os << "/*** USER DEFINED FUNCTION BEGIN ***/\n";
-	os << udf << "\n";
-	os << "/*** USER DEFINED FUNCTION END ***/\n\n";
-
-	os << "void main(){\n"
-		  " ivec2 dstCoords = ivec2(gl_GlobalInvocationID.xy);\n"
-		  " uv = vec2(dstCoords) / uWorldSize;\n"
-		  " worldPos = vec2(dstCoords) - uWorldSize * 0.5;\n"
-		  " seed = uSeed;\n"
-		  " imageStore(uHeightMap, dstCoords, vec4(" << udf_name << "(), 0.0, 0.0, 0.0));\n"
-		  "}";
+	return shader_code;
 }
 
 void getMinMaxHeight(Shader& shader, AppState& state, Texture &heightMap, unsigned int width, unsigned int height) {

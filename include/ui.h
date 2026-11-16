@@ -320,7 +320,8 @@ namespace UI{
 				    state.step_size = step_values[pending_density_idx];
 	
 				    std::string udf = wrap_user_input(state.fun_buf, state.fun_name);
-				    build_shader(udf, state.fun_name, "height_map");
+					std::string shader_code = build_shader(udf, state.fun_name);
+					state.height_map_shader = new Shader(shader_code);
 
 				    state.terrain = new Terrain(state.size, state.step_size, state.chunk_size);
 				    state.terrain->generate();
